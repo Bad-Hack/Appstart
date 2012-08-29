@@ -1,0 +1,71 @@
+10
+
+dir
+5
+file:///Y:/appstart/trunk/application/modules/default
+file:///Y:/appstart
+
+
+
+2012-08-29T07:47:12.396000Z
+4
+dharmesh.patel
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+8527a234-88d7-0f49-932d-9b515b9326a3
+
+Bootstrap.php
+file
+
+
+
+
+2012-08-29T06:47:56.840000Z
+fe3b9891b1addef2be56bd6ecb0a13bf
+2012-08-29T06:43:45.027958Z
+2
+tirth.bodawala
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+87
+
+controllers
+dir
+
+models
+dir
+
+views
+dir
+
