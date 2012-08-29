@@ -78,7 +78,9 @@ class Admin_LoginController extends Zend_Controller_Action {
 		}
 		$form->getElement ( "email" )->setAttrib ( "required", "required" );
 		$form->getElement ( "password" )->setAttrib ( "required", "required" );
-		
+		foreach ($form->getElements() as $element) {
+			if($element->getDecorator('Label')) $element->getDecorator('Label')->setTag(null);
+		}
 		$this->view->form = $form;
 	}
 	public function logoutAction() {

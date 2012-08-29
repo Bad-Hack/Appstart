@@ -1,3 +1,4 @@
+<form id="frmFilter" onsubmit="_filter();return false;">
 <div id="filterBox">
       <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
         <tr>
@@ -19,3 +20,52 @@
         </tr>
       </table>
 </div>
+</form>
+<table width="100%" class="pattern-style-b" cellspacing='0' id="dataGrid">
+	<thead>
+		<tr>
+	        <th scope="col">User Email</th>
+		    <th scope="col">Role</th>
+		    <th scope="col">Action</th>
+		</tr>
+    </thead> 
+	<tbody>
+		<tr>
+			<td colspan="3" class="dataTables_empty">Loading data from server</td>
+		</tr>
+	</tbody>      
+</table>
+
+<script type="text/javascript">
+var grid ="";
+$(document).ready(function() {
+	grid = $('#dataGrid').dataTable({    	
+    	"aoColumns": [
+						{ "sName": "email" },
+						{ "sName": "role" },
+						{ "sName": "action","bSortable": false}
+					 ],
+		"bPaginate" : true,
+		"bDestroy": true,	
+        "bProcessing": false,
+        "bServerSide": true,
+        "bSortClasses": false,       
+        "sAjaxSource": "<?php echo $this->url(array("module"=>"admin","controller"=>"system-user","action"=>"grid"));?>",
+        "sServerMethod": "POST",
+        	"fnServerParams": function ( aoData ) {
+            	tmData= $('#frmFilter').serializeArray();
+            	$(tmData).each(function(){
+                   	name= $(this).attr("name");
+    				value= $(this).attr("value");                
+                   	aoData.push( { "name": name, "value": value } );
+                });            
+            }
+    });    
+    $("#dataGrid_length,#dataGrid_filter").hide();
+});
+function _filter()
+{
+	grid.fnDraw();
+	return false;	
+}
+</script>

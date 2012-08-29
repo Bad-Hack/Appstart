@@ -1,0 +1,67 @@
+<form id="frmFilter" onsubmit="_filter();return false;">
+<div id="filterBox">
+      <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
+        <tr>
+          <td valign="middle"><h2 class="filterIcon">Filter</h2></td>
+          <td>
+          	<table>
+              <tr>
+                <td>Business Type</td>
+                <td><input type="text" name="email" class="input" id="txtEmail"></td>
+              </tr>
+            </table>
+          </td>
+          <td>&nbsp;</td>
+          <td align="right">
+          	<input type="submit" name="button" id="button" class="button" value="Submit">
+          </td>
+        </tr>
+      </table>
+</div>
+</form>
+<table width="100%" class="pattern-style-b" cellspacing='0' id="dataGrid">
+	<thead>
+		<tr>
+	        <th scope="col">Business Type</th>
+		    <th scope="col">Action</th>
+		</tr>
+    </thead> 
+	<tbody>
+		<tr>
+			<td colspan="2" class="dataTables_empty">Loading data from server</td>
+		</tr>
+	</tbody>      
+</table>
+
+<script type="text/javascript">
+var grid ="";
+$(document).ready(function() {
+	grid = $('#dataGrid').dataTable({    	
+    	"aoColumns": [
+						{ "sName": "name" },
+						{ "sName": "","bSortable": false}
+					 ],
+		"bPaginate" : true,
+		"bDestroy": true,	
+        "bProcessing": false,
+        "bServerSide": true,
+        "bSortClasses": false,       
+        "sAjaxSource": "<?php echo $this->url(array("module"=>"admin","controller"=>"business-type","action"=>"grid"));?>",
+        "sServerMethod": "POST",
+        	"fnServerParams": function ( aoData ) {
+            	tmData= $('#frmFilter').serializeArray();
+            	$(tmData).each(function(){
+                   	name= $(this).attr("name");
+    				value= $(this).attr("value");                
+                   	aoData.push( { "name": name, "value": value } );
+                });            
+            }
+    });    
+    $("#dataGrid_length,#dataGrid_filter").hide();
+});
+function _filter()
+{
+	grid.fnDraw();
+	return false;	
+}
+</script>

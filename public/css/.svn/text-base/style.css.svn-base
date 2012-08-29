@@ -340,7 +340,7 @@ color:#66676b;
 
 h2{ font-size:25px; color:#033c47; font-weight:normal; margin-bottom:5px; padding:0px 10px 0px 22px; line-height:22px;}
 #filterBox{ border-bottom:solid 4px #dcdde2; min-height:40px;  }
-
+.boxBorderBottom{ border-bottom:solid 4px #dcdde2; min-height:40px;  }
 
 
 

@@ -1,7 +1,7 @@
 <?php
 class Admin_Model_SystemUser extends Standard_Model
 {
-    private $_user_id;
+    private $_system_user_id;
     private $_email;
     private $_password;
     private $_role;

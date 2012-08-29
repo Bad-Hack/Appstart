@@ -1,0 +1,42 @@
+<div id="filterBox">
+      <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
+        <tr>
+          <td valign="middle"><h2 class="filterIcon">Add Template</h2></td>
+        </tr>
+      </table>
+</div>
+<div class="boxBorderBottom">
+<form id="form1" onsubmit="return false;">
+	<table>
+		<tr>
+	    	<td>Template Name</td>
+	        <td>
+	        	<!-- Template Name -->
+			</td>
+		</tr>
+	    <tr>
+	    	<td>Business Type</td>
+	        <td>
+	        	<!-- Business Type -->
+			</td>
+		</tr>
+		<tr>
+	    	<td>Status</td>
+	        <td>
+	        	<!-- Business Type -->
+			</td>
+		</tr>
+	    <tr>
+	    	<td>Modules</td>
+	        <td>
+	        	<!-- Modules (Multi Select) -->
+	        </td>
+		</tr>
+		<tr>
+			<td>
+				<!-- Submit -->
+			</td>
+		</tr>
+	</table>
+</form>
+</div>

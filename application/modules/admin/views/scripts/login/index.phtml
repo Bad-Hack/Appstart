@@ -1,9 +1,5 @@
 <?php
-$form = $this->form;
-// Remove <dt> from label generation
-foreach ($form->getElements() as $element) {
-    if($element->getDecorator('Label')) $element->getDecorator('Label')->setTag(null);
-}
+	$form = $this->form;
 ?>
 <form class="box login" method="<?php echo $form->getMethod() ?>" action="<?php echo
     $form->getAction()?>">
