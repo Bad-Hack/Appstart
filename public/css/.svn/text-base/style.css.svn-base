@@ -207,7 +207,7 @@ box-shadow:  1px 1px 2px rgba(0, 0, 0, 0.2);
 
 .crumbs li a { background-image: url('../images/bg-crumbs.png');  background-repeat: no-repeat; background-position: 100% 0; position: relative; }
 .crumbs li a:hover { color: #fff; background-position: 100% -36px; cursor: pointer; }
-.crumbs li a:active { color: #333; background-position: 100% -72px; }
+.crumbs li a.active { color: #333; background-position: 100% -73px; }
 .crumbs li.first a span { height: 22px; width: 3px; border-left: 1px solid #d9d9d9; position: absolute; top: 0px; left: 0px; }
 
 
@@ -321,6 +321,10 @@ color:#66676b;
 	-webkit-border-bottom-right-radius:3px;
 	border-bottom-right-radius:3px;
 }
+#dataGrid tr:hover {
+	border-collapse: separate !important;	
+}
+
 #dataGrid tr:hover td{
 	background: #013b46;
 	background: -webkit-gradient(linear, left top, left bottom, from(#013b46), to(#013b46));
@@ -345,7 +349,7 @@ h2{ font-size:25px; color:#033c47; font-weight:normal; margin-bottom:5px; paddin
 
 
 .button{
-    float: right;
+    /*float: right;*/
     padding: 2px 15px 4px 15px;
     cursor: pointer;   
     color: #fff;
@@ -386,6 +390,54 @@ h2{ font-size:25px; color:#033c47; font-weight:normal; margin-bottom:5px; paddin
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset; 
 }
 
+input[type=submit],
+input[type=button],
+input[type=reset]{
+    /*float: right;*/
+    padding: 2px 15px 4px 15px;
+    cursor: pointer;   
+    color: #fff;
+    font: bold 13px Arial, Verdana, Arial;
+    
+    overflow: visible; /* IE6/7 fix */
+    border: 0;  
+    background-color: #033c47;
+    background-image: -moz-linear-gradient(#486f7b, #033c47);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#486f7b), to(#033c47));    
+    background-image: -webkit-linear-gradient(#486f7b, #033c47);
+    background-image: -o-linear-gradient(#486f7b, #033c47);
+    background-image: -ms-linear-gradient(#486f7b, #033c47);
+    background-image: linear-gradient(#486f7b, #033c47);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#486f7b', EndColorStr='#033c47');     
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+	border:solid 2px #91b7c2;
+}
+
+input[type=submit]:hover,
+input[type=button]:hover,
+input[type=reset]:hover {
+   background-color: #033c47;
+    background-image: -moz-linear-gradient(#5e9aac, #0e839a);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#5e9aac), to(#0e839a));    
+    background-image: -webkit-linear-gradient(#5e9aac, #0e839a);
+    background-image: -o-linear-gradient(#5e9aac, #0e839a);
+    background-image: -ms-linear-gradient(#5e9aac, #0e839a);
+    background-image: linear-gradient(#5e9aac, #0e839a);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#5e9aac', EndColorStr='#0e839a');      }
+
+input[type=submit]:active,
+input[type=button]:active,
+input[type=reset]:active{
+    background: #64799e;
+    position: relative;
+    top: 2px;    
+    -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset;
+    -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset; 
+}
+
 .input {
     border: 1px solid #caced2;
     border-radius: 3px 3px 3px 3px;
@@ -398,6 +450,19 @@ h2{ font-size:25px; color:#033c47; font-weight:normal; margin-bottom:5px; paddin
    
 }
 
+input[type=text],
+input[type=email],
+input[type=password], select {
+    border: 1px solid #caced2;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 2px 4px #dcdde2 inset;
+    color: #797979;
+    font: 12px Arial,Helvetica;
+  margin: 0 2px 0 2px;
+    padding: 5px;
+	min-width:130px;
+   
+}
 
 .filterIcon{ background-image:url(../images/filter.png); background-repeat:no-repeat; }
 

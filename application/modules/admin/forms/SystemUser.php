@@ -20,9 +20,11 @@ class Admin_Form_SystemUser extends Zend_Form
                 array($notEmpty,true),
             	array('EmailAddress',true),
             ),
-		'errorMessages' => array('Invalid Email Address')
+			'errorMessages' => array('Invalid Email Address')
 				
         ));
+		$this->getElement("email")->setAttrib("required", "required");
+		
 		$notEmpty = new Zend_Validate_NotEmpty();
 		$notEmpty->setMessage('Value Is Required.');
 		$this->addElement('password', 'password', array(
@@ -44,6 +46,7 @@ class Admin_Form_SystemUser extends Zend_Form
 												'Password must be of minimum 6 character'))),
 				)
 		));
+		$this->getElement("password")->setAttrib("required", "required");
 		$confValidator = new Zend_Validate_Identical('password');
 		$confValidator->setMessage("Confirm password do not match");
 		
@@ -56,21 +59,22 @@ class Admin_Form_SystemUser extends Zend_Form
 						array($notEmpty,true),array($confValidator,true)
 				)
 		));
+		
+		$this->getElement("confirm_password")->setAttrib("required", "required");
 		$this->addElement('select','role',array(
 				'label'		 => 'Role:',
 				'MultiOptions' => $this->_getGroupMultiOptions(),
 				'validators'	=>	array(
 						'NotEmpty'
 				),
-				'Required'	=>	true
+				'required'	=>	true
 		));
-		$this->addElement('checkbox', 'status', array(
-				'label'      => 'Active',
-				'value'      => '1'
-		));
+		$this->getElement("role")->setAttrib("required", "required");
+		
 		// Add the submit button
 		$this->addElement('submit', 'submit', array(
-				'ignore'   => true
+				'ignore'   => true,
+				'onclick'  => 'validate();'
 		));
 		// Add the reset button
 		$this->addElement('reset', 'reset', array(
@@ -80,7 +84,7 @@ class Admin_Form_SystemUser extends Zend_Form
     public function _getGroupMultiOptions()
     {
     	$options = array("" => 'Select user group');
-    	$options[1] = "System Administrator";
+    	$options[1] = "Administrator";
     	$options[2] = "System User";
     	return $options;
     }

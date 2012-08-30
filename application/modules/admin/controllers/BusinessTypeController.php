@@ -15,18 +15,14 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 		$this->_helper->layout ()->disableLayout ();
 		$this->_helper->viewRenderer->setNoRender ( true );
 		$businessTypeMapper = new Admin_Model_Mapper_BusinessType();
+		$response = $businessTypeMapper->getDataTableList(array(
+			'column' => array(
+					'id' => array('actions'),
+			)
+		));
 		
-		$columns = array(
-				'business_type_id',
-				'name'
-		);
+		echo $this->_helper->json($response);
 		
-		$filter = " 1=1 ";
-		$gridData["sEcho"] = $this->_request->getParam("sEcho",1);
-		$gridData["iTotalRecords"] = $businessTypeMapper->countAll($filter);
-		$gridData["iTotalDisplayRecords"] = $businessTypeMapper->countAll($filter);
-		$gridData["aaData"] = $businessTypeMapper->getList($columns,null);
-		echo $this->_helper->json($gridData);
 	}
 	
 	public function addAction() {

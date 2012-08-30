@@ -14,85 +14,124 @@ class Admin_SystemUserController extends Zend_Controller_Action
 		
     }
     
-    public function gridAction()
-    {
-    	// action body
-    	$this->_helper->layout ()->disableLayout ();
-    	$this->_helper->viewRenderer->setNoRender ();
-    	
-    	$grid = array(
-    			"sEcho" => intval($this->_request->getParam("sEcho")),
-    			"iTotalRecords" => "0",
-    			"iTotalDisplayRecords" => "0",
-    			"aaData" => array()
-    	);
-    	 
-    	$sortingColumn = explode ( ",", $this->_request->getParam ( "sColumns" ) );
-    	 
-    	$grid["iTotalRecords"] = 1;
-    	$gridArray ["iTotalDisplayRecords"] = 1;
-    	$gridArray ["debug"] = $sortingColumn;
-    	 
-    	// action body
-    	//$data["user_id"] = "1";
-    	$data[0][] = "admin@aksystems.com";
-    	$data[0][] = "Admin";
-    	$data[0][] = "Edit";
-    	
-    	$grid ["aaData"] = $data;
-    	$jsonGrid = Zend_Json::encode($grid);
-    	$this->_response->appendBody($jsonGrid);
-    }
-
     public function addAction()
     {
     	// action body
     	$form = new Admin_Form_SystemUser();
-    	$request = $this->getRequest();
-    	if ($this->getRequest()->isPost()) {
-    		if($form->isValid($request->getPost()))
-    		{
-    			// Save Record In DB
-    			
-    		}
-    		else {
-    			$this->view->assign(array("password"=>$this->getRequest()->getParam('password',"")));
-    		}
-    	}
-    	
     	foreach ($form->getElements() as $element) {
     		if($element->getDecorator('Label')) $element->getDecorator('Label')->setTag(null);
     	}
     	$this->view->form = $form;
+    	$this->view->assign(array("partial"=>"system-user/partials/add.phtml"));
+    	$this->render("add-edit");
     }
     
     public function editAction()
     {
-    	// action body
     	$form = new Admin_Form_SystemUser();
     	$request = $this->getRequest();
-    	
+    	if($request->getParam("id","")!="")
+    	{
+	    	$mapper = new Admin_Model_Mapper_SystemUser();
+	    	$data = $mapper->find($request->getParam("id",""))->toArray();
+	    	
+	    	$data["confirm_password"] = $data["password"];
+			$form->populate($data);
+			$this->view->password = $data["password"];
+	    	foreach ($form->getElements() as $element) {
+	    		if($element->getDecorator('Label')) $element->getDecorator('Label')->setTag(null);
+	    	}
+    	}
+    	$this->view->form = $form;
+    	$this->view->assign(array("partial"=>"system-user/partials/edit.phtml"));
+    	$this->render("add-edit");
+    }
+    
+    public function saveAction()
+    {
+    	$this->_helper->layout ()->disableLayout ();
+    	$this->_helper->viewRenderer->setNoRender ();
+    	$form = new Admin_Form_SystemUser();
+    	$request = $this->getRequest();
+    	$msg = "Error";
+    	$error = true;
     	if ($this->getRequest()->isPost()) {
     		if($form->isValid($request->getPost()))
     		{
     			// Save Record In DB
-    			
+	    		try {
+    				$auth = Zend_Auth::getInstance();
+	    			$activeUser = $auth->getStorage ()->read ()->system_user_id;
+	    			
+	    			$model = new Admin_Model_SystemUser();
+	    			
+	    			if($request->getParam("system_user_id","")!="") {
+	    				$model->setSystemUserId($request->getParam("system_user_id"));
+	    			}
+	    			else {
+	    				$model->setCreatedBy($activeUser);
+	    				$model->setCreatedAt(date("Y-m-d h:i:s"));
+	    			}
+	    			
+	    			$model->setEmail($request->getParam("email"));
+	    			$model->setPassword($request->getParam("password"));
+	    			$model->setRole($request->getParam("role"));
+	    			$model->setLastUpdatedBy($activeUser);
+	    			$model->setLastUpdatedAt(date("Y-m-d h:i:s"));
+	    			$model->save();
+	    			
+	    			$msg = "Record save successfully";
+	    			$error = false;
+	    		}
+	    		catch (Exception $e) {
+	    			$msg = "Error: [".$e->getCode()."] ".$e->getMessage()."";
+	    		}
     		}
     		else {
-    			$this->view->assign(array("password"=>$this->getRequest()->getParam('password',"")));
+    			// Invalid Request
+    			$msg = "Please verify your information";
     		}
     	}
-    	else
+    	
+    	$response["error"] = $error;
+    	$response["message"] = $msg;
+    	$jsonResponse = Zend_Json::encode($response);
+    	$this->_response->appendBody($jsonResponse);
+    }
+    
+    public function gridAction()
+    {
+    	$this->_helper->layout ()->disableLayout ();
+    	$this->_helper->viewRenderer->setNoRender ();
+    	
+    	$mapper = new Admin_Model_Mapper_SystemUser();
+    	
+    	$response = $mapper->getDataTableList();
+    	
+    	/*$response = array("sEcho" => intval($this->_request->getParam("sEcho")));
+    	$response["iTotalRecords"] = $mapper->countAll();
+    	$sortingColumn = explode ( ",", $this->_request->getParam ( "sColumns" ) );
+    	
+    	// @TODO Filter and sorting logic
+    	
+    	// --------
+    	$data = array();
+    	$models = $mapper->fetchAll();
+    	foreach($models as $key=>$value)
     	{
-    		$mapper = new Admin_Model_Mapper_BusinessType();
-    		$data = $mapper->find($request->getParam("id",""));
-    		$data["confirm_password"] = $data["password"];
+    		$data[$key][] = $value->getEmail();
+    		$data[$key][] = $value->getRole()==1 ? "Administrator" : "System User";
+    		if($value->getSystemUserId()==1)
+    			$data[$key][] = '<a href="#'.$value->getSystemUserId().'">Edit</a>';
+    		else
+    			$data[$key][] = '<a href="#'.$value->getSystemUserId().'">Edit</a>&nbsp;<a href="#'.$value->getSystemUserId().'">Delete</a>';
     	}
-
-    	foreach ($form->getElements() as $element) {
-    		if($element->getDecorator('Label')) $element->getDecorator('Label')->setTag(null);
-    	}
-    	$this->view->form = $form;
+    	
+    	$response["iTotalDisplayRecords"] = count($data);
+    	$response["debug"] = $sortingColumn;	 
+    	$response ["aaData"] = $data;
+    	*/
+    	$jsonGrid = Zend_Json::encode($response);
+    	$this->_response->appendBody($jsonGrid);
     }
 }
-

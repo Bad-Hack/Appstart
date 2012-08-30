@@ -40,6 +40,8 @@ class Admin_Form_Login extends Zend_Form
         	'class'	   => "button"
         ));	
 		
+        $this->getElement ( "email" )->setAttrib ( "required", "required" );
+        $this->getElement ( "password" )->setAttrib ( "required", "required" );
     }
 }
 

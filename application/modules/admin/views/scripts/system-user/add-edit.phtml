@@ -1,0 +1,81 @@
+<?php $form = $this->form; ?>
+<div class="boxBorderBottom">
+      <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
+        <tr>
+          <td valign="middle"><?php echo $this->partial($this->partial,array("password"=>$this->password)); ?></td>
+        </tr>
+      </table>
+</div>
+<div id="filterBox">
+<form id="form1" onsubmit="return false;">
+	<table>
+		<tr>
+			<td align="center" colspan="2">&nbsp;</td>
+		</tr>
+		<tr>
+	    	<td><?php echo $form->email->renderLabel() ?></td>
+	        <td>
+	        	<?php echo str_replace('"text"' , '"email"',$form->email->renderViewHelper()); ?>
+			</td>
+		</tr>
+	    <tr>
+	    	<td><?php echo $form->password->renderLabel() ?></td>
+	        <td>
+	        	<?php echo $form->password->renderViewHelper() ?>
+			</td>
+		</tr>
+		<tr>
+	    	<td><?php echo $form->confirm_password->renderLabel() ?></td>
+	        <td>
+	        	<?php echo $form->confirm_password->renderViewHelper() ?>
+			</td>
+		</tr>
+	    <tr>
+	    	<td><?php echo $form->role->renderLabel() ?></td>
+	        <td>
+	        	<?php echo $form->role->renderViewHelper() ?>
+	        </td>
+		</tr>
+		<tr>
+			<td align="center" colspan="2">&nbsp;</td>
+		</tr>
+		<tr>
+			<td align="center" colspan="2">
+				<?php echo $form->submit->renderViewHelper() ?>&nbsp;
+				<?php echo $form->reset->renderViewHelper() ?>
+			</td>
+		</tr>
+	</table>
+</form>
+</div>
+
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+	$("form").validator();
+});
+function validate()
+{
+	if(!$("form").data("validator").checkValidity()) return false;
+	if($("#password").attr("value")!=$("#confirm_password").attr("value"))
+	{
+		$("form").data("validator").invalidate({confirm_password:"Please confirm password"});
+		return;
+	}
+	var formData = $("#form1").serialize();
+	jQuery.ajax({
+		url: "<?php echo $this->url(array("module"=>"admin","controller"=>"system-user","action"=>"save"),null,true); ?>",
+		type:"POST",
+		dataType:"json",
+		data:formData,
+		success:function(data){
+			alert(data.message);
+			if(!data.error)
+			{
+				location.href = "<?php echo $this->url(array("module"=>"admin","controller"=>"system-user","action"=>"index"),null,true); ?>";
+			}
+		}
+	});
+}
+-->
+</script>

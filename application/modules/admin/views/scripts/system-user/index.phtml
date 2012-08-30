@@ -39,28 +39,16 @@
 <script type="text/javascript">
 var grid ="";
 $(document).ready(function() {
-	grid = $('#dataGrid').dataTable({    	
-    	"aoColumns": [
-						{ "sName": "email" },
-						{ "sName": "role" },
-						{ "sName": "action","bSortable": false}
-					 ],
-		"bPaginate" : true,
-		"bDestroy": true,	
-        "bProcessing": false,
-        "bServerSide": true,
-        "bSortClasses": false,       
-        "sAjaxSource": "<?php echo $this->url(array("module"=>"admin","controller"=>"system-user","action"=>"grid"));?>",
-        "sServerMethod": "POST",
-        	"fnServerParams": function ( aoData ) {
-            	tmData= $('#frmFilter').serializeArray();
-            	$(tmData).each(function(){
-                   	name= $(this).attr("name");
-    				value= $(this).attr("value");                
-                   	aoData.push( { "name": name, "value": value } );
-                });            
-            }
-    });    
+	grid= dataTable({
+		id: $('#dataGrid'),
+		"aoColumns": [
+			{ "sName": "email" },
+			{ "sName": "role" },
+			{ "sName": "","bSortable": false}
+		 ],
+		 "sAjaxSource": "<?php echo $this->url(array("module"=>"admin","controller"=>"system-user","action"=>"grid"));?>",
+		 filterForm : $("#frmFilter")
+	});    
     $("#dataGrid_length,#dataGrid_filter").hide();
 });
 function _filter()

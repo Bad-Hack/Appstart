@@ -108,7 +108,6 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		}
 		return $models;
 	}
-	
 	public function save(Standard_Model $model) {
 		// public function save(array $model) {
 		if (! ($model instanceof $this->_modelClass)) {
@@ -135,13 +134,20 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 	/**
 	 * Deletes existing rows.
 	 *
-	 * @param  array|string $where SQL WHERE clause(s).
-	 * @return int          The number of rows deleted.
+	 * @param array|string $where
+	 *        	SQL WHERE clause(s).
+	 * @return int The number of rows deleted.
 	 */
-	public function delete($where){
-		return $this->getDbTable()->delete($where);
+	public function delete($where) {
+		return $this->getDbTable ()->delete ( $where );
 	}
-	public function countAll($filter) {
+	/**
+	 * Count according to the criteria specified
+	 *
+	 * @param string $filter        	
+	 * @return number
+	 */
+	public function countAll($filter = null) {
 		return $this->getDbTable ()->fetchAll ( $filter )->count ();
 	}
 	
@@ -179,5 +185,91 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		unset ( $name );
 		
 		return $primaryKey;
+	}
+	
+	/**
+	 * Get Grid Data-Table List
+	 *
+	 * @param array $columns        	
+	 * @param string $where        	
+	 * @return boolean multitype:multitype:string
+	 */
+	public function getDataTableList(array $options = array(), $where = null) {
+		
+		// Get the current request object
+		$request = Zend_Controller_Front::getInstance ()->getRequest ();
+		
+		// Calculate Columns required
+		$columns = $request->getParam ( 'sColumns' );
+		$columns = explode ( ",", $columns );
+		$columns = array_filter ( $columns, function ($value) {
+			return ($value != "");
+		} );
+		
+		// Applying Sorting
+		$order = "";
+		$iSortingCols = $request->getParam ( 'iSortingCols' );
+		for($i = 0; $i < intval ( $iSortingCols ); $i ++) {
+			if ($request->getParam ( "bSortable_" . $request->getParam ( 'iSortCol_' . $i ), false )) {
+				$order .= $columns [$request->getParam ( 'iSortCol_' . $i )] . " " . $request->getParam ( 'sSortDir_' . $i ) . ", ";
+			}
+		}
+		// Change sOrder back to null
+		$order = $order == "" ? null : $order;
+		
+		// Extract Searching Fields
+		$allParams = $request->getParams ();
+		$searchParams = array_filter ( $allParams, function ($key) use(&$allParams) {
+			if (strpos ( key ( $allParams ), "search_" ) !== false && $allParams [key ( $allParams )] != "") {
+				next ( $allParams );
+				return true;
+			} else {
+				next ( $allParams );
+				return false;
+			}
+		} );
+		
+		// Searching
+		if (! empty ( $searchParams )) {
+			if ($where == "") {
+				$where .= " (";
+			} else {
+				$where .= " AND ";
+			}
+			
+			foreach ( $searchParams as $searchColumn => $searchValue ) {
+				$searchColumn = substr ( $searchColumn, strlen ( "search_" ) );
+				$where .= $searchColumn . " LIKE '%" . $searchValue . "%' AND ";
+			}
+			
+			$where = substr_replace ( $where, "", - 4 );
+			$where .= ") ";
+		}
+		// Get the data from database
+		$models = $this->fetchAll ( $where, $order );
+		$gridData = array ();
+		if($models){
+			foreach ( $models as $model ) {
+					
+				$record = array ();
+				foreach ( $columns as $column ) {
+					if (isset ($options ["column"]) && isset ( $options ["column"]["id"] ) && in_array ( $column, $options ["column"]["id"] )) {
+						$record [] = $model->toArray ();
+					} else if ( isset ($options ["column"]) && isset ( $options ["column"]["ignore"] ) && in_array ( $column, $options ["column"]["ignore"] )) {
+						$record [] = "";
+					} else {
+						$record [] = $model->get ( $column );
+					}
+				}
+				$gridData [] = $record;
+			}	
+		}
+		$finalGridData ["sEcho"] = $request->getParam ( "sEcho", 1 );
+		
+		$finalGridData ["iTotalRecords"] = $this->countAll ();
+		$finalGridData ["iTotalDisplayRecords"] = $this->countAll ( $where );
+		$finalGridData ["aaData"] = $gridData;
+		
+		return $finalGridData;
 	}
 }

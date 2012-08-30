@@ -1,4 +1,4 @@
-<form id="frmFilter" onsubmit="_filter();return false;">
+<form id="frmFilter" onsubmit="return _filter();">
 	<div id="filterBox">
 		<table
 			style="width: 100%; border: 0; border-spacing: 0; border-collapse: collapse;">
@@ -8,7 +8,7 @@
 					<table>
 						<tr>
 							<td>Business Type</td>
-							<td><input type="text" name="email" class="input" id="txtEmail"></td>
+							<td><input type="text" name="name" class="input" id="txtEmail"></td>
 						</tr>
 					</table>
 				</td>
@@ -25,7 +25,7 @@
 		<tr>
 			<th scope="col">Business Type ID</th>
 			<th scope="col">Business Type</th>
-			<th scope="col">Action</th>
+			<th scope="col">Actions</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -38,52 +38,22 @@
 <script type="text/javascript">
 var grid ="";
 $(document).ready(function() {
-	grid = $('#dataGrid').dataTable({    	
-    	"aoColumns": [
-    	              	{ "sName": "business_type_id" },
-						{ "sName": "name" },
-						{ "sName": "","bSortable": false}
-					 ],
-		"bPaginate" : true,
-		"bDestroy": true,	
-        "bProcessing": false,
-        "bServerSide": true,
-        "bSortClasses": false,       
-        "sAjaxSource": "<?php echo $this->url(array("module"=>"admin","controller"=>"business-type","action"=>"grid"));?>",
-        "fnServerData": function( sSource, aoData, fnCallback ){
-            $(document).queue(function(next){
-            	$.blockUI({
-                	onBlock:next
-                });
-			}).queue(function(next){
-				$.ajax({
-	                type: "POST",
-	                url : sSource,
-	                data: aoData,
-	                cache: false,
-	                dataType: "json",
-	                success: function(json){fnCallback(json);}
-	            }).complete(next);
-			}).queue(function(next){
-				$.unblockUI({
-					onUnblock: next
-				});
-			});
-        },
-        "fnServerParams": function ( aoData ) {
-           	tmData= $('#frmFilter').serializeArray();
-           	$(tmData).each(function(){
-               	name= $(this).attr("name");
-    			value= $(this).attr("value");                
-               	aoData.push( { "name": name, "value": value } );
-			});            
-		}
-    });    
+	
+	grid = dataTable({
+		aoColumns: [
+	              	{ "sName": "business_type_id" },
+					{ "sName": "name" },
+					{ "sName": "actions","bSortable": false}
+				 ],
+		id : $('#dataGrid'),
+		filterForm : $('#frmFilter'),
+		sAjaxSource: "<?php echo $this->url(array("module"=>"admin","controller"=>"business-type","action"=>"grid"));?>"
+	});
+	
     $("#dataGrid_length,#dataGrid_filter").hide();
 });
-function _filter()
-{
+function _filter(){
 	grid.fnDraw();
-	return false;	
+	return false;
 }
 </script>
