@@ -33,7 +33,7 @@
     </nav>
     <div style="clear:both;"></div>
     <nav id="main-nav">
-      <?php echo $this->navigation()->menu() ?> 
+      <?php echo $this->navigation()->menu()->setPartial(array("navigation.phtml","admin")) ?> 
     </nav>
     
     <!-- with images -->

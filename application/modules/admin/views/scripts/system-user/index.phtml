@@ -44,7 +44,7 @@ $(document).ready(function() {
 		"aoColumns": [
 			{ "sName": "email" },
 			{ "sName": "role" },
-			{ "sName": "","bSortable": false}
+			{ "sName": "actions","bSortable": false}
 		 ],
 		 "sAjaxSource": "<?php echo $this->url(array("module"=>"admin","controller"=>"system-user","action"=>"grid"));?>",
 		 filterForm : $("#frmFilter")

@@ -79,6 +79,9 @@ function dataTable(params){
                    	aoData.push( { "name": name, "value": value } );
     			});
         	}
+		},
+		"fnDrawCallback":function(){
+			$(element+"_length , " + element + "_filter").hide();
 		}
 	};
 	return $(element).dataTable(gridObject);

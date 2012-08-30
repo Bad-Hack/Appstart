@@ -1,24 +1,17 @@
 <ul class="crumbs">
-<?php
-$class = 'class="first"';
-$i=0;
-foreach ($this->pages as $index => $page) {
-	echo '<li '.$class.'>';
-	$class ="";
-	$style = " style='z-index:".(count($this->pages) - $i++)."' ";
-	//var_dump(get_class_methods(get_class($page)));die;
-	if(count($this->pages) != $i) {
-?>	
-	<a href="<?php echo $page->getHref(); ?>" <?php echo $style;?>> <span></span><?php echo $page->getLabel(); ?></a>
-<?php 
-	} else {
-?>
-	<a href="#" class="active" <?php echo $style;?>> <span></span><?php echo $page->getLabel(); ?></a>
-<?php 
+	<?php
+	$class = 'class="first"';
+	$i = 0;
+	foreach ( $this->pages as $index => $page ) {
+		echo '<li ' . $class . '>';
+		$class = "";
+		$style = " style='z-index:" . (count ( $this->pages ) - $i ++) . "' ";
+		if (count ( $this->pages ) != $i) {
+			echo '<a href="' . $page->getHref () . '" ' . $style . '><span>' . $page->getLabel () . '</span></a>';
+		} else {
+			echo '<a href="javascript:void(0);" class="active" ' . $style . '><span>' . $page->getLabel () . '</span></a>';
+		}
+		echo "</li>";
 	}
-?>
-	</li>
-<?php 
-}
-?>
+	?>
 </ul>

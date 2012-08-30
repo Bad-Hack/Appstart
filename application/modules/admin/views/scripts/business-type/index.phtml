@@ -1,4 +1,4 @@
-<form id="frmFilter" onsubmit="return _filter();">
+<form id="frmFilter">
 	<div id="filterBox">
 		<table
 			style="width: 100%; border: 0; border-spacing: 0; border-collapse: collapse;">
@@ -38,7 +38,7 @@
 <script type="text/javascript">
 var grid ="";
 $(document).ready(function() {
-	
+	// Load Grid Data
 	grid = dataTable({
 		aoColumns: [
 	              	{ "sName": "business_type_id" },
@@ -49,11 +49,9 @@ $(document).ready(function() {
 		filterForm : $('#frmFilter'),
 		sAjaxSource: "<?php echo $this->url(array("module"=>"admin","controller"=>"business-type","action"=>"grid"));?>"
 	});
-	
-    $("#dataGrid_length,#dataGrid_filter").hide();
+    $(document).on("submit","#frmFilter",function(){
+    	grid.fnDraw();
+    	return false;
+    });
 });
-function _filter(){
-	grid.fnDraw();
-	return false;
-}
 </script>

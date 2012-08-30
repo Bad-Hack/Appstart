@@ -106,31 +106,22 @@ class Admin_SystemUserController extends Zend_Controller_Action
     	
     	$mapper = new Admin_Model_Mapper_SystemUser();
     	
-    	$response = $mapper->getDataTableList();
-    	
-    	/*$response = array("sEcho" => intval($this->_request->getParam("sEcho")));
-    	$response["iTotalRecords"] = $mapper->countAll();
-    	$sortingColumn = explode ( ",", $this->_request->getParam ( "sColumns" ) );
-    	
-    	// @TODO Filter and sorting logic
-    	
-    	// --------
-    	$data = array();
-    	$models = $mapper->fetchAll();
-    	foreach($models as $key=>$value)
-    	{
-    		$data[$key][] = $value->getEmail();
-    		$data[$key][] = $value->getRole()==1 ? "Administrator" : "System User";
-    		if($value->getSystemUserId()==1)
-    			$data[$key][] = '<a href="#'.$value->getSystemUserId().'">Edit</a>';
-    		else
-    			$data[$key][] = '<a href="#'.$value->getSystemUserId().'">Edit</a>&nbsp;<a href="#'.$value->getSystemUserId().'">Delete</a>';
-    	}
-    	
-    	$response["iTotalDisplayRecords"] = count($data);
-    	$response["debug"] = $sortingColumn;	 
-    	$response ["aaData"] = $data;
-    	*/
+    	$response = $mapper->getDataTableList(array(
+    			'column' => array (
+    					'id' => array('actions'),
+    					'replace' => array(
+    							'role' => array (
+    									'1' => 'Administrator',
+    									'2' => 'User'
+    							),
+    							'email' => array (
+    									'admin@aksystem.com' => "Super Admin",
+    									'dharmesh@aksystem.com' => 'Super Super Admin'
+    							)
+    					),
+    					'ignore' => array("actions")
+    			)
+    	));
     	$jsonGrid = Zend_Json::encode($response);
     	$this->_response->appendBody($jsonGrid);
     }

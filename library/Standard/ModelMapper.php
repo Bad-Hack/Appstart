@@ -229,6 +229,12 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 			}
 		} );
 		
+		// Check for replace columns bbefore setting data to data grid
+		$replaceColumns = false;
+		if (isset ( $options ["column"] ) && isset ( $options ["column"] ["replace"] )) {
+			$replaceColumns = array_keys ( $options ["column"] ["replace"] );
+		}
+		
 		// Searching
 		if (! empty ( $searchParams )) {
 			if ($where == "") {
@@ -239,30 +245,62 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 			
 			foreach ( $searchParams as $searchColumn => $searchValue ) {
 				$searchColumn = substr ( $searchColumn, strlen ( "search_" ) );
-				$where .= $searchColumn . " LIKE '%" . $searchValue . "%' AND ";
+				
+				// Creating custom search for replacement properties
+				if($replaceColumns && in_array($searchColumn, $replaceColumns)){
+					$filterReplaceColumns = $options['column']['replace'][$searchColumn];
+					$searchArray = array_filter($filterReplaceColumns, function($data) use (&$filterReplaceColumns,$searchValue){
+							if(strpos(strtolower(current($filterReplaceColumns)), strtolower($searchValue))!==false){
+								next ( $filterReplaceColumns );
+								return true;
+							}
+							next ( $filterReplaceColumns );
+							return false;
+					});
+					if(!empty($searchArray)){
+						$where .= "( ( ";
+						foreach($searchArray as $key=>$value){
+							$where .= $searchColumn . " LIKE '%" . $key . "%' OR ";
+						}
+						$where = substr_replace ( $where, "", - 3 );
+						$where .= " ) OR ".$searchColumn . " LIKE '%" . $searchValue . "%' ) AND ";
+					} else {
+						$where .= $searchColumn . " LIKE '%" . $searchValue . "%' AND ";
+					}
+				} else {
+					$where .= $searchColumn . " LIKE '%" . $searchValue . "%' AND ";
+					$lastUsed = "AND";
+				}
 			}
 			
 			$where = substr_replace ( $where, "", - 4 );
 			$where .= ") ";
 		}
+		
 		// Get the data from database
 		$models = $this->fetchAll ( $where, $order );
 		$gridData = array ();
-		if($models){
+		if ($models) {
+			
 			foreach ( $models as $model ) {
-					
+				
 				$record = array ();
 				foreach ( $columns as $column ) {
-					if (isset ($options ["column"]) && isset ( $options ["column"]["id"] ) && in_array ( $column, $options ["column"]["id"] )) {
+					if (isset ( $options ["column"] ) && isset ( $options ["column"] ["id"] ) && in_array ( $column, $options ["column"] ["id"] )) {
 						$record [] = $model->toArray ();
-					} else if ( isset ($options ["column"]) && isset ( $options ["column"]["ignore"] ) && in_array ( $column, $options ["column"]["ignore"] )) {
+					} else if (isset ( $options ["column"] ) && isset ( $options ["column"] ["ignore"] ) && in_array ( $column, $options ["column"] ["ignore"] )) {
 						$record [] = "";
 					} else {
-						$record [] = $model->get ( $column );
+						$columnValue = $model->get ( $column );
+						if ($replaceColumns && in_array ( $column, $replaceColumns ) && isset ( $options ["column"] ["replace"] [$column] [$columnValue] )) {
+							$record [] = $options ["column"] ["replace"] [$column] [$columnValue];
+						} else {
+							$record [] = $columnValue;
+						}
 					}
 				}
 				$gridData [] = $record;
-			}	
+			}
 		}
 		$finalGridData ["sEcho"] = $request->getParam ( "sEcho", 1 );
 		

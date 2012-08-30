@@ -203,12 +203,11 @@ box-shadow:  1px 1px 2px rgba(0, 0, 0, 0.2);
 .crumbs { display: block; }
 .crumbs li {  display: inline; }
 .crumbs li.first { padding-left: 8px; }
-.crumbs li a, .crumbs li a:link, .crumbs li a:visited { color: #666; display: block; float: left; font-size: 11px; margin-left: -13px; padding: 2px 17px 3px 25px; position: relative; text-decoration: none; }
+.crumbs li a, .crumbs li a:link, .crumbs li a:visited { color: #666; display: block; float: left; font-size: 11px; margin-left: -13px; padding: 2px 25px 3px 20px; position: relative; text-decoration: none; }
 
 .crumbs li a { background-image: url('../images/bg-crumbs.png');  background-repeat: no-repeat; background-position: 100% 0; position: relative; }
 .crumbs li a:hover { color: #fff; background-position: 100% -36px; cursor: pointer; }
 .crumbs li a.active { color: #333; background-position: 100% -73px; }
-.crumbs li.first a span { height: 22px; width: 3px; border-left: 1px solid #d9d9d9; position: absolute; top: 0px; left: 0px; }
 
 
 
@@ -495,4 +494,6 @@ div.showing {font-family:  arial, sans-serif; /*12px*/ text-align: left; float: 
 	color:#cc0000;
 	clear: both;
 }
-
+.dataTables_length , .dataTables_Filter{
+	display:none !important;
+}
