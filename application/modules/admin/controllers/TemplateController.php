@@ -63,32 +63,23 @@ class Admin_TemplateController extends Zend_Controller_Action
     					
     					// Save Modules
     					$modules = $request->getParam("modules");
-    					foreach($modules as $key => $value) {
-    						// Insert In Template Modules
-    						$mapper = new Admin_Model_Mapper_TemplateModule();
-    						$model = $mapper->findByTemplateAndModuleId($template_id, $value);
-    						
-    						$model->setStatus(1);
-    						$model->setLastUpdatedBy($activeUser);
-    						$model->setLastUpdatedAt(date("Y-m-d h:i:s"));
-    						
-    						$model->save();
-    					}
     					
-    					// Inactivate Removed Modules
+    					// Customer Module Changes START
+	    					// Inactivate Removed Modules from Customer_Modules
+	    					$customerModuleMapper = new Admin_Model_Mapper_CustomerModule();
+	    					$customerModuleMapper->inactivateModulesByTemplateId($template_id,implode(",",$modules));
+	    					
+	    					// Activate Added Modules In Custoemr
+	    					$customerModuleMapper->activateModulesByTemplateId($template_id,implode(",",$modules));
+	    				// Customer Module Changes END
+	    				
+    					// Remove Modules From Template Module
+    					$templateModuleMapper = new Admin_Model_Mapper_TemplateModule();
+    					$templateModuleMapper->delete("template_id=".$template_id." AND module_id NOT IN (".implode(",", $modules).")");
     					
-    					$mapper = new Admin_Model_Mapper_TemplateModule();
-    					$models = $mapper->fetchAll("template_id=".$template_id);
-    					foreach ($models as $model)
-    					{
-    						if(!in_array($model->getModuleId(), $modules)) {
-    							$model->setStatus(0);
-    							$model->setLastUpdatedBy($activeUser);
-    							$model->setLastUpdatedAt(date("Y-m-d h:i:s"));
-    							
-    							$model->save();
-    						}    							
-    					}
+    					// Add New Modules To Template Modules
+    					$templateModuleMapper->addModules($template_id,$modules);
+    					
     				}
     				else {
     					$template->setCreatedBy($activeUser);

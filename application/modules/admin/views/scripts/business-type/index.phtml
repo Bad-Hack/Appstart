@@ -40,18 +40,74 @@ var grid ="";
 $(document).ready(function() {
 	// Load Grid Data
 	grid = dataTable({
+		aaSorting: [[ 0, "desc" ]],
 		aoColumns: [
-	              	{ "sName": "business_type_id" },
+	              	{ "sName": "business_type_id"},
 					{ "sName": "name" },
 					{ "sName": "actions","bSortable": false}
 				 ],
 		id : $('#dataGrid'),
 		filterForm : $('#frmFilter'),
-		sAjaxSource: "<?php echo $this->url(array("module"=>"admin","controller"=>"business-type","action"=>"grid"));?>"
+		sAjaxSource: "<?php echo $this->url(array("module"=>"admin","controller"=>"business-type","action"=>"grid"),"default",true);?>"
 	});
     $(document).on("submit","#frmFilter",function(){
     	grid.fnDraw();
     	return false;
+    });
+
+    $(document).on("click",".grid_delete",function(e){
+        window.currentBusinessTypeDeleteUrl = $(this).attr("href"); 
+        if(!e.isDefaultPrevented()){
+            var message = '<div class="confirm_wrapper">';
+            message += '	Are you sure you want to delete this Business Type?<br />';
+            message += '	<div class="confirm">';
+            message += '		<button class="button" value="yes">Yes</button>';
+            message += '		<button class="button" value="no">No</button>';
+            message += '	</div>';
+            message += '</div>';
+            $(".dataTables_wrapper").block({
+                message : message
+            });
+            
+            e.preventDefault();
+        }
+    });
+    $(document).on("click","div.confirm button.button",function(e){
+        if(!e.isDefaultPrevented()){
+            if($(this).attr("value")=="no"){
+            	$(".dataTables_wrapper").unblock();
+            	window.currentBusinessTypeDeleteUrl = undefined;
+            } else {
+            	$(".confirm_wrapper").html("Deleting Business Type..");
+                $.ajax({
+                    url: window.currentBusinessTypeDeleteUrl,
+                    cache: false,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(json){
+                        if(json.success != undefined){
+                            var successMessage = '<div class="grid_success">Business Type deleted successfully.</div>'; 
+                        	$(".confirm_wrapper").html(successMessage);
+                        	setTimeout(function(){
+                        		$(".dataTables_wrapper").unblock();
+                            	grid.fnDraw();
+                            }, 1000);
+                        } else if(json.errors != undefined){
+                        	var errorMessage = '<div class="grid_error">';
+                        	errorMessage += "Unable to delete record error returned: <br />";
+                        	errorMessage += "<strong>"+ json.errors.message +"</strong>";
+                        	errorMessage += "</div>";
+                        	$(".confirm_wrapper").html(errorMessage);
+                        	setTimeout(function(){
+                        		$(".dataTables_wrapper").unblock();
+                            }, 2000);
+                        }
+                    },
+                    error: function(){
+                    }
+                })
+            }
+        }
     });
 });
 </script>

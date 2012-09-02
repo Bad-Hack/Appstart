@@ -92,14 +92,16 @@
 			css: {
 				padding:	5,
 				margin:		0,
-				width:		'30%',
+				width:		'auto',
+				maxWidth: 	'40%',
 				top:		'40%',
 				left:		'35%',
 				textAlign:	'center',
 				color:		'#000',
 				border:		'3px solid #aaa',
 				backgroundColor:'#fff',
-				cursor:		'wait',
+				//cursor:		'wait',
+				cursor:		'default',
 				borderRadius : "5px"
 			},
 
@@ -114,7 +116,8 @@
 			overlayCSS:  {
 				backgroundColor: '#000',
 				opacity:	  	 0.6,
-				cursor:		  	 'wait',
+				//cursor:		  	 'wait',
+				cursor:		  	 'default',
 				borderRadius: 	 "3px"
 			},
 

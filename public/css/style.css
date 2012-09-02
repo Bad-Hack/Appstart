@@ -203,11 +203,12 @@ box-shadow:  1px 1px 2px rgba(0, 0, 0, 0.2);
 .crumbs { display: block; }
 .crumbs li {  display: inline; }
 .crumbs li.first { padding-left: 8px; }
-.crumbs li a, .crumbs li a:link, .crumbs li a:visited { color: #666; display: block; float: left; font-size: 11px; margin-left: -13px; padding: 2px 25px 3px 20px; position: relative; text-decoration: none; }
+.crumbs li a, .crumbs li a:link, .crumbs li a:visited { color: #666; display: block; float: left; font-size: 11px; margin-left: -13px; padding: 2px 20px 3px 17px; position: relative; text-decoration: none; }
 
 .crumbs li a { background-image: url('../images/bg-crumbs.png');  background-repeat: no-repeat; background-position: 100% 0; position: relative; }
 .crumbs li a:hover { color: #fff; background-position: 100% -36px; cursor: pointer; }
 .crumbs li a.active { color: #333; background-position: 100% -73px; }
+.crumbs li.first a span { height: 22px; width: 3px; border-left: 1px solid #d9d9d9; position: absolute; top: 0px; left: 0px; }
 
 
 
@@ -225,7 +226,7 @@ table a:visited {
 }
 table a:active,
 table a:hover {
-	color: #bd5a35;
+	color: #c5edf4;
 	text-decoration:underline;
 }
 #dataGrid {
@@ -331,14 +332,13 @@ color:#66676b;
 	color:#fff;
 	border-top:solid 2px #91b7c2;
 	border-bottom:solid 2px #91b7c2;
-	
 	padding-top:3px !important;
 	padding-bottom:3px !important;
-	
-	
-	
 }
-
+#dataGrid tr:hover td a{
+	color: #fff;
+	text-decoration: none;
+}
 
 
 h2{ font-size:25px; color:#033c47; font-weight:normal; margin-bottom:5px; padding:0px 10px 0px 22px; line-height:22px;}
@@ -494,6 +494,12 @@ div.showing {font-family:  arial, sans-serif; /*12px*/ text-align: left; float: 
 	color:#cc0000;
 	clear: both;
 }
-.dataTables_length , .dataTables_Filter{
-	display:none !important;
-}
+.dataTables_filter , .dataTables_length {display:none !important;}
+a.grid_edit{padding-left:30px;background-image: url("../images/grid_edit_gray.png");background-position: left center;background-repeat: no-repeat;margin-right:10px;}
+a.grid_edit:hover{background-image: url("../images/grid_edit.png");}
+a.grid_delete{padding-left:30px;background-image: url("../images/grid_delete_gray.png");background-position: left center;background-repeat: no-repeat;margin-left:10px;}
+a.grid_delete:hover{background-image: url("../images/grid_delete.png");}
+div.confirm_wrapper{padding:5px;}
+div.confirm{text-align: right;margin-top:10px;}
+div.grid_success{padding-left:30px;background-image: url("../images/grid_success.png");background-position: left center;background-repeat: no-repeat;}
+div.grid_error{padding-left:30px;background-image: url("../images/grid_error.png");background-position: left center;background-repeat: no-repeat;}

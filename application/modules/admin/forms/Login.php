@@ -1,8 +1,6 @@
 <?php
-
 class Admin_Form_Login extends Zend_Form
 {
-
 	public function init(){
 		$this->setMethod('post');
 		$notEmpty = new Zend_Validate_NotEmpty();

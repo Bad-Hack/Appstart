@@ -119,12 +119,13 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		$primaryKey = $this->_getPrimaryKeyName ();
 		
 		$modelData = $model->toArray ();
-		if ($modelData [$primaryKey] != null || $modelData [$primaryKey] !== null) {
+		if ( $modelData [$primaryKey] != null && $modelData [$primaryKey] !== null) {
 			// Update the existing Record
 			$this->getDbTable ()->update ( $model->getUpdatedVars (), " " . $primaryKey . " = " . $modelData [$primaryKey] );
 			return $this->find ( $modelData [$primaryKey] );
 		} else {
 			// Insert the new record
+			unset ( $modelData [$primaryKey] );
 			$insert_id = $this->getDbTable ()->insert ( $modelData );
 			$model->set ( $primaryKey, $insert_id );
 		}
@@ -247,29 +248,28 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 				$searchColumn = substr ( $searchColumn, strlen ( "search_" ) );
 				
 				// Creating custom search for replacement properties
-				if($replaceColumns && in_array($searchColumn, $replaceColumns)){
-					$filterReplaceColumns = $options['column']['replace'][$searchColumn];
-					$searchArray = array_filter($filterReplaceColumns, function($data) use (&$filterReplaceColumns,$searchValue){
-							if(strpos(strtolower(current($filterReplaceColumns)), strtolower($searchValue))!==false){
-								next ( $filterReplaceColumns );
-								return true;
-							}
+				if ($replaceColumns && in_array ( $searchColumn, $replaceColumns )) {
+					$filterReplaceColumns = $options ['column'] ['replace'] [$searchColumn];
+					$searchArray = array_filter ( $filterReplaceColumns, function ($data) use(&$filterReplaceColumns, $searchValue) {
+						if (strpos ( strtolower ( current ( $filterReplaceColumns ) ), strtolower ( $searchValue ) ) !== false) {
 							next ( $filterReplaceColumns );
-							return false;
-					});
-					if(!empty($searchArray)){
+							return true;
+						}
+						next ( $filterReplaceColumns );
+						return false;
+					} );
+					if (! empty ( $searchArray )) {
 						$where .= "( ( ";
-						foreach($searchArray as $key=>$value){
+						foreach ( $searchArray as $key => $value ) {
 							$where .= $searchColumn . " LIKE '%" . $key . "%' OR ";
 						}
 						$where = substr_replace ( $where, "", - 3 );
-						$where .= " ) OR ".$searchColumn . " LIKE '%" . $searchValue . "%' ) AND ";
+						$where .= " ) OR " . $searchColumn . " LIKE '%" . $searchValue . "%' ) AND ";
 					} else {
 						$where .= $searchColumn . " LIKE '%" . $searchValue . "%' AND ";
 					}
 				} else {
 					$where .= $searchColumn . " LIKE '%" . $searchValue . "%' AND ";
-					$lastUsed = "AND";
 				}
 			}
 			
@@ -278,7 +278,11 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		}
 		
 		// Get the data from database
-		$models = $this->fetchAll ( $where, $order );
+		// Set Offset and Limit/Count
+		$count = $request->getParam("iDisplayLength",10);
+		$offset = $request->getParam("iDisplayStart",0);
+		
+		$models = $this->fetchAll ( $where, $order , $count , $offset);
 		$gridData = array ();
 		if ($models) {
 			

@@ -8,10 +8,8 @@
 </div>
 <div id="filterBox">
 <form id="form1" onsubmit="return false;">
-	<table>
-		<tr>
-			<td align="center" colspan="2">&nbsp;</td>
-		</tr>
+	<?php echo $form->system_user_id->renderViewHelper() ?>
+	<table style="margin:10px 0;">
 		<tr>
 	    	<td><?php echo $form->email->renderLabel() ?></td>
 	        <td>

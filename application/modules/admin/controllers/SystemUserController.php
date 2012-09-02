@@ -115,8 +115,8 @@ class Admin_SystemUserController extends Zend_Controller_Action
     									'2' => 'User'
     							),
     							'email' => array (
-    									'admin@aksystem.com' => "Super Admin",
-    									'dharmesh@aksystem.com' => 'Super Super Admin'
+    									'admin@aksystems.com' => "Super Admin",
+    									'dharmesh@aksystems.com' => 'Super Super Admin'
     							)
     					),
     					'ignore' => array("actions")

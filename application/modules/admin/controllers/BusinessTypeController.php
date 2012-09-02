@@ -1,37 +1,187 @@
 <?php
-
 class Admin_BusinessTypeController extends Zend_Controller_Action {
-	
+	public static $EDIT_MODE = "edit";
+	public static $ADD_MODE = "add";
 	public function init() {
 		/* Initialize action controller here */
 	}
-	
 	public function indexAction() {
 		// action body
-	
 	}
-	
 	public function gridAction() {
 		$this->_helper->layout ()->disableLayout ();
 		$this->_helper->viewRenderer->setNoRender ( true );
-		$businessTypeMapper = new Admin_Model_Mapper_BusinessType();
-		$response = $businessTypeMapper->getDataTableList(array(
-			'column' => array(
-					'id' => array('actions'),
-			)
-		));
-		
-		echo $this->_helper->json($response);
-		
+		$businessTypeMapper = new Admin_Model_Mapper_BusinessType ();
+		$response = $businessTypeMapper->getDataTableList ( array (
+				'column' => array (
+						'id' => array (
+								'actions' 
+						)
+				) 
+		) );
+		$rows = $response ['aaData'];
+		foreach ( $rows as $rowId => $row ) {
+			$editUrl = $this->view->url ( array (
+					"module" => "admin",
+					"controller" => "business-type",
+					"action" => "edit",
+					"id" => $row [2] ["business_type_id"] 
+			), "default", true );
+			$deleteUrl = $this->view->url ( array (
+					"module" => "admin",
+					"controller" => "business-type",
+					"action" => "delete",
+					"id" => $row [2] ["business_type_id"] 
+			), "default", true );
+			$edit = '<a href="' . $editUrl . '" class="grid_edit" >Edit</a>';
+			$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >Delete</a>';
+			$response ['aaData'] [$rowId] [2] = $edit . "&nbsp;|&nbsp;" . $delete;
+		}
+		echo $this->_helper->json ( $response );
 	}
 	
+	/**
+	 * Add Action for adding business type
+	 */
 	public function addAction() {
-		// action body
-	
+		$this->view->heading = "Add Business Type";
+		$form = new Admin_Form_BusinessType ();
+		
+		$this->_save ( $form , self::$ADD_MODE );
+		
+		$this->view->form = $form;
+		$this->render ( "add-edit" );
 	}
 	
+	/**
+	 * Edit mode of the business type
+	 */
 	public function editAction() {
-		// action body
+		
+		// Check for ID and permissions and thus proceed or redirect accordingly
+		$redirect = false;
+		$id = $this->_request->getParam ( "id", "" );
+		if ($id != "") {
+			$businessTypeModel = new Admin_Model_BusinessType ();
+			$businessTypeModel->populate ( $id );
+			if (! $businessTypeModel) {
+				$redirect = true;
+			}
+		} else {
+			$redirect = true;
+		}
+		if ($redirect) {
+			$this->_redirect ( '/admin/business-type' );
+		}
+		
+		$this->view->heading = "Edit Business Type";
+		
+		$form = new Admin_Form_BusinessType ();
+		$form->populate ( $businessTypeModel->toArray () );
+		$this->_save ( $form, self::$EDIT_MODE );
+		
+		$this->view->form = $form;
+		$this->render ( "add-edit" );
+	}
 	
+	/**
+	 * Delete Business Type
+	 */
+	public function deleteAction() {
+		sleep(2);
+		// Check for ID and permissions and thus proceed or redirect accordingly
+		$redirect = false;
+		$id = $this->_request->getParam ( "id", "" );
+		if ($id != "") {
+			$businessTypeModel = new Admin_Model_BusinessType ();
+			$businessTypeModel->populate ( $id );
+			if (! $businessTypeModel) {
+				$redirect = true;
+			}
+		} else {
+			$redirect = true;
+		}
+		if ($redirect) {
+			$this->_redirect ( '/admin/business-type' );
+		}
+		
+		$response = array ();
+		try {
+			$deletedRows = $businessTypeModel->delete ();
+			$response = array (
+					"success" => array (
+							"deleted_rows" => $deletedRows 
+					) 
+			);
+		} catch ( Zend_Exception $ex ) {
+			$message = $ex->getMessage ();
+			if (strpos ( $message, "foreign key constraint fails" ) !== false) {
+				$response = array (
+						"errors" => array (
+								"message" => "Business Type is already linked to one or more templates"
+						)
+				);
+			} else {
+				$response = array (
+						"errors" => array (
+								"message" => $ex->getMessage ()
+						)
+				);
+			}
+		}
+		
+		$this->_helper->json ( $response );
+	}
+	private function _save(Zend_Form $form, $mode = null) {
+		if ($mode == null) {
+			$mode == self::$ADD_MODE;
+		}
+		
+		if ($this->_request->isPost ()) {
+			$response = array ();
+			if ($form->isValid ( $this->_request->getParams () )) {
+				$businessTypeModel = new Admin_Model_BusinessType ( $form->getValues () );
+				
+				// Set default values for created and updated
+				$businessTypeModel->set ( "last_updated_at", Standard_Functions::getCurrentDateTime () );
+				$businessTypeModel->set ( "last_updated_by", Standard_Functions::getCurrentUser ()->system_user_id );
+				
+				if ($mode == self::$ADD_MODE) {
+					$businessTypeModel->set ( "created_at", Standard_Functions::getCurrentDateTime () );
+					$businessTypeModel->set ( "created_by", Standard_Functions::getCurrentUser ()->system_user_id );
+				}
+				
+				// Mapper class to save the data
+				$businessTypeMapper = new Admin_Model_Mapper_BusinessType ();
+				
+				// Try to save the data
+				try {
+					$businessTypeModel = $businessTypeMapper->save ( $businessTypeModel );
+				} catch ( Zend_Exception $ex ) {
+					if (strpos ( $ex->getMessage (), "Duplicate" ) !== false) {
+						$response = array (
+								"errors" => array (
+										"name" => "Business Type already exists." 
+								) 
+						);
+					}
+				}
+				if ($businessTypeModel && $businessTypeModel->get ( "business_type_id" ) != "") {
+					$response = array (
+							"success" => $businessTypeModel->toArray () 
+					);
+				}
+			} else {
+				$errors = $form->getMessages ();
+				foreach ( $errors as $name => $error ) {
+					$errors [$name] = $error [0];
+				}
+				$response = array (
+						"errors" => $errors 
+				);
+			}
+			// Send error or success message accordingly
+			$this->_helper->json ( $response );
+		}
 	}
 }

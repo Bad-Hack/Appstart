@@ -84,5 +84,8 @@ function dataTable(params){
 			$(element+"_length , " + element + "_filter").hide();
 		}
 	};
+	if (params.aaSorting != undefined ){
+		gridObject.aaSorting = params.aaSorting;
+	}
 	return $(element).dataTable(gridObject);
 }

@@ -7,9 +7,9 @@
 		$class = "";
 		$style = " style='z-index:" . (count ( $this->pages ) - $i ++) . "' ";
 		if (count ( $this->pages ) != $i) {
-			echo '<a href="' . $page->getHref () . '" ' . $style . '><span>' . $page->getLabel () . '</span></a>';
+			echo '<a href="' . $page->getHref () . '" ' . $style . '><span></span>' . $page->getLabel () . '</a>';
 		} else {
-			echo '<a href="javascript:void(0);" class="active" ' . $style . '><span>' . $page->getLabel () . '</span></a>';
+			echo '<a href="javascript:void(0);" class="active" ' . $style . '><span></span>' . $page->getLabel () . '</a>';
 		}
 		echo "</li>";
 	}

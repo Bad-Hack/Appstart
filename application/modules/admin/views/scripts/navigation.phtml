@@ -1,13 +1,10 @@
-<ul class="crumbs">
-	<?php
-	$class = 'class="first"';
-	$i = 0;
-	foreach ( $this->container as $index => $page ) {
-		echo '<li ' . $class . '>';
-		$class = "";
-		$style = " style='z-index:" . (count ( $this->container ) - $i ++) . "' ";
-		echo '<a href="' . $page->getHref () . '" ' . $style . '><span>' . $page->getLabel () . '</span></a>';
-		echo "</li>";
-	}
-	?>
-</ul>
+<?php
+$class = 'class="first"';
+$i = 0;
+foreach ( $this->container as $index => $page ) {
+	echo '<div class="link ">';
+	$class = "";
+	echo '<a href="' . $page->getHref () . '" ' . $class . '>' . $page->getLabel () . '</a>';
+	echo "</div>";
+}
+?>
