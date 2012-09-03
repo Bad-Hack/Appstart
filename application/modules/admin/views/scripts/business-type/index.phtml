@@ -58,6 +58,22 @@ $(document).ready(function() {
     $(document).on("click",".grid_delete",function(e){
         window.currentBusinessTypeDeleteUrl = $(this).attr("href"); 
         if(!e.isDefaultPrevented()){
+        	var promtus = new prompt({
+                element : ".dataTables_wrapper",
+                message : "Are you sure you want to delete this Business Type?",
+                buttons : {
+                    "Yes" : function(){
+                        alert("Yes Clicked");
+                        console.log(this);
+                        return false;
+                    },
+                    "No"  : function(){
+                        alert("No Clicked");
+                    	console.log(this);
+                    	return false;
+                    }
+                }
+            });
             var message = '<div class="confirm_wrapper">';
             message += '	Are you sure you want to delete this Business Type?<br />';
             message += '	<div class="confirm">';
@@ -65,10 +81,10 @@ $(document).ready(function() {
             message += '		<button class="button" value="no">No</button>';
             message += '	</div>';
             message += '</div>';
-            $(".dataTables_wrapper").block({
+            /*$(".dataTables_wrapper").block({
                 message : message
             });
-            
+            */
             e.preventDefault();
         }
     });
@@ -110,4 +126,59 @@ $(document).ready(function() {
         }
     });
 });
+function prompt(params){
+	this.element = params.element != undefined ? $(params.element) : $(document);
+	this.message = params.message || "Are you sure?";
+	this.buttons = params.buttons || {
+			"Yes" : function(){
+				this.close();
+			},
+			"No"  : function(){
+				this.close();
+			}
+		};
+	this.close = function(){
+		alert("closing..");
+		this.element.unblock();
+	};
+
+	this.createMessage = function(){
+		
+		var message = '<div class="confirm_wrapper">';
+        message += this.message;
+        message += '	<br />';
+        message += '	<div class="confirm">';
+        message += '	</div>';
+        message += '</div>';
+        message = $(message);
+        $.each(this.buttons , function(buttonName, associatedFunction){
+            var button = $("<button></button>",{
+                'class' : "button",
+                'value' : buttonName
+            });
+            button.html(buttonName);
+            $(message).find(".confirm").append(button);
+        });
+		return message.html();
+	};
+
+	this.bindEvents = function(){
+		$.each(this.buttons,function(buttonName,associatedFunction){
+			$(this).on("click",$(".confirm > " + "button[value="+ buttonName +"]"),associatedFunction);
+		});
+	}
+	this.init = function(self){
+		
+		$(document).queue(function(next){
+			self.element.block({
+				message: self.createMessage(),
+				onBlock: next
+			});
+		}).queue(function(next){
+			self.bindEvents();
+			next();
+		});
+		
+	}(this);
+}
 </script>
