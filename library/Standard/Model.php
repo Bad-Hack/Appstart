@@ -219,6 +219,17 @@ abstract class Standard_Model {
 	}
 	
 	/**
+	 * After saving the data of the models the updated_vars needs to be reset
+	 * 
+	 * @param array $_updated_vars
+	 * @return Standard_Model
+	 */
+	public function setUpdatedVars(array $_updated_vars = array()){
+		$this->_updated_vars = $_updated_vars;
+		return this;
+	}
+	
+	/**
 	 * Get the value of variable asked for 
 	 * 
 	 * @param string $var

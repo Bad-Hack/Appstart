@@ -129,6 +129,8 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 			$insert_id = $this->getDbTable ()->insert ( $modelData );
 			$model->set ( $primaryKey, $insert_id );
 		}
+		// Reset the updated vars
+		$model->setUpdatedVars(array());
 		return $model;
 	}
 	

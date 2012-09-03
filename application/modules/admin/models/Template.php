@@ -9,7 +9,7 @@ class Admin_Model_Template extends Standard_Model
     private $_last_updated_at;
     private $_created_by;
     private $_created_at;
-    private $_business_type;
+    private $_business_type_id;
 
 
 }

@@ -11,7 +11,11 @@ class Admin_TemplateController extends Zend_Controller_Action
     public function indexAction()
     {
         // action body
-		
+    	$this->view->addlink = $this->view->url ( array (
+						    			"module" => "admin",
+						    			"controller" => "template",
+						    			"action" => "add"
+						    	), "default", true );
     }
 
     public function addAction()
@@ -82,8 +86,8 @@ class Admin_TemplateController extends Zend_Controller_Action
     					
     				}
     				else {
-    					$template->setCreatedBy($activeUser);
-    					$template->setCreatedAt(date("Y-m-d h:i:s"));
+    					$template->setCreatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+    					$template->setCreatedAt(Standard_Functions::getCurrentDateTime ());
     					
     					$modules = $request->getParam("modules");
     					foreach($modules as $key => $value) {
@@ -91,11 +95,11 @@ class Admin_TemplateController extends Zend_Controller_Action
 	    					$model->setTemplate($template_id);
 	    					$model->setModule($value);
 	    						
-	    					$model->setLastUpdatedBy($activeUser);
-	    					$model->setLastUpdatedAt(date("Y-m-d h:i:s"));
+	    					$model->setLastUpdatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+	    					$model->setLastUpdatedAt(Standard_Functions::getCurrentDateTime ());
 	    						
-	    					$model->setCreatedBy($activeUser);
-	    					$model->setCreatedAt(date("Y-m-d h:i:s"));
+	    					$model->setCreatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+	    					$model->setCreatedAt(Standard_Functions::getCurrentDateTime ());
 	    					$model->save();
     					}
     				}
@@ -103,8 +107,8 @@ class Admin_TemplateController extends Zend_Controller_Action
     				$template->setName($request->getParam("name"));
     				$template->setBusinessTypeId($request->getParam("business_type_id"));
     				$template->setStatus($request->getParam("status"));
-    				$template->setLastUpdatedBy($activeUser);
-    				$template->setLastUpdatedAt(date("Y-m-d h:i:s"));
+    				$template->setLastUpdatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+    				$template->setLastUpdatedAt(Standard_Functions::getCurrentDateTime ());
     				
     				$template->save();
     				
@@ -132,6 +136,48 @@ class Admin_TemplateController extends Zend_Controller_Action
     	$this->_helper->layout ()->disableLayout ();
     	$this->_helper->viewRenderer->setNoRender ();
     	
+    	$request = $this->getRequest ();
+    	
+    	if (($templateId = $request->getParam ( "id", "" )) != "") {
+    		$template = new Admin_Model_Template ();
+    		$template->populate ( $templateId );
+    		if ($template) {
+    			try {
+    				$customerMapper = new Admin_Model_Mapper_Customer();
+    				if($customerMapper->countAll("template_id=".$templateId)>0)
+    				{
+    					$response = array (
+								"errors" => array (
+										"message" => "Template is linked to one or more customer."
+								)
+						);
+    				}
+    				$deletedRows = $template->delete ();
+    					
+    				$response = array (
+    						"success" => array (
+    								"deleted_rows" => $deletedRows
+    						)
+    				);
+    			} catch ( Exception $e ) {
+    				$response = array (
+    						"errors" => array (
+    								"message" => $e->getMessage ()
+    						)
+    				);
+    			}
+    		} else {
+    			$response = array (
+    					"errors" => array (
+    							"message" => "No user to delete."
+    					)
+    			);
+    		}
+    	} else {
+    		$this->_redirect ( '/admin/template' );
+    	}
+    	
+    	$this->_helper->json ( $response );
     }
     
     public function gridAction()
@@ -139,6 +185,45 @@ class Admin_TemplateController extends Zend_Controller_Action
     	$this->_helper->layout ()->disableLayout ();
     	$this->_helper->viewRenderer->setNoRender ();
     	
+    	$mapper = new Admin_Model_Mapper_Template();
+    	
+    	$response = $mapper->getGridData(array (
+							'column' => array (
+									'id' => array (
+											'actions' 
+									),
+							'replace' => array (
+									't_status' => array (
+											'1' => 'Active',
+											'0' => 'Inactive' 
+									) 
+							))
+					));
+    	
+    	$rows = $response ['aaData'];
+    	foreach ( $rows as $rowId => $row ) {
+    		$editUrl = $this->view->url ( array (
+    				"module" => "admin",
+    				"controller" => "template",
+    				"action" => "edit",
+    				"id" => $row [5] ["template_id"]
+    		), "default", true );
+    		$deleteUrl = $this->view->url ( array (
+    				"module" => "admin",
+    				"controller" => "template",
+    				"action" => "delete",
+    				"id" => $row [5] ["template_id"]
+    		), "default", true );
+    			
+    		$edit = '<a href="' . $editUrl . '" class="grid_edit" >Edit</a>';
+    		$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >Delete</a>';
+    		$sap = ($edit == "" || $delete == "") ? '' : '&nbsp;|&nbsp;';
+    			
+    		$response ['aaData'] [$rowId] [5] = $edit . $sap . $delete;
+    	}
+    	
+    	$jsonGrid = Zend_Json::encode ( $response );
+    	$this->_response->appendBody ( $jsonGrid );
     }
 }
 

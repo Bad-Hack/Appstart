@@ -11,6 +11,8 @@ class Admin_Model_Mapper_TemplateModule extends Standard_ModelMapper {
 			$model = $this->findByTemplateAndModuleId($template_id, $module_id);
 			if($model != null) {
 				$model = new $this->_modelClass($model->toArray());
+				$model->setLastUpdatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+				$model->setLastUpdatedAt(Standard_Functions::getCurrentDateTime ());
 				$model->setStatus(1);
 				$model->save();
 			} else {
@@ -18,14 +20,10 @@ class Admin_Model_Mapper_TemplateModule extends Standard_ModelMapper {
 				$model->setModuleId($module_id);
 				$model->setTemplateId($template_id);
 				$model->setStatus(1);
-				
-				$auth = Zend_Auth::getInstance();
-				$activeUser = $auth->getStorage ()->read ()->user_id;
-				
-				$model->setLastUpdatedBy($activeUser);
-				$model->setLastUpdatedAt(date("Y-m-d h:i:s"));
-				$model->setCreatedBy($activeUser);
-				$model->setCreatedAt(date("Y-m-d h:i:s"));
+				$model->setLastUpdatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+				$model->setLastUpdatedAt(Standard_Functions::getCurrentDateTime ());
+				$model->setCreatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+				$model->setCreatedAt(Standard_Functions::getCurrentDateTime ());
 				
 				$model->save();
 			}

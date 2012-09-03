@@ -5,6 +5,11 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 	}
 	public function indexAction() {
 		// action body
+		$this->view->addlink = $this->view->url ( array (
+										"module" => "admin",
+										"controller" => "system-user",
+										"action" => "add" 
+								), "default", true );
 	}
 	public function addAction() {
 		// action body
@@ -51,23 +56,20 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 			if ($form->isValid ( $request->getPost () )) {
 				// Save Record In DB
 				try {
-					$auth = Zend_Auth::getInstance ();
-					$activeUser = $auth->getStorage ()->read ()->system_user_id;
-					
 					$model = new Admin_Model_SystemUser ();
 					
 					if ($request->getParam ( "system_user_id", "" ) != "") {
 						$model->setSystemUserId ( $request->getParam ( "system_user_id" ) );
 					} else {
-						$model->setCreatedBy ( $activeUser );
-						$model->setCreatedAt ( date ( "Y-m-d h:i:s" ) );
+						$model->setCreatedBy ( Standard_Functions::getCurrentUser ()->system_user_id );
+						$model->setCreatedAt ( Standard_Functions::getCurrentDateTime () );
 					}
 					
 					$model->setEmail ( $request->getParam ( "email" ) );
 					$model->setPassword ( $request->getParam ( "password" ) );
 					$model->setRole ( $request->getParam ( "role" ) );
-					$model->setLastUpdatedBy ( $activeUser );
-					$model->setLastUpdatedAt ( date ( "Y-m-d h:i:s" ) );
+					$model->setLastUpdatedBy ( Standard_Functions::getCurrentUser ()->system_user_id );
+					$model->setLastUpdatedAt ( Standard_Functions::getCurrentDateTime () );
 					$model->save ();
 					
 					$msg = "Record save successfully";
@@ -86,6 +88,43 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 		$jsonResponse = Zend_Json::encode ( $response );
 		$this->_response->appendBody ( $jsonResponse );
 	}
+	public function deleteAction() {
+		$this->_helper->layout ()->disableLayout ();
+		$this->_helper->viewRenderer->setNoRender ();
+		$request = $this->getRequest ();
+		
+		if (($systemUserId = $request->getParam ( "id", "" )) != "") {
+			$systemUser = new Admin_Model_SystemUser ();
+			$systemUser->populate ( $systemUserId );
+			if ($systemUser) {
+				try {
+					$deletedRows = $systemUser->delete ();
+					
+					$response = array (
+							"success" => array (
+									"deleted_rows" => $deletedRows 
+							) 
+					);
+				} catch ( Exception $e ) {
+					$response = array (
+							"errors" => array (
+									"message" => $e->getMessage () 
+							) 
+					);
+				}
+			} else {
+				$response = array (
+						"errors" => array (
+								"message" => "No user to delete." 
+						) 
+				);
+			}
+		} else {
+			$this->_redirect ( '/admin/system-user' );
+		}
+		
+		$this->_helper->json ( $response );
+	}
 	public function gridAction() {
 		$this->_helper->layout ()->disableLayout ();
 		$this->_helper->viewRenderer->setNoRender ();
@@ -101,17 +140,33 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 								'role' => array (
 										'1' => 'Administrator',
 										'2' => 'User' 
-								),
-								'email' => array (
-										'admin@aksystems.com' => "Super Admin",
-										'dharmesh@aksystems.com' => 'Super Super Admin' 
 								) 
-						),
-						'ignore' => array (
-								"actions" 
 						) 
 				) 
 		) );
+		
+		$rows = $response ['aaData'];
+		foreach ( $rows as $rowId => $row ) {
+			$editUrl = $this->view->url ( array (
+					"module" => "admin",
+					"controller" => "system-user",
+					"action" => "edit",
+					"id" => $row [2] ["system_user_id"] 
+			), "default", true );
+			$deleteUrl = $this->view->url ( array (
+					"module" => "admin",
+					"controller" => "system-user",
+					"action" => "delete",
+					"id" => $row [2] ["system_user_id"] 
+			), "default", true );
+			
+			$edit = '<a href="' . $editUrl . '" class="grid_edit" >Edit</a>';
+			$delete = ($row [2] ["system_user_id"] == 1) ? '' : '<a href="' . $deleteUrl . '" class="grid_delete" >Delete</a>';
+			$sap = ($edit == "" || $delete == "") ? '' : '&nbsp;|&nbsp;';
+			
+			$response ['aaData'] [$rowId] [2] = $edit . $sap . $delete;
+		}
+		
 		$jsonGrid = Zend_Json::encode ( $response );
 		$this->_response->appendBody ( $jsonGrid );
 	}

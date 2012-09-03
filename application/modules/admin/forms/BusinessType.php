@@ -31,7 +31,7 @@ class Admin_Form_BusinessType extends Zend_Form {
 						'Invalid Business Type Name' 
 				) 
 		) );
-		$name->setAttrib ( "required", "required" );
+		$name->setAttrib("required", "required");
 		
 		// Submit button
 		$submit = $this->addElement ( 'submit', 'submit', array (
@@ -39,18 +39,16 @@ class Admin_Form_BusinessType extends Zend_Form {
 				'class' => "button" 
 		) );
 		
-		// Reset button
+		// REset button
 		$reset = $this->addElement ( 'reset', 'reset', array (
 				'ignore' => true,
-				'class' => "button" 
+				'class' => "button"
 		) );
-		
-		// Add Elements tot the form accordingly
 		$this->addElements ( array (
 				$business_type_id,
 				$name,
 				$submit,
-				$reset 
+				$reset
 		) );
 	}
 }

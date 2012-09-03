@@ -52,7 +52,7 @@ function dataTable(params){
         	var blockElement = $(element).parent();
             $(document).queue(function(next){ 
                 blockElement.block({
-                    message: "Loading Grid Data...",
+                    message: '<div class="grid_loading">Loading Grid Data...</div>',
                 	onBlock: next
                 });
 			}).queue(function(next){

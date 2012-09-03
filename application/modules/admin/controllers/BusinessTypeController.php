@@ -7,6 +7,11 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 	}
 	public function indexAction() {
 		// action body
+		$this->view->addlink = $this->view->url ( array (
+										"module" => "admin",
+										"controller" => "business-type",
+										"action" => "add"
+								), "default", true );
 	}
 	public function gridAction() {
 		$this->_helper->layout ()->disableLayout ();
@@ -88,7 +93,6 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 	 * Delete Business Type
 	 */
 	public function deleteAction() {
-		sleep(2);
 		// Check for ID and permissions and thus proceed or redirect accordingly
 		$redirect = false;
 		$id = $this->_request->getParam ( "id", "" );

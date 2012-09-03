@@ -322,7 +322,7 @@ color:#66676b;
 	border-bottom-right-radius:3px;
 }
 #dataGrid tr:hover {
-	border-collapse: separate !important;	
+	border-collapse: collapse !important;	
 }
 
 #dataGrid tr:hover td{
@@ -499,7 +499,34 @@ a.grid_edit{padding-left:30px;background-image: url("../images/grid_edit_gray.pn
 a.grid_edit:hover{background-image: url("../images/grid_edit.png");}
 a.grid_delete{padding-left:30px;background-image: url("../images/grid_delete_gray.png");background-position: left center;background-repeat: no-repeat;margin-left:10px;}
 a.grid_delete:hover{background-image: url("../images/grid_delete.png");}
-div.confirm_wrapper{padding:5px;}
-div.confirm{text-align: right;margin-top:10px;}
-div.grid_success{padding-left:30px;background-image: url("../images/grid_success.png");background-position: left center;background-repeat: no-repeat;}
-div.grid_error{padding-left:30px;background-image: url("../images/grid_error.png");background-position: left center;background-repeat: no-repeat;}
+
+#addlink {
+	float: right;
+}
+#addlink a,#addlink a:visited,#addlink a:link {
+    color: #666666;
+    display: block;
+    float: left;
+    font-size: 11px;
+    margin-left: -13px;
+    padding: 2px 20px 3px 17px;
+    position: relative;
+    text-decoration: none;
+}
+#addlink a {
+    background-image: url("../images/bg-crumbs.png");
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    position: relative;
+}
+#addlink a:hover {
+    background-image: url("../images/bg-crumbs.png");
+    background-position: 0 -36px;
+	color:#FFF;
+}
+
+#addlink span {
+    border-right: 1px solid #D9D9D9;
+    float: left;
+    height: 22px;
+}
