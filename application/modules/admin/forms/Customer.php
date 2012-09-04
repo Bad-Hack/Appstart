@@ -5,10 +5,6 @@ class Admin_Form_Customer extends Zend_Form {
 		$notEmptyValidator = new Zend_Validate_NotEmpty ();
 		$notEmptyValidator->setMessage ( 'Enter Enter Valid Value For The Field.' );
 		
-		// --------------------------------
-		// Customer Information Section
-		// --------------------------------
-		
 		// Customer ID
 		$customer_id = $this->createElement ( "hidden", "customer_id", array (
 				'value' => '',
@@ -48,10 +44,10 @@ class Admin_Form_Customer extends Zend_Form {
 		) );
 		$this->addElement ( $user_id );
 		
-		// Username
-		$username = $this->createElement ( "text", "username", array (
-				'label' => 'Username:',
-				'size' => '50',
+		// Customer Name
+		$customer_name = $this->createElement ( "text", "customer_name", array (
+				'label' => 'Customer Name:',
+				'size' => '30',
 				'required' => true,
 				'filters' => array (
 						'StringTrim' 
@@ -66,45 +62,7 @@ class Admin_Form_Customer extends Zend_Form {
 						'Invalid Username' 
 				) 
 		) );
-		$username->setAttrib ( "required", "required" );
-		$this->addElement ( $username );
-		
-		// Password
-		$password = $this->createElement ( "password", "password", array (
-				'label' => 'Password:',
-				'size' => '50',
-				'required' => true,
-				'validators' => array (
-						array (
-								$notEmptyValidator,
-								true 
-						) 
-				),
-				'errorMessages' => array (
-						'Invalid Password' 
-				) 
-		) );
-		$password->setAttrib ( "required", "required" );
-		$this->addElement ( $password );
-		
-		// Customer Name
-		$customer_name = $this->createElement ( "text", "name", array (
-				'label' => 'Customer Name:',
-				'size' => '35',
-				'required' => true,
-				'filters' => array (
-						'StringTrim' 
-				),
-				'validators' => array (
-						array (
-								$notEmptyValidator,
-								true 
-						) 
-				),
-				'errorMessages' => array (
-						'Invalid Customer Name' 
-				) 
-		) );
+		$customer_name->setAttrib ( "required", "required" );
 		$this->addElement ( $customer_name );
 		
 		// Business Type ID
@@ -116,6 +74,7 @@ class Admin_Form_Customer extends Zend_Form {
 				),
 				'Required' => true 
 		) );
+		$business_type_id->setAttrib("required", "required");
 		$this->addElement ( $business_type_id );
 		
 		// Address
@@ -183,70 +142,27 @@ class Admin_Form_Customer extends Zend_Form {
 				'label' => 'Status:',
 				'MultiOptions' => array (
 						'1' => 'Active',
-						'2' => 'InActive' 
+						'0' => 'InActive' 
 				),
 				'validators' => array (
 						'NotEmpty' 
 				),
 				'Required' => true 
 		) );
+		$status->setAttrib("required", "required");
 		$this->addElement ( $status );
 		
-		// --------------------------------
-		// Customer Information Section
-		// --------------------------------
-		
-		// Customer Configuration ID
-		$customer_configuration_id = $this->createElement ( "hidden", "customer_configuration_id", array (
-				'value' => '',
-				'filters' => array (
-						'StringTrim' 
-				) 
-		) );
-		$this->addElement($customer_configuration_id);
-		
-		// Font Type
-		$font_type = $this->createElement("text", "font_type" , array(
-				'label' => 'Font Type:',
-				'size' => '90',
-				'filters' => array (
-						'StringTrim'
-				)
-		)); 
-		$this->addElement($font_type);
-		
-		// Font Color
-		$font_color = $this->createElement("text", "font_color", array(
-				'label' => 'Font Color:',
-				'size' => '15',
-				'filters' => array (
-						'StringTrim'
-				)
+		// Template ID
+		$template_id = $this->createElement('select','template_id',array(
+				'label'		 => 'Template:',
+				'MultiOptions' => $this->_getTemplates(),
+				'validators'	=>	array(
+						'NotEmpty'
+				),
+				'Required'	=>	true
 		));
-		$this->addElement($font_color);
-		
-		// Font Size
-		$font_size = $this->createElement("text", "font_size", array(
-				'label' => 'Font Size:',
-				'size' => '15',
-				'filters' => array (
-						'StringTrim'
-				)
-		));
-		$this->addElement($font_size);
-		
-		// Spacing
-		$spacing = $this->createElement("text", "spacing", array(
-				'label' => 'Spacing:',
-				'size' => '15',
-				'filters' => array (
-						'StringTrim'
-				)
-		)); 
-		$this->addElement($spacing);
-		
-		//------------------------------
-		
+		$template_id->setAttrib("required", "required");
+		$this->addElement($template_id);
 		
 		// Submit Button
 		$submit = $this->createElement ( 'submit', 'submit', array (
@@ -260,6 +176,7 @@ class Admin_Form_Customer extends Zend_Form {
 		) );
 		$this->addElement ( $reset );
 	}
+	
 	public function _getBusinessType() {
 		$options = array (
 				"" => 'Select business type' 
@@ -269,6 +186,20 @@ class Admin_Form_Customer extends Zend_Form {
 		$models = $mapper->fetchAll ();
 		foreach ( $models as $businessType ) {
 			$options [$businessType->getBusinessTypeId ()] = $businessType->getName ();
+		}
+		
+		return $options;
+	}
+	
+	public function _getTemplates() {
+		$options = array (
+				"" => 'Select Template'
+		);
+		
+		$mapper = new Admin_Model_Mapper_Template ();
+		$models = $mapper->fetchAll ();
+		foreach ( $models as $template ) {
+			$options [$template->getTemplateId ()] = $template->getName ();
 		}
 		
 		return $options;

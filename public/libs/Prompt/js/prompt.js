@@ -10,6 +10,10 @@ function prompt(params){
 	this.reference = params.reference != undefined ? params.reference : this; 
 	this.element = params.element != undefined ? $(params.element) : $(document);
 	this.message = params.message || "Are you sure?";
+	this.beforeShow = params.beforeShow != undefined ? params.beforeShow : function(){};
+	this.onBlock = params.onBlock != undefined ? params.onBlock : function(){};
+	this.onUnblock = params.onUnblock != undefined ? params.onUnblock : function(){};
+	this.alternateMessage = false;
 	this.buttons = params.buttons || {
 			"Yes" : function(){
 				this.close();
@@ -27,30 +31,40 @@ function prompt(params){
     	errorMessage +=  message;
     	errorMessage += "</div>";
     	this.showMessage(errorMessage);
+    	return errorMessage;
 	};
 	this.showSuccessMessage = function(message){
 		var successMessage = '<div class="grid_success">';
     	successMessage +=  message;
     	successMessage += "</div>";
     	this.showMessage(successMessage);
+    	return successMessage;
 	};
 	this.showLoadingMessage = function(message){
 		var loadingMessage = '<div class="grid_loading">';
     	loadingMessage +=  message;
     	loadingMessage += "</div>";
     	this.showMessage(loadingMessage);
+    	return loadingMessage;
 	};
 	this.close = function(){
-		this.element.unblock();
+		this.element.unblock({
+			onUnblock : this.onUnblock
+		});
 	};
 	this.createMessage = function(){
-		
 		var message = '<div><div class="confirm_wrapper">';
-        message += this.message;
-        message += '<br />';
-        message += '<div class="confirm">';
-        message += '</div>';
-        message += '</div></div>';
+		
+		if(typeof(this.alternateMessage) == 'string'){
+			message += this.alternateMessage;
+			message += '</div></div>';
+		} else {
+			message += this.message;
+			message += '<br />';
+	        message += '<div class="confirm">';
+	        message += '</div>';
+	        message += '</div></div>';
+		}
         message = $(message);
         $.each(this.buttons , function(buttonName, associatedFunction){
             var button = $("<button></button>",{
@@ -60,7 +74,7 @@ function prompt(params){
             button.html(buttonName);
             $(message).find(".confirm").append(button);
         });
-		return message.html();
+		 return message.html();
 	};
 
 	this.bindEvents = function(){
@@ -74,8 +88,10 @@ function prompt(params){
 	};
 	this.init = function(self){
 		$(document).queue(function(next){
+			self.beforeShow.call(self);
+			var message = self.createMessage();
 			self.element.block({
-				message: self.createMessage(),
+				message: message,
 				onBlock: next
 			});
 		}).queue(function(next){

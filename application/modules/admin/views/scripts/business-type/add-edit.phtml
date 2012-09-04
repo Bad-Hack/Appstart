@@ -34,11 +34,16 @@ $(document).ready(function() {
 	$("#frmAddEditBusinessType").validator().submit(function(e){
 		var form = $(this);
 		if(!e.isDefaultPrevented()){
+			var promptus = false;
 			$(document).queue(function(next){
-				$("#content").block({
-					message : "Saving Business Type...",
-					onBlock : next
-				});
+				promptus = new prompt({
+	            	reference : form,
+	                element : "#content",
+	                beforeShow : function(){
+		                this.alternateMessage = this.showLoadingMessage("Saving Business Type...");
+	                }
+	            });
+	            next();
 			}).queue(function(next){
 				$.ajax({
 					type : "POST",
@@ -50,9 +55,7 @@ $(document).ready(function() {
 							form.data("validator").invalidate(json["errors"]);
 							next();
 						} else if(json["success"] != undefined){
-							$("#content").block({
-								message : "Business Type saved successfully."
-							});
+							promptus.showSuccessMessage("Business Type saved successfully.");
 							setTimeout(function(){
 								location.href = "<?php echo $this->url(array("module"=>"admin","controller"=>"business-type","action" => "index"),"default",true);?>";
 							}, 2000);
@@ -61,9 +64,8 @@ $(document).ready(function() {
 					error : next
 	  			});
 			}).queue(function(next){
-				$("#content").unblock({
-					onUnblock : next
-				});
+				promptus.close();
+				next();
 	  		});
 			e.preventDefault();
 		}

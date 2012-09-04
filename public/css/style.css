@@ -413,6 +413,26 @@ input[type=reset]{
     border-radius: 5px;
 	border:solid 2px #91b7c2;
 }
+input[type=submit][disabled],
+input[type=button][disabled],
+input[type=reset][disabled]{
+	cursor: inherit;   
+    color: #999999;
+    overflow: visible; /* IE6/7 fix */
+    border: 0;  
+    background-color: #033c47 !important;
+    background-image: -moz-linear-gradient(#EFEFEF, #EFEEEE) !important;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#EFEFEF), to(#EFEEEE)) !important;    
+    background-image: -webkit-linear-gradient(#EFEFEF, #EFEEEE) !important;
+    background-image: -o-linear-gradient(#EFEFEF, #EFEEEE) !important;
+    background-image: -ms-linear-gradient(#EFEFEF, #EFEEEE) !important;
+    background-image: linear-gradient(#EFEFEF, #EFEEEE) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#EFEFEF', EndColorStr='#EFEEEE') !important;     
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+	border:solid 2px #D3D3D3 !important;
+}
 
 input[type=submit]:hover,
 input[type=button]:hover,
@@ -449,19 +469,11 @@ input[type=reset]:active{
    
 }
 
-input[type=text],
-input[type=email],
-input[type=password], select {
-    border: 1px solid #caced2;
-    border-radius: 3px 3px 3px 3px;
-    box-shadow: 0 2px 4px #dcdde2 inset;
-    color: #797979;
-    font: 12px Arial,Helvetica;
-  margin: 0 2px 0 2px;
-    padding: 5px;
-	min-width:130px;
-   
-}
+input[type=text],input[type=email],input[type=password], select ,textarea{border: 1px solid #caced2;border-radius: 3px 3px 3px 3px;box-shadow: 0 2px 4px #dcdde2 inset;color: #797979;font: 12px Arial,Helvetica;margin: 0 2px 0 2px;padding: 5px;min-width:150px;}
+select{height:26px;}
+select option{padding:5px;}
+input[type=text],input[type=email],input[type=password], textarea{width: 180px;}
+textarea{height:80px;}
 
 .filterIcon{ background-image:url(../images/filter.png); background-repeat:no-repeat; }
 
@@ -530,3 +542,5 @@ a.grid_delete:hover{background-image: url("../images/grid_delete.png");}
     float: left;
     height: 22px;
 }
+.zend_form tr td{padding-top:5px;padding-bottom: 5px;}
+div.customer_submit{width:100%;text-align: center;margin-top:10px;}

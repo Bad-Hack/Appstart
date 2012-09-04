@@ -187,6 +187,20 @@ class Admin_TemplateController extends Zend_Controller_Action
     	
     	$mapper = new Admin_Model_Mapper_Template();
     	
+    	$select = $mapper->getDbTable ()
+				    	->select ( false )
+				    	->setIntegrityCheck ( false )
+				    	->from ( array ("t" => "template"),
+				    			array ("t.template_id",
+				    					"t_name" => "t.name",
+				    					"t_status" => "t.status",
+				    					"t_last_updated_at" => "t.last_updated_at" ) )
+    					->joinLeft ( array ("bt" => "business_type"), "bt.business_type_id=t.business_type_id",
+    							array ("business_type" => "bt.name") )
+    					->joinLeft ( array ("tm" => "template_module"), "tm.template_id=t.template_id",
+    								array ("total_modules" => "count(tm.template_module_id)") )
+    					->group ( "t.template_id" );
+    	
     	$response = $mapper->getGridData(array (
 							'column' => array (
 									'id' => array (
@@ -198,7 +212,7 @@ class Admin_TemplateController extends Zend_Controller_Action
 											'0' => 'Inactive' 
 									) 
 							))
-					));
+					),null,$select);
     	
     	$rows = $response ['aaData'];
     	foreach ( $rows as $rowId => $row ) {

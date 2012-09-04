@@ -1,18 +1,171 @@
+<?php
+$customerForm = $this->customerForm;
+$customerConfigurationForm = $this->customerConfigurationForm;
+?>
 <div id="customer-tabs">
 	<ul>
 		<li><a href="#customer-information">Customer Information</a></li>
 		<li><a href="#customer-configuration">Customer Configuration</a></li>
 	</ul>
 	<div id="customer-information">
-		<p>Customer Information Form</p>
-		<?php echo $this->customerForm->render();?>
+		<form action="<?php echo $customerForm->getAction(); ?>"
+			method="<?php echo $customerForm->getMethod();?>"
+			id="frmAddEditCustomer" class="zend_form">
+			<?php echo $customerForm->customer_id->renderViewHelper()?>
+			<table>
+				<tbody>
+					<tr>
+						<td><?php echo $customerForm->app_access_id->renderLabel() ?></td>
+						<td><?php echo $customerForm->app_access_id->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->customer_name->renderLabel() ?></td>
+						<td><?php echo $customerForm->customer_name->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->username->renderLabel() ?></td>
+						<td><?php echo $customerForm->username->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->password->renderLabel() ?></td>
+						<td><?php echo $customerForm->password->renderViewHelper()?></td>
+					</tr>
+					<!-- Modules (Multi Select) -->
+					<tr>
+						<td><?php echo $customerForm->business_type_id->renderLabel() ?></td>
+						<td><?php echo $customerForm->business_type_id->renderViewHelper()?></td>
+					</tr>
+					<!-- Status -->
+					<tr>
+						<td><?php echo $customerForm->address->renderLabel() ?></td>
+						<td><?php echo $customerForm->address->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->country->renderLabel() ?></td>
+						<td><?php echo $customerForm->country->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->city->renderLabel() ?></td>
+						<td><?php echo $customerForm->city->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->contact_person_name->renderLabel() ?></td>
+						<td><?php echo $customerForm->contact_person_name->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->contact_person_email->renderLabel() ?></td>
+						<td><?php echo $customerForm->contact_person_email->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->contact_person_phone->renderLabel() ?></td>
+						<td><?php echo $customerForm->contact_person_phone->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->status->renderLabel() ?></td>
+						<td><?php echo $customerForm->status->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->template_id->renderLabel() ?></td>
+						<td><?php echo $customerForm->template_id->renderViewHelper()?></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="customer_submit"><?php echo $customerForm->submit->renderViewHelper().$customerForm->reset->renderViewHelper();?></div>
+		</form>
 	</div>
+
+	<!-- Customer Configuration Part -->
 	<div id="customer-configuration">
-		<p>Customer Configuration Form</p>
+		<form action="<?php echo $customerConfigurationForm->getAction(); ?>"
+			method="<?php echo $customerConfigurationForm->getMethod();?>"
+			id="frmCustomerConfiguration" class="zend_form">
+		<?php echo $customerConfigurationForm->customer_configuration_id->renderViewHelper()?>
+			<table>
+				<tbody>
+					<tr>
+						<td><?php echo $customerConfigurationForm->font_type->renderLabel() ?></td>
+						<td><?php echo $customerConfigurationForm->font_type->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerConfigurationForm->font_color->renderLabel() ?></td>
+						<td><?php echo $customerConfigurationForm->font_color->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerConfigurationForm->font_size->renderLabel() ?></td>
+						<td><?php echo $customerConfigurationForm->font_size->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerConfigurationForm->spacing->renderLabel() ?></td>
+						<td><?php echo $customerConfigurationForm->spacing->renderViewHelper()?></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="customer_submit"><?php echo $customerForm->submit->renderViewHelper().$customerForm->reset->renderViewHelper();?></div>
+		</form>
 	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function(){
-		$( "#customer-tabs" ).tabs();
+		$("#frmAddEditCustomer").validator().submit(function(e){
+			if(!e.isDefaultPrevented()){
+				var self = this;
+				var promptus = false;
+				$(document).queue(function(next){
+					promptus = new prompt({
+						element : $("#customer-information"),
+						reference : self,
+						beforeShow : function(){
+							this.alternateMessage = this.showLoadingMessage("Saving Customer Information..");
+						}
+					});
+					next();
+				}).queue(function(next){
+					$.ajax({
+						url : "<?php echo $this->url(array("module"=>"admin","controller"=>"customer","action"=>"save-customer"),"default",true);?>",
+						cache : false,
+						type : "POST",
+						data : $(self).serialize(),
+						dataType : "json",
+						success : function(json){
+							if( json.success != undefined ) {
+								promptus.showSuccessMessage(json.success.message);
+								setTimeout(function(){
+									$(self).find("input[type=submit]").attr({"disabled":"disabled"});
+									next();
+								}, 2000);
+							} else if( json.errors != undefined ){
+								$(self).data("validator").invalidate(json.errors);
+								next();
+							}
+						},
+						error : next
+					});
+				}).queue(function(next){
+					promptus.close();
+					next();
+				});
+			}
+			e.preventDefault();
+		});
+		$("#frmCustomerConfiguration").validator().submit(function(e){
+			if(!e.isDefaultPrevented()){
+				var self = this;
+				$(self).find("input[type=submit]").attr({"disabled":"disabled"});
+			}
+			e.preventDefault();
+		});
+		$("#frmCustomerConfiguration, #frmAddEditCustomer").on("keypress change",function(e){
+			if(e.keyCode != 13){
+				$(this).find("input[type=submit]").removeAttr("disabled");
+			}
+		});
+		
+		$( "#customer-tabs" ).tabs({
+			select: function(event, ui){
+				if($('div.error').length){
+					$('div.error').hide();
+				}
+			}
+		});
 	});
 </script>

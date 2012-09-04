@@ -8,7 +8,7 @@
 					<table>
 						<tr>
 							<td>Business Type</td>
-							<td><input type="text" name="name" class="input" id="txtEmail"></td>
+							<td><input type="text" name="bt[name]" class="input" id="btName"></td>
 						</tr>
 					</table>
 				</td>
@@ -25,6 +25,8 @@
 		<tr>
 			<th scope="col">Business Type ID</th>
 			<th scope="col">Business Type</th>
+			<th scope="col">Total Customer</th>
+			<th scope="col">Total Template</th>
 			<th scope="col">Actions</th>
 		</tr>
 	</thead>
@@ -43,7 +45,9 @@ $(document).ready(function() {
 		aaSorting: [[ 0, "desc" ]],
 		aoColumns: [
 	              	{ "sName": "business_type_id"},
-					{ "sName": "name" },
+					{ "sName": "bt_name" },
+					{ "sName": "total_customer" },
+					{ "sName": "total_template" },
 					{ "sName": "actions","bSortable": false}
 				 ],
 		id : $('#dataGrid'),

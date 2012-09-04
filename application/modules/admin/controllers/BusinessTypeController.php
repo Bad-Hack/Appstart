@@ -13,34 +13,48 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 										"action" => "add"
 								), "default", true );
 	}
+	
 	public function gridAction() {
 		$this->_helper->layout ()->disableLayout ();
 		$this->_helper->viewRenderer->setNoRender ( true );
 		$businessTypeMapper = new Admin_Model_Mapper_BusinessType ();
-		$response = $businessTypeMapper->getDataTableList ( array (
+		
+		$select = $businessTypeMapper->getDbTable ()
+							->select ( false )
+							->setIntegrityCheck ( false )
+							->from ( array ("bt" => "business_type"), 
+										array ("bt.business_type_id",
+												"bt_name" => "bt.name") )
+							->joinLeft ( array ("c" => "customer"), "c.business_type_id=bt.business_type_id", 
+											array ("total_customer" => "count(c.customer_id)") )
+							->joinLeft ( array ("t" => "template"), "t.business_type_id=bt.business_type_id", 
+											array ("total_template" => "count(t.template_id)") )
+							->group ( "bt.business_type_id" );
+		
+		$response = $businessTypeMapper->getGridData ( array (
 				'column' => array (
 						'id' => array (
-								'actions' 
+								'actions'
 						)
-				) 
-		) );
+				)
+		),null,$select);
 		$rows = $response ['aaData'];
 		foreach ( $rows as $rowId => $row ) {
 			$editUrl = $this->view->url ( array (
 					"module" => "admin",
 					"controller" => "business-type",
 					"action" => "edit",
-					"id" => $row [2] ["business_type_id"] 
+					"id" => $row [4] ["business_type_id"]
 			), "default", true );
 			$deleteUrl = $this->view->url ( array (
 					"module" => "admin",
 					"controller" => "business-type",
 					"action" => "delete",
-					"id" => $row [2] ["business_type_id"] 
+					"id" => $row [4] ["business_type_id"]
 			), "default", true );
 			$edit = '<a href="' . $editUrl . '" class="grid_edit" >Edit</a>';
 			$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >Delete</a>';
-			$response ['aaData'] [$rowId] [2] = $edit . "&nbsp;|&nbsp;" . $delete;
+			$response ['aaData'] [$rowId] [4] = $edit . "&nbsp;|&nbsp;" . $delete;
 		}
 		echo $this->_helper->json ( $response );
 	}

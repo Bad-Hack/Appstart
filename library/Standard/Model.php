@@ -226,7 +226,7 @@ abstract class Standard_Model {
 	 */
 	public function setUpdatedVars(array $_updated_vars = array()){
 		$this->_updated_vars = $_updated_vars;
-		return this;
+		return $this;
 	}
 	
 	/**
