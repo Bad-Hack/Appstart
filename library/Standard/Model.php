@@ -78,9 +78,15 @@ abstract class Standard_Model {
 	 * @return Instance of current model
 	 */
 	final public function setOptions(array $options) {
+		$class_vars = array();
+		foreach($this->_class_vars as $class_var){
+			$class_vars[] = substr($class_var,1);
+		}
 		foreach ( $options as $key => $value ) {
-			$method = 'set' . str_replace ( " ", "", ucwords ( str_replace ( "_", " ", $key ) ) );
-			$this->$method ( $value );
+			if(in_array($key,$class_vars)){
+				$method = 'set' . str_replace ( " ", "", ucwords ( str_replace ( "_", " ", $key ) ) );
+				$this->$method ( $value );
+			}
 		}
 		return $this;
 	}

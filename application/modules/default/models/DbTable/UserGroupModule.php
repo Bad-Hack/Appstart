@@ -1,6 +1,6 @@
 <?php
-class Default_Model_DbTable_UserGroupXModule extends Zend_Db_Table_Abstract {
-	protected $_name = 'user_group_x_module';
+class Default_Model_DbTable_UserGroupModule extends Zend_Db_Table_Abstract {
+	protected $_name = 'user_group_module';
 	protected $_referenceMap = array (
 			'UserGroup' => array (
 					'columns' => array (

@@ -9,7 +9,14 @@ class Standard_Functions {
 		if($format == null){
 			$format = Standard_Functions::$MYSQL_DATETIME_FORMAT;
 		}
-		$datetime = new DateTime($timestamp);
+		$datetime = new DateTime();
+		$datetime->setTimestamp($timestamp);
 		return $datetime->format ( $format );
+	}
+	public static function getDefaultDbAdapter() {
+		return Zend_Db_Table::getDefaultAdapter();
+	}
+	public static function getResourcePath() {
+		return APPLICATION_PATH."/../public/resource/";
 	}
 }

@@ -15,6 +15,11 @@ class Default_Form_User extends Zend_Form {
 		) );
 		
 		// Username
+		$uniqueUsernameValidator = new Zend_Validate_Db_NoRecordExists ( array (
+				'table' => 'user',
+				'field' => 'username'
+		) );
+		$uniqueUsernameValidator->setMessage ( "Username already exits" );
 		$username = $this->createElement ( "text", "username", array (
 				'label' => 'Username:',
 				'size' => '50',
@@ -26,11 +31,12 @@ class Default_Form_User extends Zend_Form {
 						array (
 								$notEmptyValidator,
 								true 
-						) 
-				),
-				'errorMessages' => array (
-						'Invalid Username' 
-				) 
+						) , 
+						array (
+								$uniqueUsernameValidator,
+								true
+						)
+				)
 		) );
 		$username->setAttrib ( "required", "required" );
 		$this->addElement ( $username );

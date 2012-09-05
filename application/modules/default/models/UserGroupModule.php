@@ -1,6 +1,6 @@
 <?php
-class Default_Model_UserGroupXModule extends Standard_Model {
-	private $_user_group_x_module_id;
+class Default_Model_UserGroupModule extends Standard_Model {
+	private $_user_group_module_id;
 	private $_user_group_id;
 	private $_module_id;
 	private $_last_updated_by;

@@ -128,6 +128,9 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 						dataType : "json",
 						success : function(json){
 							if( json.success != undefined ) {
+								//var customer = json.success.customer,
+								//	user = json.success.user;
+								//$(self).find(".")
 								promptus.showSuccessMessage(json.success.message);
 								setTimeout(function(){
 									$(self).find("input[type=submit]").attr({"disabled":"disabled"});

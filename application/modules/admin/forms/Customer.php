@@ -15,6 +15,12 @@ class Admin_Form_Customer extends Zend_Form {
 		$this->addElement ( $customer_id );
 		
 		// App Access ID
+		$uniqueAppAccessIdValidator = new Zend_Validate_Db_NoRecordExists ( array (
+				'table' => 'customer',
+				'field' => 'app_access_id' 
+		) );
+		$uniqueAppAccessIdValidator->setMessage ( "App Access ID already exits" );
+		
 		$app_access_id = $this->createElement ( "text", "app_access_id", array (
 				'label' => 'App Access ID:',
 				'size' => '35',
@@ -25,14 +31,17 @@ class Admin_Form_Customer extends Zend_Form {
 				'validators' => array (
 						array (
 								$notEmptyValidator,
+								true,
+						),
+						array (
+								$uniqueAppAccessIdValidator,
 								true 
 						) 
-				),
-				'errorMessages' => array (
-						'Invalid App Access ID' 
 				) 
 		) );
+		
 		$app_access_id->setAttrib ( "required", "required" );
+		
 		$this->addElement ( $app_access_id );
 		
 		// User ID
@@ -74,7 +83,7 @@ class Admin_Form_Customer extends Zend_Form {
 				),
 				'Required' => true 
 		) );
-		$business_type_id->setAttrib("required", "required");
+		$business_type_id->setAttrib ( "required", "required" );
 		$this->addElement ( $business_type_id );
 		
 		// Address
@@ -149,20 +158,20 @@ class Admin_Form_Customer extends Zend_Form {
 				),
 				'Required' => true 
 		) );
-		$status->setAttrib("required", "required");
+		$status->setAttrib ( "required", "required" );
 		$this->addElement ( $status );
 		
 		// Template ID
-		$template_id = $this->createElement('select','template_id',array(
-				'label'		 => 'Template:',
-				'MultiOptions' => $this->_getTemplates(),
-				'validators'	=>	array(
-						'NotEmpty'
+		$template_id = $this->createElement ( 'select', 'template_id', array (
+				'label' => 'Template:',
+				'MultiOptions' => $this->_getTemplates (),
+				'validators' => array (
+						'NotEmpty' 
 				),
-				'Required'	=>	true
-		));
-		$template_id->setAttrib("required", "required");
-		$this->addElement($template_id);
+				'Required' => true 
+		) );
+		$template_id->setAttrib ( "required", "required" );
+		$this->addElement ( $template_id );
 		
 		// Submit Button
 		$submit = $this->createElement ( 'submit', 'submit', array (
@@ -176,7 +185,6 @@ class Admin_Form_Customer extends Zend_Form {
 		) );
 		$this->addElement ( $reset );
 	}
-	
 	public function _getBusinessType() {
 		$options = array (
 				"" => 'Select business type' 
@@ -190,10 +198,9 @@ class Admin_Form_Customer extends Zend_Form {
 		
 		return $options;
 	}
-	
 	public function _getTemplates() {
 		$options = array (
-				"" => 'Select Template'
+				"" => 'Select Template' 
 		);
 		
 		$mapper = new Admin_Model_Mapper_Template ();
