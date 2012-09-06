@@ -15,9 +15,15 @@ class Admin_Form_Customer extends Zend_Form {
 		$this->addElement ( $customer_id );
 		
 		// App Access ID
+		// Check with front_controller
+		$request = Zend_Controller_Front::getInstance()->getRequest();
 		$uniqueAppAccessIdValidator = new Zend_Validate_Db_NoRecordExists ( array (
 				'table' => 'customer',
-				'field' => 'app_access_id' 
+				'field' => 'app_access_id',
+				'exclude' => array (
+						'field' => 'customer_id',
+						'value' => $request->getParam("customer_id",null) 
+				) 
 		) );
 		$uniqueAppAccessIdValidator->setMessage ( "App Access ID already exits" );
 		
@@ -31,7 +37,7 @@ class Admin_Form_Customer extends Zend_Form {
 				'validators' => array (
 						array (
 								$notEmptyValidator,
-								true,
+								true 
 						),
 						array (
 								$uniqueAppAccessIdValidator,

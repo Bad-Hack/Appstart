@@ -28,29 +28,37 @@ class Admin_Model_Mapper_Customer extends Standard_ModelMapper {
 			
 			// Save the customer and update the customer model
 			$customer = $customer->save ();
-			
-			// Setting the UserGroup Model
-			$userGroup = new Default_Model_UserGroup ();
-			$userGroup->setOptions ( array (
-					'customer_id' => $customer->getCustomerId (),
-					'name' => 'Administrator',
-					'last_updated_at' => Standard_Functions::getCurrentDateTime (),
-					'created_at' => Standard_Functions::getCurrentDateTime () 
-			) );
-			$userGroup = $userGroup->save ();
-			// Save the user Group and update the usergroup model
-			
 			// Setting the User Model
 			$user = new Default_Model_User ();
 			$userOptions = $options;
 			$userOptions ["name"] = $options ["customer_name"];
 			$userOptions ["phone"] = $options ["contact_person_phone"];
 			$userOptions ["email"] = $options ["contact_person_phone"];
-			$userOptions ["user_group_id"] = $userGroup->getUserGroupId ();
-			$userOptions ["customer_id"] = $customer->getCustomerId ();
+			
+			// Setting the UserGroup Model
+			$userGroup = new Default_Model_UserGroup ();
+			if($options['customer_id']!="" && $options['customer_id']!=null){
+				$userGroup->setOptions ( array (
+						'customer_id' => $customer->getCustomerId (),
+						'name' => 'Administrator',
+						'last_updated_at' => Standard_Functions::getCurrentDateTime (),
+						'created_at' => Standard_Functions::getCurrentDateTime ()
+				) );
+				$userGroup = $userGroup->save ();
+				
+				$userOptions ["user_group_id"] = $userGroup->getUserGroupId ();
+				$userOptions ["customer_id"] = $customer->getCustomerId ();
+				
+			} else {
+				
+			}
+			// Save the user Group and update the usergroup model
+					
+			
 			// Set the options for user
 			$user->setOptions ( $userOptions );
 			$user = $user->save ();
+			
 			$user->setLastUpdatedBy ( $user->getUserId () );
 			$user->setCreatedBy ( $user->getUserId () );
 			$user = $user->save ();

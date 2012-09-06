@@ -15,9 +15,15 @@ class Default_Form_User extends Zend_Form {
 		) );
 		
 		// Username
+		// Check with front_controller
+		$request = Zend_Controller_Front::getInstance()->getRequest();
 		$uniqueUsernameValidator = new Zend_Validate_Db_NoRecordExists ( array (
 				'table' => 'user',
-				'field' => 'username'
+				'field' => 'username',
+				'exclude' => array (
+						'field' => 'user_id',
+						'value' => $request->getParam ( "user_id", null ) 
+				) 
 		) );
 		$uniqueUsernameValidator->setMessage ( "Username already exits" );
 		$username = $this->createElement ( "text", "username", array (
@@ -31,12 +37,12 @@ class Default_Form_User extends Zend_Form {
 						array (
 								$notEmptyValidator,
 								true 
-						) , 
+						),
 						array (
 								$uniqueUsernameValidator,
-								true
-						)
-				)
+								true 
+						) 
+				) 
 		) );
 		$username->setAttrib ( "required", "required" );
 		$this->addElement ( $username );
@@ -84,8 +90,8 @@ class Default_Form_User extends Zend_Form {
 				'label' => 'Phone:',
 				'size' => '20',
 				'filters' => array (
-						'StringTrim'
-				)
+						'StringTrim' 
+				) 
 		) );
 		$this->addElement ( $phone );
 		
@@ -114,14 +120,14 @@ class Default_Form_User extends Zend_Form {
 		$this->addElement ( $status );
 		
 		// User Group ID
-		$this->addElement('multiselect','user_group_id',array(
-				'label'		 => 'User Group:',
-				'MultiOptions' => $this->_getUserGroups(),
-				'validators'	=>	array(
-						'NotEmpty'
+		$this->addElement ( 'multiselect', 'user_group_id', array (
+				'label' => 'User Group:',
+				'MultiOptions' => $this->_getUserGroups (),
+				'validators' => array (
+						'NotEmpty' 
 				),
-				'Required'	=>	true
-		));
+				'Required' => true 
+		) );
 		
 		// Submit Button
 		$submit = $this->createElement ( 'submit', 'submit', array (
@@ -135,7 +141,6 @@ class Default_Form_User extends Zend_Form {
 		) );
 		$this->addElement ( $reset );
 	}
-	
 	public function _getUserGroups() {
 		$options = array (
 				"" => 'Select User Groups' 
@@ -143,7 +148,7 @@ class Default_Form_User extends Zend_Form {
 		
 		$mapper = new Default_Model_Mapper_UserGroup ();
 		$models = $mapper->fetchAll ();
-		if($models){
+		if ($models) {
 			foreach ( $models as $userGroup ) {
 				$options [$userGroup->getUserGroupId ()] = $userGroup->getName ();
 			}

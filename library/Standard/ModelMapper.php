@@ -428,8 +428,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		$totalFiltered = 0;
 		if($select===null)
 		{
-			$models = $this->fetchAll ( $where, $order , $count , $offset)->toArray();
-			
+			$models = $this->fetchAll ( $where, $order , $count , $offset);
 			$total = $this->countAll();
 			$totalFiltered = $this->countAll( $where );
 		}
@@ -450,6 +449,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		if ($models) {
 			foreach ( $models as $model ) {
 				$record = array ();
+				$model = $model instanceof Standard_Model ? $model->toArray() : $model;
 				foreach ( $columns as $column ) {
 					if (isset ( $options ["column"] ) && isset ( $options ["column"] ["id"] ) && in_array ( $column, $options ["column"] ["id"] )) {
 						$record [] = $model;

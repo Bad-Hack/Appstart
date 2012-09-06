@@ -2,13 +2,76 @@
 <?php echo $this->doctype('HTML5');?>
 <html>
 <head>
-<?php echo $this->headTitle();?>
-<?php echo $this->headStyle()->appendStyle($this->placeholder('css'));?>
-<?php echo $this->headScript();?>
+<?php echo $this->headTitle("AppStart");?>
+<?php 
+	echo $this->headLink()
+			->appendStylesheet($this->baseUrl('css/style.css'))
+			->appendStylesheet($this->baseUrl('libs/jqueryui/css/jqueryui.smoothness.custom.css'))
+			->appendStylesheet($this->baseUrl('css/structure.css'))
+			->appendStylesheet($this->baseUrl("libs/DataTables/css/data_table.css"))
+			->appendStylesheet($this->baseUrl('css/jquery.tools.css'))
+			->appendStylesheet($this->baseUrl('libs/Prompt/css/prompt.css'));
+	 echo $this->headScript()
+			->appendFile($this->baseUrl('libs/html5/html5.js'),'text/javascript', array('conditional' => 'lt IE 9'))
+			->appendFile($this->baseUrl("js/jquery-1.8.0.min.js"))
+			->appendFile($this->baseUrl("js/ajaxfileupload.js"))
+			->appendFile($this->baseUrl("libs/blockUI/jquery.blockUI.js"))
+			->appendFile($this->baseUrl("js/jquery.tools.min.js"))
+			->appendFile($this->baseUrl("libs/jqueryui/js/jqueryui.smoothness.min.js"))
+			->appendFile($this->baseUrl("libs/DataTables/js/jquery.dataTables.min.js"))
+			->appendFile($this->baseUrl("libs/DataTables/js/dataTables.aksPlugin.js"))
+			->appendFile($this->baseUrl("libs/Prompt/js/prompt.js"));?>
 </head>
 <body>
-	<?php
-	echo $this->layout ()->content;
-	?>
+<?php 
+	$zenAuth = Zend_Auth::getInstance();
+  	$zendRead = $zenAuth->getStorage()->read();
+?>
+<div id="wrapper">
+  <header id="header">
+    <h1></h1>
+    <nav id="top-nav" >
+      <ul>
+        <li class="current"><a href="#">Welcome <span><?php //echo $zendRead->first_name." ".$zendRead->last_name ?></span> </a></li>
+        <li class="logout"><a href="<?php echo $this->url(array('module'=>'admin','controller'=>'login','action'=>'logout'),null,true);?>"  >Logout</a></li>
+      </ul>
+    </nav>
+    <div style="clear:both;"></div>
+    <nav id="main-nav">
+      <?php //echo $this->navigation()->menu()->setPartial(array("navigation.phtml","admin")) ?> 
+    </nav>
+    
+    <!-- with images -->
+    <div id="breadcrumb">
+      <?php /*echo $this->navigation()
+  				  ->breadcrumbs()
+  				  ->setMinDepth(0)
+  				  ->setLinkLast(false)
+  				  ->setRenderInvisible(true)
+  				  ->setSeparator("")
+      			  ->setPartial(array("breadcrumb.phtml","admin"));*/ ?>
+    </div>
+    <?php 
+    	if($this->addlink) {
+    ?>
+    	<div id="addlink">
+    		<a href="<?php echo $this->addlink; ?>">Add New</a><span></span>
+    	</div>
+    <?php 
+	} ?>
+  </header>
+  <!-- #header-->
+  <div style="clear:both;"></div>
+  <div id="content">
+    <?php echo $this->layout ()->content; ?>
+    <br style="clear:both" />
+  </div>
+  <!-- #content-->
+  
+  <footer id="footer"> Copyright by AK Systems Inc 2012</footer>
+  <!-- #footer --> 
+  
+</div>
+<!-- #wrapper -->
 </body>
 </html>

@@ -131,7 +131,7 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 		
 		$mapper = new Admin_Model_Mapper_SystemUser ();
 		
-		$response = $mapper->getDataTableList ( array (
+		$response = $mapper->getGridData ( array (
 				'column' => array (
 						'id' => array (
 								'actions' 

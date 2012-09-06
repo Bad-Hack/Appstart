@@ -63,12 +63,14 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 	 * Add Action for adding business type
 	 */
 	public function addAction() {
-		$this->view->heading = "Add Business Type";
 		$form = new Admin_Form_BusinessType ();
 		
 		$this->_save ( $form , self::$ADD_MODE );
 		
 		$this->view->form = $form;
+		$this->view->assign ( array (
+				"partial" => "business-type/partials/add.phtml"
+		) );
 		$this->render ( "add-edit" );
 	}
 	
@@ -93,13 +95,14 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 			$this->_redirect ( '/admin/business-type' );
 		}
 		
-		$this->view->heading = "Edit Business Type";
-		
 		$form = new Admin_Form_BusinessType ();
 		$form->populate ( $businessTypeModel->toArray () );
 		$this->_save ( $form, self::$EDIT_MODE );
 		
 		$this->view->form = $form;
+		$this->view->assign ( array (
+				"partial" => "business-type/partials/edit.phtml"
+		) );
 		$this->render ( "add-edit" );
 	}
 	

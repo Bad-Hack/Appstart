@@ -25,6 +25,10 @@ class Admin_TemplateController extends Zend_Controller_Action
     		if($element->getDecorator('Label')) $element->getDecorator('Label')->setTag(null);
     	}
     	$this->view->form = $form;
+    	$this->view->assign ( array (
+    			"partial" => "template/partials/add.phtml"
+    	) );
+    	$this->render ( "add-edit" );
     }
     
     public function editAction()
@@ -42,6 +46,10 @@ class Admin_TemplateController extends Zend_Controller_Action
 	    	}
     	}
     	$this->view->form = $form;
+    	$this->view->assign ( array (
+    			"partial" => "template/partials/edit.phtml"
+    	) );
+    	$this->render ( "add-edit" );
     }
     
     public function saveAction()

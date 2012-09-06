@@ -37,6 +37,12 @@ class Admin_Plugin_Layout extends Zend_Controller_Plugin_Abstract {
             $layout->setLayoutPath(APPLICATION_PATH . "/layouts/scripts/");
             $layout->setLayout("admin");
         }
+        else
+        {
+        	$layout = Zend_Layout::getMvcInstance();
+        	$layout->setLayoutPath(APPLICATION_PATH . "/layouts/scripts/");
+        	$layout->setLayout("layout");
+        }
     }
 }
 

@@ -12,6 +12,7 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 			method="<?php echo $customerForm->getMethod();?>"
 			id="frmAddEditCustomer" class="zend_form">
 			<?php echo $customerForm->customer_id->renderViewHelper()?>
+			<?php echo $customerForm->user_id->renderViewHelper()?>
 			<table>
 				<tbody>
 					<tr>
@@ -128,9 +129,9 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 						dataType : "json",
 						success : function(json){
 							if( json.success != undefined ) {
-								//var customer = json.success.customer,
-								//	user = json.success.user;
-								//$(self).find(".")
+								var customer = json.success.message.customer;
+								$(self).find("#customer_id").attr("value",customer.customer_id);
+								$(self).find("#user_id").attr("value",customer.user_id);
 								promptus.showSuccessMessage(json.success.message);
 								setTimeout(function(){
 									$(self).find("input[type=submit]").attr({"disabled":"disabled"});

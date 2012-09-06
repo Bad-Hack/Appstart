@@ -18,10 +18,14 @@ class Admin_Plugin_Authentication extends Zend_Controller_Plugin_Abstract {
 			}
 			
 			if ($this->_auth->hasIdentity () && $this->_auth->getStorage ()->read ()->role != "guest") {
-				$view = Zend_Layout::getMvcInstance ()->getView ();
-				$config = new Zend_Config_Xml ( APPLICATION_PATH . '/modules/admin/configs/navigation.xml', "nav" );
-				$navigation = new Zend_Navigation ( $config );
-				$view->navigation ( $navigation )->setAcl ( $this->_acl )->setRole ( $this->_auth->getStorage ()->read ()->role );
+				//if($this->_acl->isAllowed($this->_auth->getStorage ()->read ()->role,$resource)) {
+					$view = Zend_Layout::getMvcInstance ()->getView ();
+					$config = new Zend_Config_Xml ( APPLICATION_PATH . '/modules/admin/configs/navigation.xml', "nav" );
+					$navigation = new Zend_Navigation ( $config );
+					$view->navigation ( $navigation )->setAcl ( $this->_acl )->setRole ( $this->_auth->getStorage ()->read ()->role );
+				//} else {
+				//	$request->setControllerName ( 'login' )->setActionName ( 'logout' );
+				//}
 			} else {
 				$request->setControllerName ( 'login' )->setActionName ( 'index' );
 			}
