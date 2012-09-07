@@ -44,9 +44,9 @@ class Contact_ConfigController extends Zend_Controller_Action
     		$db->query($sql);
     		
     		// Create Resource Dir
-    		mkdir(Standard_Functions::getResourcePath()."contact",0777);
-    		mkdir(Standard_Functions::getResourcePath()."contact/images",0777);
-    		mkdir(Standard_Functions::getResourcePath()."contact/uploads",0777);
+    		mkdir(Standard_Functions::getResourcePath()."contact",0755);
+    		mkdir(Standard_Functions::getResourcePath()."contact/images",0755);
+    		mkdir(Standard_Functions::getResourcePath()."contact/uploads",0755);
     		echo "Success";
     	}
     	catch (Exception $ex) {

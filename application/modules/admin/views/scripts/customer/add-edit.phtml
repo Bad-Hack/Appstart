@@ -31,12 +31,19 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 						<td><?php echo $customerForm->password->renderLabel() ?></td>
 						<td><?php echo $customerForm->password->renderViewHelper()?></td>
 					</tr>
-					<!-- Modules (Multi Select) -->
+					<tr>
+						<td><?php echo $customerForm->phone->renderLabel() ?></td>
+						<td><?php echo $customerForm->phone->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->email->renderLabel() ?></td>
+						<td><?php echo $customerForm->email->renderViewHelper()?></td>
+					</tr>
 					<tr>
 						<td><?php echo $customerForm->business_type_id->renderLabel() ?></td>
 						<td><?php echo $customerForm->business_type_id->renderViewHelper()?></td>
 					</tr>
-					<!-- Status -->
+
 					<tr>
 						<td><?php echo $customerForm->address->renderLabel() ?></td>
 						<td><?php echo $customerForm->address->renderViewHelper()?></td>
@@ -128,7 +135,7 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 						data : $(self).serialize(),
 						dataType : "json",
 						success : function(json){
-							if( json.success != undefined ) {
+							if( json && json.success != undefined ) {
 								var customer = json.success.message.customer;
 								$(self).find("#customer_id").attr("value",customer.customer_id);
 								$(self).find("#user_id").attr("value",customer.user_id);
@@ -137,7 +144,7 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 									$(self).find("input[type=submit]").attr({"disabled":"disabled"});
 									next();
 								}, 2000);
-							} else if( json.errors != undefined ){
+							} else if( json && json.errors != undefined ){
 								$(self).data("validator").invalidate(json.errors);
 								next();
 							}

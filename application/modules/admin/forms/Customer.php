@@ -210,7 +210,11 @@ class Admin_Form_Customer extends Zend_Form {
 		);
 		
 		$mapper = new Admin_Model_Mapper_Template ();
-		$models = $mapper->fetchAll ();
+		
+		// Generate Quote
+		$templateQuote = $mapper->getDbTable()->getAdapter()->quoteInto('status = ?', 1);
+		
+		$models = $mapper->fetchAll ($templateQuote);
 		foreach ( $models as $template ) {
 			$options [$template->getTemplateId ()] = $template->getName ();
 		}

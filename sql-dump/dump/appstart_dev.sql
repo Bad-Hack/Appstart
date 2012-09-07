@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50508
 File Encoding         : 65001
 
-Date: 2012-09-06 20:52:37
+Date: 2012-09-07 22:03:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -41,7 +41,7 @@ INSERT INTO `business_type` VALUES ('2', 'Tirth Estate', '1', '2012-08-30 14:20:
 -- ----------------------------
 DROP TABLE IF EXISTS `contact`;
 CREATE TABLE `contact` (
-  `conatct_id` int(11) NOT NULL AUTO_INCREMENT,
+  `contact_id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) DEFAULT NULL,
   `location` varchar(50) DEFAULT NULL,
   `address` varchar(90) DEFAULT NULL,
@@ -63,13 +63,13 @@ CREATE TABLE `contact` (
   `last_updated_at` datetime DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`conatct_id`)
+  PRIMARY KEY (`contact_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of contact
 -- ----------------------------
-INSERT INTO `contact` VALUES ('1', null, 'Test Location 1', '', '', '', '', '', '', '', '', '', '', '', '', null, null, 'statistics.png', '1', '1970-01-01 00:00:00', null, null);
+INSERT INTO `contact` VALUES ('1', null, 'Test Location 1', 'Vadodara', '', '', '', '', '22.3073095', '73.181097599999', '', '', '', '', '', null, null, 'statistics.png', '1', '1970-01-01 00:00:00', '1', '1970-01-01 00:00:00');
 
 -- ----------------------------
 -- Table structure for `customer`
@@ -99,18 +99,16 @@ CREATE TABLE `customer` (
   KEY `fk_template` (`template_id`) USING BTREE,
   CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`template_id`) REFERENCES `template` (`template_id`),
   CONSTRAINT `customer_ibfk_2` FOREIGN KEY (`business_type_id`) REFERENCES `business_type` (`business_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of customer
 -- ----------------------------
-INSERT INTO `customer` VALUES ('44', 'My App', '35', 'Tirth Bodawala', '1', '', 'India', 'Vadodara', 'Tirth Bodawala', 'tirthbodawla@yahoo.co.in', '+919600540105', '1', '3', '1', '2012-09-05 14:57:28', '1', '2012-09-05 14:57:28');
-INSERT INTO `customer` VALUES ('51', 'My App1234', '41', 'Tirth Bodawala', '1', '', 'India', 'Vadodara', 'Tirth Bodawala', 'tirthbodawla@yahoo.co.in', '+919600540105', '1', '3', '1', '2012-09-05 15:27:02', '1', '2012-09-05 15:27:02');
-INSERT INTO `customer` VALUES ('52', 'My App1234123', '42', 'Tirth Bodawala', '1', '', 'India', 'Vadodara', 'Tirth Bodawala', 'tirthbodawla@yahoo.co.in', '+919600540105', '1', '3', '1', '2012-09-05 15:41:37', '1', '2012-09-05 15:41:37');
-INSERT INTO `customer` VALUES ('53', 'My App1234123221', '43', 'Tirth Bodawala', '1', '', 'India', 'Vadodara', 'Tirth Bodawala', 'tirthbodawla@yahoo.co.in', '+919600540105', '1', '3', '1', '2012-09-05 15:42:01', '1', '2012-09-05 15:42:01');
-INSERT INTO `customer` VALUES ('54', 'Tirth\'s App', '44', 'Tirth Bodawala', '1', '', 'India', 'Vadodara', 'Tirth Bodawala', 'tirthbodawla@yahoo.co.in', '+919600540105', '1', '3', '1', '2012-09-06 16:54:29', '1', '2012-09-06 16:54:29');
-INSERT INTO `customer` VALUES ('55', 'My App -1', '45', 'Tirth Bodawala', '1', '', 'India', 'Vadodara', 'Tirth Bodawala', 'tirthbodawla@yahoo.co.in', '+919600540105', '1', '3', '1', '2012-09-06 16:55:40', '1', '2012-09-06 16:55:40');
-INSERT INTO `customer` VALUES ('56', 'My App 1 1', '46', 'Tirth Bodawala', '2', '', 'India', 'Vadodara', 'Tirth Bodawala', 'tirthbodawla@yahoo.co.in', '+919600540105', '1', '3', '1', '2012-09-06 17:09:26', '1', '2012-09-06 17:09:26');
+INSERT INTO `customer` VALUES ('58', 'Co-Valuate', '48', 'Tirth Bodawala', '2', '21/B Paragraj Society,\r\nHarni Warasiya Ring Road,\r\nVadodara', 'India', 'Vadodara', 'Kirtan Bodawala', 'kirtanking@gmail.com', '+919727130422', '1', '3', '1', '1970-01-01 01:00:00', '1', '1970-01-01 01:00:00');
+INSERT INTO `customer` VALUES ('67', 'Co-Valuate 2', '57', 'Tirth Bodawala', '2', '21/B Paragraj Society,\r\nHarni Warasiya Ring Road,', 'India', 'Vadodara', 'Kirtan Bodawala', 'kirtanking@gmail.com', '+919727130422', '1', '3', '1', '1970-01-01 01:00:00', '1', '1970-01-01 01:00:00');
+INSERT INTO `customer` VALUES ('68', 'Co-Valuate 3', '58', 'Tirth Bodawala', '2', '21/B Paragraj Society,\r\nHarni Warasiya Ring Road,', 'India', 'Vadodara', 'Kirtan Bodawala', 'kirtanking@gmail.com', '+919727130422', '1', '3', '1', '1970-01-01 01:00:00', '1', '1970-01-01 01:00:00');
+INSERT INTO `customer` VALUES ('69', 'Co-Valuate 4', '59', 'Tirth Bodawala', '2', '21/B Paragraj Society,\r\nHarni Warasiya Ring Road', 'India', 'Vadodara', 'Kirtan Bodawala', 'kirtanking@gmail.com', '+919727130422', '1', '4', '1', '1970-01-01 01:00:00', '1', '1970-01-01 01:00:00');
+INSERT INTO `customer` VALUES ('70', 'Co-Valuate 5', '60', 'Tirth Bodawala', '2', '21212', 'India', 'Vadodara', '', 'kirtanking@gmail.com', '+919727130422', '1', '4', '1', '2012-09-07 20:52:51', '1', '1970-01-01 01:00:00');
 
 -- ----------------------------
 -- Table structure for `customer_configuration`
@@ -155,11 +153,14 @@ CREATE TABLE `customer_module` (
   KEY `fk_module_id` (`module_id`) USING BTREE,
   CONSTRAINT `customer_module_ibfk_1` FOREIGN KEY (`module_id`) REFERENCES `module` (`module_id`),
   CONSTRAINT `customer_module_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of customer_module
 -- ----------------------------
+INSERT INTO `customer_module` VALUES ('1', '2', '70', '1', '0', 'Tirth', '1', null, null);
+INSERT INTO `customer_module` VALUES ('2', '4', '70', '2', '0', 'Tirth Bodawala', '1', null, null);
+INSERT INTO `customer_module` VALUES ('3', '3', '70', '2', '0', 'Tirth', '0', null, null);
 
 -- ----------------------------
 -- Table structure for `customer_payment`
@@ -223,16 +224,14 @@ CREATE TABLE `home_wallpaper` (
   `created_by` varchar(80) NOT NULL DEFAULT '',
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`wallpaper_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of home_wallpaper
 -- ----------------------------
-INSERT INTO `home_wallpaper` VALUES ('8', '1277800px-Battery_Park_City_005.JPG', '1277800px-SeattleI5Skyline.jpg', '1277800px-Hudson-4th.jpg', '1277800px-SeattleI5Skyline.jpg', '2', '0', '2', '2', '2012-09-06 11:00:52', '2', '2012-09-06 11:00:52');
-INSERT INTO `home_wallpaper` VALUES ('9', '2514800px-Hoboken_PO_jeh.jpg', '2514I-90_floating_bridges_looking_east.JPG', '2514800px-Sunset_on_the_Hudson_River_(2011)_IMG_3981.JPG', '2514800px-Penn_campus_2.jpg', '1', '1', '4', '2', '2012-09-06 11:22:58', '2', '2012-09-06 11:22:58');
-INSERT INTO `home_wallpaper` VALUES ('10', '1983800px-Downtown_Seattle_2.JPG', '1983800px-SeattleI5Skyline.jpg', '1983800px-Hoboken_PO_jeh.jpg', '1983loseweightchangingthecolourofyourplate-jpg_113403.jpg', '5', '1', '2', '2', '2012-09-06 11:23:49', '2', '2012-09-06 11:23:49');
-INSERT INTO `home_wallpaper` VALUES ('11', '6806800px-Hoboken_PO_jeh.jpg', '6806Bridgeport_101_0153small.jpg', '6806800px-Sunset_on_the_Hudson_River_(2011)_IMG_3981.JPG', '', '2', '1', '5', '2', '2012-09-06 13:12:17', '2', '2012-09-06 13:12:17');
-INSERT INTO `home_wallpaper` VALUES ('12', '1194800px-Hoboken_PO_jeh.jpg', '1194170px-Late_model_Ford_Model_T.jpg', '1194800px-Sunset_on_the_Hudson_River_(2011)_IMG_3981.JPG', '', '4', '0', '8', '2', '2012-09-06 14:38:31', '2', '2012-09-06 14:38:31');
+INSERT INTO `home_wallpaper` VALUES ('70', '', '', '', '', '4', '1', '6', '2', '1970-01-01 00:00:00', '2', '1970-01-01 00:00:00');
+INSERT INTO `home_wallpaper` VALUES ('74', '', '', '', '', '4', '0', '2', '2', '1970-01-01 00:00:00', '2', '1970-01-01 00:00:00');
+INSERT INTO `home_wallpaper` VALUES ('75', '', '', '', '', '5', '0', '0', '2', '1970-01-01 00:00:00', '2', '1970-01-01 00:00:00');
 
 -- ----------------------------
 -- Table structure for `module`
@@ -255,10 +254,10 @@ CREATE TABLE `module` (
 -- Records of module
 -- ----------------------------
 INSERT INTO `module` VALUES ('1', 'Tirth', 'Tirth\'s Description', '/home/', '1', '1', '2012-08-29 15:18:46', '1', '2012-08-29 15:18:53');
-INSERT INTO `module` VALUES ('2', 'Tirth', 'Tirth\' Desc', '/', '0', '1', '2012-08-29 00:00:00', '1', '2012-08-29 00:00:00');
+INSERT INTO `module` VALUES ('2', 'Tirth', 'Tirth\' Desc', '/', '1', '1', '2012-08-29 00:00:00', '1', '2012-08-29 00:00:00');
 INSERT INTO `module` VALUES ('3', 'Tirth', 'Tirth\' Desc', '/', '1', '1', '2012-08-29 00:00:00', '1', '2012-08-29 00:00:00');
 INSERT INTO `module` VALUES ('4', 'Tirth Bodawala', 'Tirth\' Desc', '/', '1', '1', '2012-08-29 00:00:00', '1', '2012-08-29 00:00:00');
-INSERT INTO `module` VALUES ('5', 'Tirth Gopaldas Bodawala', '', '', '1', '0', '0000-00-00 00:00:00', '0', '0000-00-00 00:00:00');
+INSERT INTO `module` VALUES ('5', 'Tirth Gopaldas Bodawala', '', '', '1', '1', '2012-09-07 16:48:15', '1', '2012-09-07 16:48:18');
 
 -- ----------------------------
 -- Table structure for `system_user`
@@ -299,12 +298,13 @@ CREATE TABLE `template` (
   PRIMARY KEY (`template_id`),
   KEY `IDX_97601F83987F37DE` (`business_type_id`) USING BTREE,
   CONSTRAINT `template_ibfk_1` FOREIGN KEY (`business_type_id`) REFERENCES `business_type` (`business_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of template
 -- ----------------------------
-INSERT INTO `template` VALUES ('3', '2', 'Tirth', '0', '1', '2012-08-30 17:14:31', '1', '2012-08-27 17:14:36');
+INSERT INTO `template` VALUES ('3', '2', 'Tirth', '1', '1', '2012-08-30 17:14:31', '1', '2012-08-27 17:14:36');
+INSERT INTO `template` VALUES ('4', '2', 'New Temoplate', '1', '1', '2012-09-07 16:28:21', '1', '2012-09-07 16:28:27');
 
 -- ----------------------------
 -- Table structure for `template_module`
@@ -324,7 +324,7 @@ CREATE TABLE `template_module` (
   KEY `IDX_7CC2FDA5DA0FB8` (`template_id`) USING BTREE,
   CONSTRAINT `template_module_ibfk_1` FOREIGN KEY (`template_id`) REFERENCES `template` (`template_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `template_module_ibfk_2` FOREIGN KEY (`module_id`) REFERENCES `module` (`module_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of template_module
@@ -332,6 +332,8 @@ CREATE TABLE `template_module` (
 INSERT INTO `template_module` VALUES ('1', '2', '3', '1', '1', '2012-09-05 17:17:30', '1', '2012-09-05 17:17:34');
 INSERT INTO `template_module` VALUES ('2', '3', '3', '1', '1', '2012-09-05 17:17:50', '1', '2012-09-05 17:17:58');
 INSERT INTO `template_module` VALUES ('3', '4', '3', '0', '1', '2012-09-05 17:18:22', '1', '2012-09-05 17:18:25');
+INSERT INTO `template_module` VALUES ('4', '2', '4', '1', '1', '2012-09-07 16:43:34', '1', '2012-09-07 16:45:02');
+INSERT INTO `template_module` VALUES ('5', '4', '4', '1', '1', '2012-09-07 16:45:16', '1', '2012-09-07 16:45:19');
 
 -- ----------------------------
 -- Table structure for `user`
@@ -354,18 +356,13 @@ CREATE TABLE `user` (
   UNIQUE KEY `uk_username` (`username`) USING BTREE,
   KEY `fk_group` (`user_group_id`) USING BTREE,
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`user_group_id`) REFERENCES `user_group` (`user_group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('35', 'admin', 'admin', 'Tirth Bodawala', '+919600540105', '+919600540105', '1', '35', '35', '2012-09-05 14:57:28', '35', '2012-09-05 14:57:28');
-INSERT INTO `user` VALUES ('41', 'admin1234', 'admin', 'Tirth Bodawala', '+919600540105', '+919600540105', '1', '41', '41', '2012-09-05 15:27:02', '41', '2012-09-05 15:27:02');
-INSERT INTO `user` VALUES ('42', 'admin1234123', 'admin', 'Tirth Bodawala', '+919600540105', '+919600540105', '1', '42', '42', '2012-09-05 15:41:37', '42', '2012-09-05 15:41:37');
-INSERT INTO `user` VALUES ('43', 'admin123412322', 'admin', 'Tirth Bodawala', '+919600540105', '+919600540105', '1', '43', '43', '2012-09-05 15:42:01', '43', '2012-09-05 15:42:01');
-INSERT INTO `user` VALUES ('44', 'tirthbodawala', 'admin', 'Tirth Bodawala', '+919600540105', '+919600540105', '1', '44', '44', '2012-09-06 16:54:29', '44', '2012-09-06 16:54:29');
-INSERT INTO `user` VALUES ('45', 'tirthbodawala1', 'admin', 'Tirth Bodawala', '+919600540105', '+919600540105', '1', '45', '45', '2012-09-06 16:55:40', '45', '2012-09-06 16:55:40');
-INSERT INTO `user` VALUES ('46', 'admin2121222', 'admin', 'Tirth Bodawala', '+919600540105', '+919600540105', '1', '46', '46', '2012-09-06 17:09:26', '46', '2012-09-06 17:09:26');
+INSERT INTO `user` VALUES ('59', 'tirthbodawala4', 'king123#', 'Tirth Bodawala', '+917600540105', 'tirthbodawala@yahoo.co.in', '1', '61', '59', '2012-09-07 18:25:45', '59', '2012-09-04 18:25:38');
+INSERT INTO `user` VALUES ('60', 'tirthbodawala5', 'tirth', 'Tirth Bodawala', '+917600540105', 'tirthbodawala@yahoo.co.in', '1', '62', '60', '2012-09-07 20:52:51', '60', '2012-09-06 18:25:32');
 
 -- ----------------------------
 -- Table structure for `user_group`
@@ -383,18 +380,13 @@ CREATE TABLE `user_group` (
   UNIQUE KEY `uk_customer_user_group` (`customer_id`,`name`) USING BTREE,
   KEY `fk_user_group` (`customer_id`) USING BTREE,
   CONSTRAINT `user_group_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of user_group
 -- ----------------------------
-INSERT INTO `user_group` VALUES ('35', '44', 'Administrator', '35', '1970-01-01 01:00:00', '35', '1970-01-01 01:00:00');
-INSERT INTO `user_group` VALUES ('41', '51', 'Administrator', '41', '1970-01-01 01:00:00', '41', '1970-01-01 01:00:00');
-INSERT INTO `user_group` VALUES ('42', '52', 'Administrator', '42', '1970-01-01 01:00:00', '42', '1970-01-01 01:00:00');
-INSERT INTO `user_group` VALUES ('43', '53', 'Administrator', '43', '1970-01-01 01:00:00', '43', '1970-01-01 01:00:00');
-INSERT INTO `user_group` VALUES ('44', '54', 'Administrator', '44', '1970-01-01 01:00:00', '44', '1970-01-01 01:00:00');
-INSERT INTO `user_group` VALUES ('45', '55', 'Administrator', '45', '1970-01-01 01:00:00', '45', '1970-01-01 01:00:00');
-INSERT INTO `user_group` VALUES ('46', '56', 'Administrator', '46', '1970-01-01 01:00:00', '46', '1970-01-01 01:00:00');
+INSERT INTO `user_group` VALUES ('61', '69', 'Administrator', '59', '1970-01-01 01:00:00', '59', '1970-01-01 01:00:00');
+INSERT INTO `user_group` VALUES ('62', '70', 'Administrator', '60', '1970-01-01 01:00:00', '60', '1970-01-01 01:00:00');
 
 -- ----------------------------
 -- Table structure for `user_group_module`
@@ -404,6 +396,7 @@ CREATE TABLE `user_group_module` (
   `user_group_module_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_group_id` int(11) DEFAULT NULL,
   `module_id` int(11) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT NULL,
   `last_updated_by` int(11) DEFAULT NULL,
   `last_updated_at` datetime DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
@@ -413,15 +406,11 @@ CREATE TABLE `user_group_module` (
   KEY `fk_group_module` (`module_id`) USING BTREE,
   CONSTRAINT `user_group_module_ibfk_1` FOREIGN KEY (`user_group_id`) REFERENCES `user_group` (`user_group_id`),
   CONSTRAINT `user_group_module_ibfk_2` FOREIGN KEY (`module_id`) REFERENCES `module` (`module_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of user_group_module
 -- ----------------------------
-INSERT INTO `user_group_module` VALUES ('5', '35', '3', '35', '1970-01-01 01:00:00', '35', '1970-01-01 01:00:00');
-INSERT INTO `user_group_module` VALUES ('6', '41', '3', '41', '1970-01-01 01:00:00', '41', '1970-01-01 01:00:00');
-INSERT INTO `user_group_module` VALUES ('7', '42', '3', '42', '1970-01-01 01:00:00', '42', '1970-01-01 01:00:00');
-INSERT INTO `user_group_module` VALUES ('8', '43', '3', '43', '1970-01-01 01:00:00', '43', '1970-01-01 01:00:00');
-INSERT INTO `user_group_module` VALUES ('9', '44', '3', '44', '1970-01-01 01:00:00', '44', '1970-01-01 01:00:00');
-INSERT INTO `user_group_module` VALUES ('10', '45', '3', '45', '1970-01-01 01:00:00', '45', '1970-01-01 01:00:00');
-INSERT INTO `user_group_module` VALUES ('11', '46', '3', '46', '1970-01-01 01:00:00', '46', '1970-01-01 01:00:00');
+INSERT INTO `user_group_module` VALUES ('22', '62', '4', '1', '60', '2012-09-07 20:52:51', '60', '1970-01-01 01:00:00');
+INSERT INTO `user_group_module` VALUES ('23', '62', '3', '0', '60', '2012-09-07 20:52:39', '60', '1970-01-01 01:00:00');
+INSERT INTO `user_group_module` VALUES ('24', '62', '2', '1', '60', '2012-09-07 20:52:51', '60', '1970-01-01 01:00:00');

@@ -20,6 +20,17 @@ class Admin_Bootstrap extends Zend_Application_Module_Bootstrap
 		$fc->registerPlugin(new Admin_Plugin_Layout());
 	}
 	
+	private function _getTemplateModules($where = " 1 = 1 ") {
+		$templateModuleMapper = new Admin_Model_Mapper_TemplateModule ();
+	
+		// Search for active modules and active template_module
+		$templateModuleSql = $this->getDbTable ()->select ()->setIntegrityCheck ( false )->from ( array (
+				'tm' => 'template_module'
+		), '*' )->join ( array (
+				"m" => "module"
+		), " m.module_id = tm.module_id " )->where ( ' m.status = 1 AND tm.status = 1 ' )->where ( $where );
+		return $templateModuleMapper->fetchAll ( $templateModuleSql );
+	}
 }
 
 

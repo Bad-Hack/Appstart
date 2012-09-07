@@ -51,7 +51,6 @@ class Default_Form_User extends Zend_Form {
 		$password = $this->createElement ( "password", "password", array (
 				'label' => 'Password:',
 				'size' => '50',
-				'required' => true,
 				'validators' => array (
 						array (
 								$notEmptyValidator,
@@ -62,6 +61,7 @@ class Default_Form_User extends Zend_Form {
 						'Invalid Password' 
 				) 
 		) );
+		$password->setRequired(true);
 		$password->setAttrib ( "required", "required" );
 		$this->addElement ( $password );
 		

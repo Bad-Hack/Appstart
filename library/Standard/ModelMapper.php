@@ -119,18 +119,20 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		$primaryKey = $this->_getPrimaryKeyName ();
 		
 		$modelData = $model->toArray ();
-		if ( $modelData [$primaryKey] != null && $modelData [$primaryKey] !== null) {
+		if ($modelData [$primaryKey] != null && $modelData [$primaryKey] !== null) {
 			// Update the existing Record
-			$this->getDbTable ()->update ( $model->getUpdatedVars (), " " . $primaryKey . " = " . $modelData [$primaryKey] );
+			$updatedVars = $model->getUpdatedVars ();
+			unset ( $updatedVars [$primaryKey] );
+			$this->getDbTable ()->update ( $updatedVars, " " . $primaryKey . " = " . $modelData [$primaryKey] );
 			return $this->find ( $modelData [$primaryKey] );
 		} else {
 			// Insert the new record
 			unset ( $modelData [$primaryKey] );
-			$insert_id = $this->getDbTable ()->insert ( $modelData );
+			$insert_id = $this->getDbTable ()->insert ( $modelData );	
 			$model->set ( $primaryKey, $insert_id );
 		}
 		// Reset the updated vars
-		$model->setUpdatedVars(array());
+		$model->setUpdatedVars ( array () );
 		return $model;
 	}
 	
@@ -281,10 +283,10 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		
 		// Get the data from database
 		// Set Offset and Limit/Count
-		$count = $request->getParam("iDisplayLength",10);
-		$offset = $request->getParam("iDisplayStart",0);
+		$count = $request->getParam ( "iDisplayLength", 10 );
+		$offset = $request->getParam ( "iDisplayStart", 0 );
 		
-		$models = $this->fetchAll ( $where, $order , $count , $offset);
+		$models = $this->fetchAll ( $where, $order, $count, $offset );
 		$gridData = array ();
 		if ($models) {
 			
@@ -320,12 +322,12 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 	/**
 	 * Get Grid Data
 	 *
-	 * @param array $columns
-	 * @param string $where
+	 * @param array $columns        	
+	 * @param string $where        	
 	 * @return boolean multitype:multitype:string
 	 */
-	public function getGridData(array $options = array(), $where = null, $select=null) {
-	
+	public function getGridData(array $options = array(), $where = null, $select = null) {
+		
 		// Get the current request object
 		$request = Zend_Controller_Front::getInstance ()->getRequest ();
 		// Calculate Columns required
@@ -334,7 +336,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		$columns = array_filter ( $columns, function ($value) {
 			return ($value != "");
 		} );
-	
+		
 		// Applying Sorting
 		$order = "";
 		$iSortingCols = $request->getParam ( 'iSortingCols' );
@@ -345,7 +347,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		}
 		// Change sOrder back to null
 		$order = $order == "" ? null : $order;
-	
+		
 		// Extract Searching Fields
 		$allParams = $request->getParams ();
 		$searchParams = array_filter ( $allParams, function ($key) use(&$allParams) {
@@ -357,7 +359,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 				return false;
 			}
 		} );
-
+		
 		// Check for replace columns bbefore setting data to data grid
 		$replaceColumns = false;
 		if (isset ( $options ["column"] ) && isset ( $options ["column"] ["replace"] )) {
@@ -380,11 +382,11 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 					unset ( $searchParams [$searchColumn] );
 				}
 			}
-				
+			
 			foreach ( $searchParams as $searchColumn => $searchValue ) {
-
+				
 				$searchColumn = substr ( $searchColumn, strlen ( "search_" ) );
-
+				
 				// Creating custom search for replacement properties
 				if ($replaceColumns && in_array ( $searchColumn, $replaceColumns )) {
 					$filterReplaceColumns = $options ['column'] ['replace'] [$searchColumn];
@@ -410,7 +412,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 					$where .= $searchColumn . " LIKE '%" . $searchValue . "%' AND ";
 				}
 			}
-				
+			
 			$where = substr_replace ( $where, "", - 4 );
 			$where .= ") ";
 		}
@@ -422,34 +424,28 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 		$count = $request->getParam ( "iDisplayLength", 10 );
 		$offset = $request->getParam ( "iDisplayStart", 0 );
 		
-		
 		// $models = $this->fetchAll ( $where, $order , $count , $offset);
 		$total = 0;
 		$totalFiltered = 0;
-		if($select===null)
-		{
-			$models = $this->fetchAll ( $where, $order , $count , $offset);
-			$total = $this->countAll();
-			$totalFiltered = $this->countAll( $where );
-		}
-		else
-		{
-			$total = $this->countAll();
-				
-			$totalFiltered = $this->getDbTable ()->fetchAll ($select->where( $where ))->count();
+		if ($select === null) {
+			$models = $this->fetchAll ( $where, $order, $count, $offset );
+			$total = $this->countAll ();
+			$totalFiltered = $this->countAll ( $where );
+		} else {
+			$total = $this->countAll ();
 			
-			$select = $select->where ( $where )
-							->order ( $order )
-							->limit ( $count, $offset );
+			$totalFiltered = $this->getDbTable ()->fetchAll ( $select->where ( $where ) )->count ();
 			
-			$models = $this->getDbTable ()->fetchAll ( $select)->toArray ();
+			$select = $select->where ( $where )->order ( $order )->limit ( $count, $offset );
+			
+			$models = $this->getDbTable ()->fetchAll ( $select )->toArray ();
 		}
 		
 		$gridData = array ();
 		if ($models) {
 			foreach ( $models as $model ) {
 				$record = array ();
-				$model = $model instanceof Standard_Model ? $model->toArray() : $model;
+				$model = $model instanceof Standard_Model ? $model->toArray () : $model;
 				foreach ( $columns as $column ) {
 					if (isset ( $options ["column"] ) && isset ( $options ["column"] ["id"] ) && in_array ( $column, $options ["column"] ["id"] )) {
 						$record [] = $model;
@@ -457,7 +453,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 						$record [] = "";
 					} else {
 						$columnValue = $model [$column];
-
+						
 						if ($replaceColumns && in_array ( $column, $replaceColumns ) && isset ( $options ["column"] ["replace"] [$column] [$columnValue] )) {
 							$record [] = $options ["column"] ["replace"] [$column] [$columnValue];
 						} else {
@@ -468,13 +464,13 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 				$gridData [] = $record;
 			}
 		}
-
+		
 		$finalGridData ["sEcho"] = $request->getParam ( "sEcho", 1 );
-
+		
 		$finalGridData ["iTotalRecords"] = $total;
 		$finalGridData ["iTotalDisplayRecords"] = $totalFiltered;
 		$finalGridData ["aaData"] = $gridData;
-
+		
 		return $finalGridData;
 	}
 }
