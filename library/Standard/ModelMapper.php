@@ -433,7 +433,6 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 			$totalFiltered = $this->countAll ( $where );
 		} else {
 			$total = $this->countAll ();
-			
 			$totalFiltered = $this->getDbTable ()->fetchAll ( $select->where ( $where ) )->count ();
 			
 			$select = $select->where ( $where )->order ( $order )->limit ( $count, $offset );

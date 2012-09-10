@@ -1,4 +1,4 @@
-<form id="frmFilter" onsubmit="_filter();return false;">
+<form id="frmFilter">
 <div id="filterBox">
       <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
         <tr>
@@ -10,13 +10,13 @@
                 <td><input type="text" name="customer_name" class="input" id="txtCustomerName" /></td>
                 <td>Business Type</td>
                 <td>
-                	<input type="text" name="business_type_id" class="input" id="txtBusinessTypeId" />
+                	<input type="text" name="bt[name]" class="input" id="txtBusinessTypeId" />
                 </td>
                 <td>Status</td>
                 <td>
-                	<select name="status">
+                	<select name="c[status]">
                 		<option value="1">Active</option>
-                		<option value="2">InActive</option>
+                		<option value="0">InActive</option>
                 	</select>
                 </td>
               </tr>
@@ -33,11 +33,11 @@
 <table style="border-spacing:0;border-collapse:collapse;width:100%" class="pattern-style-b" id="dataGrid">
 	<thead>
 		<tr>
-	        <th scope="col">Customer Name</th>
+	        <th scope="col">App Access ID</th>
 		    <th scope="col">Business Type</th>
+		    <th scope="col">Customer User Name</th>
+		    <th scope="col">Customer Name</th>
 		    <th scope="col">Contact Person</th>
-		    <th scope="col">City</th>
-		    <th scope="col">Country</th>
 		    <th scope="col">Status</th>
 		    <th scope="col">Action</th>
 		</tr>
@@ -52,37 +52,24 @@
 <script type="text/javascript">
 var grid ="";
 $(document).ready(function() {
-	grid = $('#dataGrid').dataTable({    	
-    	"aoColumns": [
+	grid = dataTable({
+		aaSorting: [[ 0, "desc" ]],
+		"aoColumns": [
+						{ "sName": "app_access_id" },
+						{ "sName": "bt.name" },
+						{ "sName": "u.username" },
 						{ "sName": "customer_name" },
-						{ "sName": "business_type_id" },
 						{ "sName": "contact_person_name" },
-						{ "sName": "city" },
-						{ "sName": "country" },
-						{ "sName": "status" },
-						{ "sName": "action","bSortable": false}
+						{ "sName": "c.status" },
+						{ "sName": "actions","bSortable": false}
 					 ],
-		"bPaginate" : true,
-		"bDestroy": true,	
-        "bProcessing": false,
-        "bServerSide": true,
-        "bSortClasses": false,       
-        "sAjaxSource": "<?php echo $this->url(array("module"=>"admin","controller"=>"customer","action"=>"grid"));?>",
-        "sServerMethod": "POST",
-        	"fnServerParams": function ( aoData ) {
-            	tmData= $('#frmFilter').serializeArray();
-            	$(tmData).each(function(){
-                   	name= $(this).attr("name");
-    				value= $(this).attr("value");                
-                   	aoData.push( { "name": name, "value": value } );
-                });            
-            }
-    });    
-    $("#dataGrid_length,#dataGrid_filter").hide();
+		id : $('#dataGrid'),
+		filterForm : $('#frmFilter'),
+		sAjaxSource: "<?php echo $this->url(array("module"=>"admin","controller"=>"customer","action"=>"grid"),"default",true);?>",
+	});
 });
-function _filter()
-{
+$(document).on("submit","#frmFilter",function(){
 	grid.fnDraw();
-	return false;	
-}
+	return false;
+});
 </script>

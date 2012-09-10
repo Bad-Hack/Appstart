@@ -87,7 +87,8 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 		<form action="<?php echo $customerConfigurationForm->getAction(); ?>"
 			method="<?php echo $customerConfigurationForm->getMethod();?>"
 			id="frmCustomerConfiguration" class="zend_form">
-		<?php echo $customerConfigurationForm->customer_configuration_id->renderViewHelper()?>
+			<?php echo $customerConfigurationForm->customer_configuration_id->renderViewHelper()?>
+			<?php echo $customerConfigurationForm->customer_id->renderViewHelper()?>
 			<table>
 				<tbody>
 					<tr>
@@ -108,12 +109,23 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 					</tr>
 				</tbody>
 			</table>
-			<div class="customer_submit"><?php echo $customerForm->submit->renderViewHelper().$customerForm->reset->renderViewHelper();?></div>
+			<div class="customer_submit"><?php echo $customerConfigurationForm->submit->renderViewHelper().$customerForm->reset->renderViewHelper();?></div>
 		</form>
 	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function(){
+		// Hide errors on changing tab
+		var tabs = $( "#customer-tabs" ).tabs({
+			select: function(event, ui){
+				if($('div.error').length){
+					$('div.error').hide();
+				}
+			}
+		});
+		if($("#customer_id").attr("value")=="" || $("#customer_id").attr("value")==null )
+			$(tabs).tabs('option','disabled',[1]);
+
 		$("#frmAddEditCustomer").validator().submit(function(e){
 			if(!e.isDefaultPrevented()){
 				var self = this;
@@ -139,7 +151,10 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 								var customer = json.success.message.customer;
 								$(self).find("#customer_id").attr("value",customer.customer_id);
 								$(self).find("#user_id").attr("value",customer.user_id);
-								promptus.showSuccessMessage(json.success.message);
+								$(tabs).tabs('option','disabled',[]);
+								// Set the id for the customer configuration
+								$("#configuration_customer_id").attr("value",customer.customer_id);
+								promptus.showSuccessMessage("Customer saved successfully");
 								setTimeout(function(){
 									$(self).find("input[type=submit]").attr({"disabled":"disabled"});
 									next();
@@ -158,24 +173,63 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 			}
 			e.preventDefault();
 		});
+
+		// On submitting the Configuration Form
 		$("#frmCustomerConfiguration").validator().submit(function(e){
 			if(!e.isDefaultPrevented()){
 				var self = this;
-				$(self).find("input[type=submit]").attr({"disabled":"disabled"});
+				var promptus = false;
+				$(document).queue(function(next){
+					promptus = new prompt({
+						element : $("#customer-configuration"),
+						reference : self,
+						beforeShow : function(){
+							this.alternateMessage = this.showLoadingMessage("Saving Customer Configuration..");
+						}
+					});
+					next();
+				}).queue(function(next){
+					$.ajax({
+						url : "<?php echo $this->url(array("module"=>"admin","controller"=>"customer","action"=>"save-customer-configuration"),"default",true);?>",
+						cache : false,
+						type : "POST",
+						data : $(self).serialize(),
+						dataType : "json",
+						success : function(json){
+							if( json && json.success != undefined ) {
+								var customer_configuration = json.success.message.customer_configuration;
+								$(self).find("#customer_configuration_id").attr("value",customer_configuration.customer_configuration_id);								
+								promptus.showSuccessMessage("Customer saved successfully");
+								setTimeout(function(){
+									$(self).find("input[type=submit]").attr({"disabled":"disabled"});
+									next();
+								}, 2000);
+							} else if( json && json.errors != undefined ){
+								if( typeof(json.errors.message) == "string"){
+										promptus.showErrorMessage(json.errors.message);
+										setTimeout(function(){
+											next();
+										}, 2000);
+								} else {
+									$(self).data("validator").invalidate(json.errors);
+									next();
+								}
+							}
+						},
+						error : next
+					});
+				}).queue(function(next){
+					promptus.close();
+					next();
+				});
 			}
 			e.preventDefault();
 		});
+
+		// Allow submit when the key is press or the form is changed
 		$("#frmCustomerConfiguration, #frmAddEditCustomer").on("keypress change",function(e){
 			if(e.keyCode != 13){
 				$(this).find("input[type=submit]").removeAttr("disabled");
-			}
-		});
-		
-		$( "#customer-tabs" ).tabs({
-			select: function(event, ui){
-				if($('div.error').length){
-					$('div.error').hide();
-				}
 			}
 		});
 	});

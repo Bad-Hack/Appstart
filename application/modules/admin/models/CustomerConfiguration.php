@@ -5,7 +5,7 @@ class Admin_Model_CustomerConfiguration extends Standard_Model {
 	private $_font_type;
 	private $_font_color;
 	private $_font_size;
-	private $_font_spacing;
+	private $_spacing;
 	private $_last_updated_by;
 	private $_last_updated_at;
 	private $_created_by;
