@@ -19,7 +19,7 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 		$this->_helper->viewRenderer->setNoRender ( true );
 		$businessTypeMapper = new Admin_Model_Mapper_BusinessType ();
 		
-		$select = $businessTypeMapper->getDbTable ()
+		/*$select = $businessTypeMapper->getDbTable ()
 							->select ( false )
 							->setIntegrityCheck ( false )
 							->from ( array ("bt" => "business_type"), 
@@ -27,10 +27,17 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 												"bt_name" => "bt.name") )
 							->joinLeft ( array ("c" => "customer"), "c.business_type_id=bt.business_type_id", 
 											array ("total_customer" => "count(c.customer_id)") )
-							->joinLeft ( array ("t" => "template"), "t.business_type_id=bt.business_type_id", 
+							->joinLeft ( array ("t" => "template"), "t.business_type_id=bt.business_type_id AND t.template_id=c.template_id", 
 											array ("total_template" => "count(t.template_id)") )
 							->group ( "bt.business_type_id" );
-		
+		*/
+		$select = $businessTypeMapper->getDbTable ()
+							->select ( false )
+							->setIntegrityCheck ( false )
+							->from ( array ("bt" => "business_type"),
+									array ("bt.business_type_id",
+											"bt_name" => "bt.name") )
+							->group ( "bt.business_type_id" );
 		$response = $businessTypeMapper->getGridData ( array (
 				'column' => array (
 						'id' => array (
@@ -40,6 +47,15 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 		),null,$select);
 		$rows = $response ['aaData'];
 		foreach ( $rows as $rowId => $row ) {
+			$customer = new Admin_Model_Mapper_Customer();
+			$totalCustomer = $customer->countAll("business_type_id=".$row [4] ["business_type_id"]);
+			$template = new Admin_Model_Mapper_Template();
+			$totalTemplate = $template->countAll("business_type_id=".$row [4] ["business_type_id"]);
+			
+			$response ['aaData'] [$rowId] [2] = $totalCustomer;
+			$response ['aaData'] [$rowId] [3] = $totalTemplate;
+			
+			
 			$editUrl = $this->view->url ( array (
 					"module" => "admin",
 					"controller" => "business-type",

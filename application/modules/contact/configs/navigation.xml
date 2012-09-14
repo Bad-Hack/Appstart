@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <nav> 
+		<Contact>
+    		<label>Contact</label>
+			<module>contact</module>			
+			<controller>index</controller>
+			<action>index</action>
+            <order>3</order>
+            <resource>contact</resource>
+            <pages>
+				<add>
+					<label>Add Contact</label>
+					<module>contact</module>			
+					<controller>index</controller>
+					<action>add</action>
+					<resource>contact</resource>
+					<visible>false</visible>
+				</add>
+				<edit>
+					<label>Edit Contact</label>
+					<module>contact</module>			
+					<controller>index</controller>
+					<action>edit</action>
+					<resource>contact</resource>
+					<visible>false</visible>
+				</edit>
+			</pages>
+    	</Contact>
+	</nav>
+</config>

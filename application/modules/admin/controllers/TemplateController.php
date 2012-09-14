@@ -37,10 +37,19 @@ class Admin_TemplateController extends Zend_Controller_Action
     	$request = $this->getRequest();
     	if($request->getParam("id","")!="")
     	{ 
-	    	$mapper = new Admin_Model_Mapper_BusinessType();
+	    	$mapper = new Admin_Model_Mapper_Template();
 	    	$data = $mapper->find($request->getParam("id",""))->toArray();
 	    	$form->populate($data);
 	    	
+	    	$mapper = new Admin_Model_Mapper_TemplateModule();
+	    	$modules = $mapper->fetchAll("template_id=".$request->getParam("id",""));
+	    	if($modules) {
+		    	$values = array();
+		    	foreach($modules as $module) {
+		    		$values[] = $module->getModuleId();
+		    	}
+		    	$form->getElement("modules")->setValue($values);
+	    	}
 	    	foreach ($form->getElements() as $element) {
 	    		if($element->getDecorator('Label')) $element->getDecorator('Label')->setTag(null);
 	    	}
@@ -56,18 +65,18 @@ class Admin_TemplateController extends Zend_Controller_Action
     {
     	$this->_helper->layout ()->disableLayout ();
     	$this->_helper->viewRenderer->setNoRender ();
-    	$form = new Admin_Form_SystemUser();
+    	$form = new Admin_Form_Template();
     	$request = $this->getRequest();
     	$error = true;
     	$msg = "";
+    	$templateMapper = new Admin_Model_Mapper_Template();
+    	
     	if ($this->getRequest()->isPost()) {
     		if($form->isValid($request->getPost()))
     		{
     			// Save Record In DB
+    			$templateMapper->getDbTable()->getAdapter()->beginTransaction();
     			try {
-    				$auth = Zend_Auth::getInstance();
-    				$activeUser = $auth->getStorage ()->read ()->user_id;
-    				
     				$template = new Admin_Model_Template();
     				$template_id = $request->getParam("template_id","");
     				if($template_id!="") {
@@ -96,20 +105,6 @@ class Admin_TemplateController extends Zend_Controller_Action
     				else {
     					$template->setCreatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
     					$template->setCreatedAt(Standard_Functions::getCurrentDateTime ());
-    					
-    					$modules = $request->getParam("modules");
-    					foreach($modules as $key => $value) {
-	    					$model = new Admin_Model_TemplateModule();
-	    					$model->setTemplate($template_id);
-	    					$model->setModule($value);
-	    						
-	    					$model->setLastUpdatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
-	    					$model->setLastUpdatedAt(Standard_Functions::getCurrentDateTime ());
-	    						
-	    					$model->setCreatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
-	    					$model->setCreatedAt(Standard_Functions::getCurrentDateTime ());
-	    					$model->save();
-    					}
     				}
     				
     				$template->setName($request->getParam("name"));
@@ -118,18 +113,46 @@ class Admin_TemplateController extends Zend_Controller_Action
     				$template->setLastUpdatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
     				$template->setLastUpdatedAt(Standard_Functions::getCurrentDateTime ());
     				
-    				$template->save();
+    				$id = $template->save();
     				
+    				if($template_id=="") {
+	    				$modules = $request->getParam("modules");
+	    				foreach($modules as $key => $value) {
+	    					$model = new Admin_Model_TemplateModule();
+	    					$model->setTemplateId($id->getTemplateId());
+	    					$model->setModuleId($value);
+	    					$model->setLastUpdatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+	    					$model->setLastUpdatedAt(Standard_Functions::getCurrentDateTime ());
+	    					$model->setStatus(1);
+	    					$model->setCreatedBy(Standard_Functions::getCurrentUser ()->system_user_id);
+	    					$model->setCreatedAt(Standard_Functions::getCurrentDateTime ());
+	    					$model->save();
+	    				}
+    				}
     				$error = false;
     				$msg = "Record save successfully";
+    				$templateMapper->getDbTable()->getAdapter()->commit();
     			}
     			catch (Exception $e) {
+    				$templateMapper->getDbTable()->getAdapter()->rollBack();
     				$msg = "Error: [".$e->getCode()."] ".$e->getMessage()."";
 	    		}
     		}
     		else {
     			// Invalid Request
-    			$msg = "Please verify your information";
+    			$error ="";
+    			$messages = $form->getMessages();
+    			foreach ($messages as $key=>$msg) {
+    				$error .= "<br>".$key.": ";
+    				if(is_array($msg)) {
+    					foreach($msg as $m) {
+    						$error .= $m."<br>";
+    					}
+    				} else {
+    					$error .= $msg;
+    				}
+    			}
+    			$msg = "Please verify your information: <br />".$error;
     		}
     	}
     	
@@ -248,4 +271,3 @@ class Admin_TemplateController extends Zend_Controller_Action
     	$this->_response->appendBody ( $jsonGrid );
     }
 }
-

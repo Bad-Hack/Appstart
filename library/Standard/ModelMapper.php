@@ -371,7 +371,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 			if ($where == "") {
 				$where .= " (";
 			} else {
-				$where .= " AND ";
+				$where .= " AND (";
 			}
 			// Before Search Params
 			foreach ( $searchParams as $searchColumn => $searchValue ) {
@@ -416,6 +416,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 			$where = substr_replace ( $where, "", - 4 );
 			$where .= ") ";
 		}
+
 		// print_r($searchParams);
 		// die;
 		$where = $where == "" ? "1=1" : $where;
@@ -433,6 +434,7 @@ abstract class Standard_ModelMapper implements Standard_MapperStandards {
 			$totalFiltered = $this->countAll ( $where );
 		} else {
 			$total = $this->countAll ();
+			
 			$totalFiltered = $this->getDbTable ()->fetchAll ( $select->where ( $where ) )->count ();
 			
 			$select = $select->where ( $where )->order ( $order )->limit ( $count, $offset );

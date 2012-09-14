@@ -73,8 +73,7 @@ class Admin_Form_SystemUser extends Zend_Form
 		
 		// Add the submit button
 		$this->addElement('submit', 'submit', array(
-				'ignore'   => true,
-				'onclick'  => 'validate();'
+				'ignore'   => true
 		));
 		// Add the reset button
 		$this->addElement('reset', 'reset', array(

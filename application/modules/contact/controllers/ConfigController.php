@@ -30,7 +30,7 @@ class Contact_ConfigController extends Zend_Controller_Action
 					`email_2`  varchar(60) NULL ,
 					`email_3`  varchar(60) NULL ,
 					`website`  varchar(60) NULL ,
-					`timings`  varchar(30) NULL ,
+					`timings`  varchar(90) NULL ,
 					`order`  tinyint NULL ,
 					`status`  tinyint NULL ,
 					`logo`  varchar(120) NULL ,

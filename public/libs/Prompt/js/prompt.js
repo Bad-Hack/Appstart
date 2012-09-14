@@ -8,7 +8,7 @@
  */
 function prompt(params){
 	this.reference = params.reference != undefined ? params.reference : this; 
-	this.element = params.element != undefined ? $(params.element) : $(document);
+	this.element = params.element != undefined ? $(params.element) : $("body");
 	this.message = params.message || "Are you sure?";
 	this.beforeShow = params.beforeShow != undefined ? params.beforeShow : function(){};
 	this.onBlock = params.onBlock != undefined ? params.onBlock : function(){};

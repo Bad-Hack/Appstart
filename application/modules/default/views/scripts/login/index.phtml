@@ -1,8 +1,8 @@
 <?php
 	$form = $this->form;
 ?>
-<form class="box login" method="<?php echo $form->getMethod() ?>" action="<?php echo
-    $form->getAction()?>">
+<form class="box login" method="<?php echo $form->getMethod() ?>" 
+		action="<?php echo $this->url(array("module"=>"default","controller"=>"login","action"=>"index"))?>">
     <fieldset class="boxBody">
 	<?php
 		if(isset($this->loginMessage))
@@ -14,8 +14,8 @@
 	?>
 	<?php echo $form->username->renderLabel() ?>
 	  <?php echo $form->username->renderViewHelper(); ?>
-	  <?php echo $form->password->renderLabel() ?><label class="forgot"><a href="<?php echo $this->url(array("module"=>"admin","controller"=>"login","action"=>"forgot"))?>" class="rLink" tabindex="5">Forget your password?</a></label>
-	  <?php echo $form->password->renderViewHelper() ?>
+	  <?php echo $form->password->renderLabel() ?>
+	  <?php echo $form->password->renderViewHelper() ?><label class="forgot"><a href="<?php echo $this->url(array("module"=>"default","controller"=>"login","action"=>"forgot"))?>" class="rLink" tabindex="5">Forget your password?</a></label>
 	</fieldset>
 	<footer>
 	  <?php echo $form->remember->renderViewHelper()." ";?><?php echo $form->remember->renderLabel(); ?>

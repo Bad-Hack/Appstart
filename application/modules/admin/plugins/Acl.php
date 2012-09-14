@@ -25,6 +25,6 @@ class Admin_Plugin_Acl extends Zend_Acl {
 		// Set Permissions
 		$this->allow('admin',array('user','business_type','template'))
 			 ->allow(array('admin','user'),'customer');
-		
+		$this->deny("user",array('user','business_type','template'));
 	}
 }

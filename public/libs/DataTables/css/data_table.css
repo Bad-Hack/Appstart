@@ -67,11 +67,21 @@
 .dataTables_info {
 	width: 60%;
 	float: left;
+	margin-top:5px;
+	
+	color: #ABABAB;
+    
+    
+    font-size: 11px;
+	padding-left:2px;
+
+	
 }
 
 .dataTables_paginate {
 	float: right;
 	text-align: right;
+	margin-top:5px;
 }
 
 /* Pagination nested */

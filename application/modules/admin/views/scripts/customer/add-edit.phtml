@@ -232,5 +232,40 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 				$(this).find("input[type=submit]").removeAttr("disabled");
 			}
 		});
+
+		$("#business_type_id").change(function(){
+			var self = this;
+			$(document).queue(function(next){
+				promptus = new prompt({
+					element : $("#customer-information"),
+					reference : self,
+					beforeShow : function(){
+						this.alternateMessage = this.showLoadingMessage("Loading templates for the selected business type..");
+					}
+				});
+				next();
+			}).queue(function(next){
+				$.ajax({
+					url : "<?php echo $this->url(array("module"=>"admin","controller"=>"customer","action"=>"get-template"),"default",true);?>",
+					cache : false,
+					type : "POST",
+					data : {business_type_id : $(self).attr("value")},
+					dataType : "json",
+					success : function(data){
+						$("#template_id").html("");
+						$.each(data, function (i, j) {
+							$('#template_id').append(
+							        $('<option label="'+j.value+'"></option>').val(j.key).html(j.value)
+							);			
+				        });
+				        next();
+					},
+					error : next
+				});
+			}).queue(function(next){
+				promptus.close();
+				next();
+			});
+		});
 	});
 </script>

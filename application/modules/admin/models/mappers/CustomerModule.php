@@ -8,10 +8,11 @@ class Admin_Model_Mapper_CustomerModule extends Standard_ModelMapper
 		$customerMapper = new Admin_Model_Mapper_Customer();
 		$templateCustomer = $customerMapper->fetchAll("template_id=".$template_id);
 		foreach($templateCustomer as $customer) {
-			$inactivateList = $this->getDbTable()->fetchAll("customer_id = ".$customer." AND module_id not in(".$ignore_modules.") AND status=1");
+			$inactivateList = $this->getDbTable()->fetchAll("customer_id = ".$customer->getCustomerId()." AND module_id not in(".$ignore_modules.") AND status=1");
 			foreach($inactivateList as $inactive) {
-				$inactive->setStatus(0);
-				$inactive->save();
+				$cmodule = new $this->_modelClass($inactive->toArray());
+				$cmodule->setStatus(0);
+				$cmodule->save();
 			}
 		}
 	}
@@ -21,10 +22,11 @@ class Admin_Model_Mapper_CustomerModule extends Standard_ModelMapper
 		$customerMapper = new Admin_Model_Mapper_Customer();
 		$templateCustomer = $customerMapper->fetchAll("template_id=".$template_id);
 		foreach($templateCustomer as $customer) {
-			$activateList = $this->getDbTable()->fetchAll("customer_id = ".$customer." AND module_id in(".$ignore_modules.") AND status=0");
+			$activateList = $this->getDbTable()->fetchAll("customer_id = ".$customer->getCustomerId()." AND module_id in(".$ignore_modules.") AND status=0");
 			foreach($activateList as $active) {
-				$active->setStatus(0);
-				$active->save();
+				$cmodule = new $this->_modelClass($active->toArray());
+				$cmodule->setStatus(0);
+				$cmodule->save();
 			}
 		}
 	}

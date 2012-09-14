@@ -33,7 +33,8 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 			
 			$data ["confirm_password"] = $data ["password"];
 			$form->populate ( $data );
-			$this->view->password = $data ["password"];
+			unset($form->getElement('password')->required);
+			unset($form->getElement('confirm_password')->required);
 			foreach ( $form->getElements () as $element ) {
 				if ($element->getDecorator ( 'Label' ))
 					$element->getDecorator ( 'Label' )->setTag ( null );
@@ -53,6 +54,12 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 		$msg = "Error";
 		$error = true;
 		if ($this->getRequest ()->isPost ()) {
+			if ($request->getParam ( "system_user_id", "" ) != "") {
+				if($request->getParam ( "password","" )=="") {
+					$form->removeElement("password");
+					$form->removeElement("confirm_password");
+				}
+			}
 			if ($form->isValid ( $request->getPost () )) {
 				// Save Record In DB
 				try {
@@ -66,7 +73,10 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 					}
 					
 					$model->setEmail ( $request->getParam ( "email" ) );
-					$model->setPassword ( $request->getParam ( "password" ) );
+					if($request->getParam ( "password","" )!="")
+					{
+						$model->setPassword ( md5($request->getParam ( "password" ) . $request->getParam ( "email" )));
+					}
 					$model->setRole ( $request->getParam ( "role" ) );
 					$model->setLastUpdatedBy ( Standard_Functions::getCurrentUser ()->system_user_id );
 					$model->setLastUpdatedAt ( Standard_Functions::getCurrentDateTime () );
@@ -79,7 +89,19 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 				}
 			} else {
 				// Invalid Request
-				$msg = "Please verify your information";
+				$error ="";
+    			$messages = $form->getMessages();
+    			foreach ($messages as $key=>$msg) {
+    				$error .= "<br>".$key.": ";
+    				if(is_array($msg)) {
+    					foreach($msg as $m) {
+    						$error .= $m."<br>";
+    					}
+    				} else {
+    					$error .= $msg;
+    				}
+    			}
+    			$msg = "Please verify your information: <br />".$error;
 			}
 		}
 		

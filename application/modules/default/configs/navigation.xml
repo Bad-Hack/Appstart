@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <nav> 
+		<Dashboard>
+    		<label>Dashboard</label>
+			<module>default</module>			
+			<controller>index</controller>
+			<action>index</action>
+            <order>-1000</order>
+            <resource>index</resource>
+    	</Dashboard>
+    	<Settings>
+    		<label>Settings</label>
+    		<uri>#</uri>
+    		<order>1000</order>
+    		<resource>settings</resource>
+    		<pages>
+    			<user>
+    				<label>User Profile</label>
+    				<module>default</module>			
+					<controller>settings</controller>
+					<action>index</action>
+		            <resource>profile</resource>
+    			</user>
+    		</pages>
+    	</Settings>
+	</nav>
+</config>

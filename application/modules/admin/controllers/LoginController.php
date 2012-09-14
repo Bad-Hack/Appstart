@@ -12,7 +12,7 @@ class Admin_LoginController extends Zend_Controller_Action {
 				// get the default db adapter
 				$db = Zend_Db_Table::getDefaultAdapter ();
 				// create the auth adapter
-				$authAdapter = new Zend_Auth_Adapter_DbTable ( $db, 'system_user', 'email', 'password', '' );
+				$authAdapter = new Zend_Auth_Adapter_DbTable ( $db, 'system_user', 'email', 'password', 'MD5(CONCAT(?,email))' );
 				
 				$authAdapter->setIdentity ( $request->getPost ( 'email' ) );
 				$authAdapter->setCredential ( $request->getPost ( 'password' ) );

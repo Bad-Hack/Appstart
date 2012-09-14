@@ -1,0 +1,158 @@
+<?php $form = $this->form; ?>
+<style>
+	#gMap{
+        margin: auto;
+        border: 1px solid #DCDDE2;
+        width: 100%;
+        height: 400px;
+    }
+</style>
+<div id="filterBox">
+      <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
+        <tr>
+          <td valign="middle"><?php echo $this->partial($this->partial,array()); ?></td>
+        </tr>
+      </table>
+</div>
+<div class="boxBorderBottom">
+<form id="frmAddEditHomeWallpaper" method="<?php echo $form->getMethod();?>" action="<?php echo $form->getAction();?>" class="zend_form">
+	<?php echo $form->home_wallpaper_id->renderViewHelper()?>
+	<table style="margin:10px 0; width:100%;">
+		<tbody>
+			<tr>
+		    	<td><?php echo $form->image_title->renderLabel() ?></td>
+		        <td>
+		        	<?php echo $form->image_title->renderViewHelper()?>
+				</td>
+			</tr>
+			<tr>
+		    	<td><label for="image_ipad">iPad Image</label> </td>
+		        <td>
+		        	<input id="image_ipad" type="file" name="image_ipad" />
+		        	<input id="image_ipad_path" type="hidden" name="image_ipad_path" />
+				</td>
+			</tr>
+
+			<tr>
+		    	<td><label for="image_iphone">iPhone Image</label> </td>
+		        <td>
+		        	<input id="image_iphone" type="file" name="image_iphone" />
+		        	<input id="image_iphone_path" type="hidden" name="image_iphone_path" />
+				</td>
+			</tr>
+
+			<tr>
+		    	<td><label for="image_android">Android Image</label> </td>
+		        <td>
+		        	<input id="image_android" type="file" name="image_android" />
+		        	<input id="image_android_path" type="hidden" name="image_android_path" />
+				</td>
+			</tr>
+
+			<tr>
+		    	<td><label for="image_ipad3">iPad3 Image</label> </td>
+		        <td>
+		        	<input id="image_ipad3" type="file" name="image_ipad3" />
+		        	<input id="image_ipad3_path" type="hidden" name="image_ipad3_path" />
+				</td>
+			</tr>
+			<tr>
+		    	<td><?php echo $form->link_to_module->renderLabel() ?></td>
+		        <td>
+		        	<?php echo $form->link_to_module->renderViewHelper()?>
+				</td>
+			</tr>
+			<tr>
+		    	<td><?php echo $form->status->renderLabel() ?></td>
+		        <td>
+		        	<?php echo $form->status->renderViewHelper()?>
+				</td>
+			</tr>
+			<tr>
+		    	<td></td>
+		        <td>
+		        	<?php echo $form->submit->renderViewHelper() ?>&nbsp;
+					<?php echo $form->reset->renderViewHelper() ?>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+</div>
+<script type="text/javascript">
+// <!--
+$(document).ready(function() {
+	$("#frmAddEditHomeWallpaper").validator().submit(function(e){
+		var form = $(this);
+		if(!e.isDefaultPrevented()){
+			var promptus = false;
+			$(document).queue(function(next){
+				promptus = new prompt({
+	            	reference : form,
+	                element : "#content",
+	                beforeShow : function(){
+		                this.alternateMessage = this.showLoadingMessage("Saving Wallpaper...");
+	                }
+	            });
+	            next();
+			}).queue(function(next){
+				var count = 0;
+				$("input[type='file']").each(function(){
+					var input = $(this).attr("id");
+					if($(this).attr("value") != "")
+					{
+						$.ajaxFileUpload({
+							url:'<?php echo $form->getAction(); ?>',
+							secureuri:false,
+							fileElementId:$(this).attr("id"),
+							dataType: 'json',
+							data:{upload:$(this).attr("id")},
+							success: function (data, status)
+							{
+								if(data.success != undefined) {
+									$("#"+ input + "_path").attr("value",data.success);
+								}	
+							},
+							complete: function(){
+								count++;
+								if(count==4){
+									next();
+								}
+							}
+						});
+					} else {
+						count++;
+						if(count==4){
+							next();
+						}
+					}
+				});
+			}).queue(function(next){
+				$.ajax({
+					type : "POST",
+					cache : false,
+					data : form.serialize(),
+					url : "<?php echo $form->getAction(); ?>",
+					success : function(json){
+						if(json["errors"] != undefined){
+							form.data("validator").invalidate(json["errors"]);
+							next();
+						} else if(json["success"] != undefined){
+							promptus.showSuccessMessage("Home Wallpaper saved successfully.");
+							setTimeout(function(){
+								location.href = "<?php echo $this->url(array("module"=>"home-wallpaper","controller"=>"index","action" => "index"),"default",true);?>";
+							}, 2000);
+						}
+					},
+					error : next
+	  			});
+			}).queue(function(next){
+				promptus.close();
+				next();
+	  		});
+			e.preventDefault();
+		}
+	});
+});
+// -->
+</script>

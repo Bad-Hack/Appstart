@@ -3,7 +3,6 @@
 <html>
 <head>
 <?php echo $this->headTitle("AppStart");?>
-<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
 <?php 
 	echo $this->headLink()
 			->appendStylesheet($this->baseUrl('css/style.css'))
@@ -25,33 +24,29 @@
 			->appendFile($this->baseUrl("libs/Prompt/js/prompt.js"));?>
 </head>
 <body>
-<?php 
-	$zenAuth = Zend_Auth::getInstance();
-  	$zendRead = $zenAuth->getStorage()->read();
-?>
 <div id="wrapper">
   <header id="header">
     <h1></h1>
     <nav id="top-nav" >
       <ul>
-        <li class="current"><a href="#">Welcome <span><?php //echo $zendRead->first_name." ".$zendRead->last_name ?></span> </a></li>
+        <li class="current"><a href="#">Welcome <span><?php echo Standard_Functions::getCurrentUser()->name; ?></span> </a></li>
         <li class="logout"><a href="<?php echo $this->url(array('module'=>'default','controller'=>'login','action'=>'logout'),null,true);?>"  >Logout</a></li>
       </ul>
     </nav>
     <div style="clear:both;"></div>
     <nav id="main-nav">
-      <?php //echo $this->navigation()->menu()->setPartial(array("navigation.phtml","admin")) ?> 
+      <?php echo $this->navigation()->menu()->setPartial(array("navigation.phtml","default")) ?> 
     </nav>
     
     <!-- with images -->
     <div id="breadcrumb">
-      <?php /*echo $this->navigation()
+      <?php echo $this->navigation()
   				  ->breadcrumbs()
   				  ->setMinDepth(0)
   				  ->setLinkLast(false)
   				  ->setRenderInvisible(true)
   				  ->setSeparator("")
-      			  ->setPartial(array("breadcrumb.phtml","admin"));*/ ?>
+      			  ->setPartial(array("breadcrumb.phtml","default")); ?>
     </div>
     <?php 
     	if($this->addlink) {

@@ -30,7 +30,7 @@ class Admin_CustomerController extends Zend_Controller_Action {
 	public function editAction() {
 		
 		// Redirect on no customer_id found
-		$customer_id = $this->getParam ( "id", "" );
+		$customer_id = $this->_request->getParam ( "id", "" );
 		if ($customer_id == "") {
 			$this->_redirect ( 'index' );
 		}
@@ -88,52 +88,56 @@ class Admin_CustomerController extends Zend_Controller_Action {
 		$redirect = false;
 		$id = $this->_request->getParam ( "id", "" );
 		$response = array ();
+		$usergroupMapper = new Default_Model_Mapper_UserGroup ();
 		try {
-			
-			$usergroupMapper = new Default_Model_Mapper_UserGroup ();
+			$usergroupMapper->getDbTable()->getAdapter()->beginTransaction();
 			$usergroups = $usergroupMapper->fetchAll ( "customer_id=" . $id );
-			
-			foreach ( $usergroups as $group ) {
-				$groupmoduleMaper = new Default_Model_Mapper_UserGroupModule ();
-				$groupmodule = $groupmoduleMaper->fetchAll ( "user_group_id=" . $group->getUserGroupId () );
-				foreach ( $groupmodule as $module ) {
-					$module->delete ();
+			if(is_array($usergroups)){
+				foreach ( $usergroups as $group ) {
+					$groupmoduleMaper = new Default_Model_Mapper_UserGroupModule ();
+					$groupmodule = $groupmoduleMaper->fetchAll ( "user_group_id=" . $group->getUserGroupId () );
+					foreach ( $groupmodule as $module ) {
+						$module->delete ();
+					}
+					$userMaper = new Default_Model_Mapper_User ();
+					$users = $userMaper->fetchAll ( "user_group_id=" . $group->getUserGroupId () );
+					foreach ( $users as $user ) {
+						$user->delete ();
+					}
+					
+					$group->delete ();
 				}
-				$userMaper = new Default_Model_Mapper_User ();
-				$users = $userMaper->fetchAll ( "user_group_id=" . $group->getUserGroupId () );
-				foreach ( $users as $user ) {
-					$user->delete ();
-				}
-				
-				$group->delete ();
 			}
-			
 			$customermoduleMapper = new Admin_Model_Mapper_CustomerModule ();
 			$customermodules = $customermoduleMapper->fetchAll ( "customer_id=" . $id );
-			foreach ( $customermodules as $module ) {
-				$module->delete ();
+			if(is_array($customermodules)) {
+				foreach ( $customermodules as $module ) {
+					$module->delete ();
+				}
 			}
-			
 			$customerconfigMapper = new Admin_Model_Mapper_CustomerConfiguration ();
 			$customerconfigs = $customerconfigMapper->fetchAll ( "customer_id=" . $id );
-			foreach ( $customerconfigs as $config ) {
-				$config->delete ();
+			if(is_array($customerconfigs)) {
+				foreach ( $customerconfigs as $config ) {
+					$config->delete ("customer_id=" . $id);
+				}
 			}
-			
-			$customerModel = new Admin_Model_Customer ();
-			$deletedRows = $customerModel->delete ();
+			$customerMapper = new Admin_Model_Mapper_Customer();
+			$deletedRows = $customerMapper->delete("customer_id=" . $id);
 			
 			$response = array (
 					"success" => array (
 							"deleted_rows" => $deletedRows 
 					) 
 			);
+			$usergroupMapper->getDbTable()->getAdapter()->commit();
 		} catch ( Zend_Exception $ex ) {
+			$usergroupMapper->getDbTable()->getAdapter()->rollBack();
 			$message = $ex->getMessage ();
 			if (strpos ( $message, "foreign key constraint fails" ) !== false) {
 				$response = array (
 						"errors" => array (
-								"message" => "Business Type is already linked to one or more templates" 
+								"message" => $ex->getMessage() 
 						) 
 				);
 			} else {
@@ -350,6 +354,27 @@ class Admin_CustomerController extends Zend_Controller_Action {
 		}
 		
 		return $customerForm;
+	}
+	
+	public function getTemplateAction() {
+		sleep(2);
+		$business_type_id = $this->_request->getParam ( "business_type_id", "" );
+		$options = array ();
+		$options [0]["key"] = "";
+		$options [0]["value"] = "Select Template";
+		$mapper = new Admin_Model_Mapper_Template ();
+		
+		// Generate Quote
+		//$templateQuote = $mapper->getDbTable()->getAdapter()->quoteInto('status = ? AND business_type_id = ?', 1,$business_type_id);
+		$i=1;
+		$models = $mapper->fetchAll ("status = 1 AND business_type_id = ".$business_type_id);
+		if(is_array($models)) {
+			foreach ( $models as $template ) {
+				$options [$i]["key"] = $template->getTemplateId ();
+				$options [$i++]["value"] = $template->getName ();
+			}
+		}
+		echo $this->_helper->json ( $options );
 	}
 }
 

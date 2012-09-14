@@ -162,9 +162,9 @@ class Contact_Form_Contact extends Zend_Form {
 		$this->addElement ( $website);
 		
 		// Timings
-		$timings = $this->createElement ( "text", "timings", array (
+		$timings = $this->createElement ( "textarea", "timings", array (
 				'label' => 'Timings:',
-				'size' => '35',
+				'size' => '90',
 				'filters' => array (
 						'StringTrim'
 				)
@@ -191,6 +191,10 @@ class Contact_Form_Contact extends Zend_Form {
 			 ->addValidator('Extension', false, 'jpg,png,gif');
 		$this->addElement($logo);
 		
+		$this->addElement('checkbox', 'status', array(
+				'label'      => 'Active',
+				'value'      => '1'
+		));
 		
 		// Submit button
 		$submit = $this->addElement ( 'submit', 'submit', array (

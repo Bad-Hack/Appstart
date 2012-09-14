@@ -70,6 +70,9 @@ class Admin_Model_Mapper_Customer extends Standard_ModelMapper {
 				if ($userOptions ["password"] == "" || $userOptions ["password"] == null)
 					unset ( $userOptions ["password"] );
 			}
+			if(isset( $userOptions ["password"])) {
+				$userOptions ["password"] = md5( $userOptions ["password"] . $userOptions ["username"]);
+			}
 			// Set the options for user
 			$user->setOptions ( $userOptions );
 			$user = $user->save ();

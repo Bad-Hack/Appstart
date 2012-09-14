@@ -18,7 +18,6 @@ class Admin_Form_Template extends Zend_Form
             'filters'    => array('StringTrim'),
             'validators' => array(
                 array($notEmpty,true),
-            	array('EmailAddress',true),
             ),
 		'errorMessages' => array('Invalid Email Address')
 				
@@ -49,8 +48,7 @@ class Admin_Form_Template extends Zend_Form
 		
 		// Add the submit button
 		$this->addElement('submit', 'submit', array(
-				'ignore'   => true,
-				'onclick'  => 'validate();'
+				'ignore'   => true
 		));
 		// Add the reset button
 		$this->addElement('reset', 'reset', array(

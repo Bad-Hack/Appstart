@@ -132,14 +132,15 @@ abstract class Standard_Model {
 	 */
 	private function _createVariable($method) {
 		$string = "";
-		for($i = 0; $i < strlen ( $method ); $i ++) {
+		/*for($i = 0; $i < strlen ( $method ); $i ++) {
 			if ($method [$i] == strtoupper ( $method [$i] )) {
 				$string .= "_" . strtolower ( $method [$i] );
 			} else {
 				$string .= $method [$i];
 			}
 		}
-		return $string;
+		return $string;*/
+		return strtolower (preg_replace('/[A-Z]|[0-9]/', "_$0", $method));
 	}
 	
 	/**

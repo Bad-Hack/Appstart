@@ -3,7 +3,7 @@
 ?>
 <form class="box login" method="<?php echo $form->getMethod() ?>" action="<?php echo
     $form->getAction()?>">
-    <fieldset class="boxBody">
+    <fieldset class="boxBody admin">
 	<?php
 		if(isset($this->loginMessage))
 		{
@@ -14,8 +14,8 @@
 	?>
 	<?php echo $form->email->renderLabel() ?>
 	  <?php echo str_replace('"text"' , '"email"',$form->email->renderViewHelper()); ?>
-	  <?php echo $form->password->renderLabel() ?><label class="forgot"><a href="<?php echo $this->url(array("module"=>"admin","controller"=>"login","action"=>"forgot"))?>" class="rLink" tabindex="5">Forget your password?</a></label>
-	  <?php echo $form->password->renderViewHelper() ?>
+	  <?php echo $form->password->renderLabel() ?>
+	  <?php echo $form->password->renderViewHelper() ?><label class="forgot"><a href="<?php echo $this->url(array("module"=>"admin","controller"=>"login","action"=>"forgot"))?>" class="rLink" tabindex="5">Forget your password?</a></label>
 	</fieldset>
 	<footer>
 	  <?php echo $form->remember->renderViewHelper()." ";?><?php echo $form->remember->renderLabel(); ?>
