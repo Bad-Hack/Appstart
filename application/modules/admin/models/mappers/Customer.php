@@ -40,6 +40,36 @@ class Admin_Model_Mapper_Customer extends Standard_ModelMapper {
 			}
 			// Save the customer and update the customer model
 			$customer = $customer->save ();
+			// Setting the customer languages
+			$languages = $options["language_id"];
+			$default_language_id = $options["default_language_id"];
+			$customer_id = $customer->getCustomerId ();
+			if ($mode == self::$ADD_MODE) {
+				foreach($languages as $lang) {
+					$modelLang = new Admin_Model_CustomerLanguage();
+					$modelLang->setCustomerId($customer_id);
+					$modelLang->setLanguageId($lang);
+					$modelLang->setIsDefault((int) ($default_language_id == $lang));
+					$modelLang->save();
+				}
+			} else {
+				$db->delete("customer_language","customer_id=".$customer_id." AND language_id NOT IN(".(implode(",",$languages)).")");
+				foreach($languages as $lang) {
+					$modelLang = new Admin_Model_CustomerLanguage();
+					
+					$mapperLang = new Admin_Model_Mapper_CustomerLanguage();
+					$result = $mapperLang->fetchAll("customer_id=".$customer_id." AND language_id = ".$lang);
+					if($result)
+					{
+						$modelLang = $result[0];
+					}
+					
+					$modelLang->setCustomerId($customer_id);
+					$modelLang->setLanguageId($lang);
+					$modelLang->setIsDefault((int) ($default_language_id == $lang));
+					$modelLang->save();
+				}
+			}
 			
 			// Setting the user group
 			$userGroup = new Default_Model_UserGroup ();
@@ -183,12 +213,17 @@ class Admin_Model_Mapper_Customer extends Standard_ModelMapper {
 					$customerModuleExists = $customerModuleMapper->fetchAll ( $customerModuleExistsQuote );
 					if ($customerModuleExists) {
 						$customerModuleExists = $customerModuleExists [0];
-						$customerModuleOptions = array (
+						/*$customerModuleOptions = array (
 								'customer_module_id' => $customerModuleExists->getCustomerModuleId (),
 								'last_updated_by' => $currentUserId,
 								'last_updated_at' => $currentDateTime,
 								'status' => 1 
-						);
+						);*/
+						$customerModuleOptions = $customerModuleExists->toArray();
+						$customerModuleOptions['last_updated_by'] = $currentUserId;
+						$customerModuleOptions['last_updated_at'] = $currentDateTime;
+						$customerModuleOptions['status'] = 1;
+						
 					} else {
 						$module = $templateModuleRow->findParentRow ( 'Admin_Model_DbTable_Module', 'Module' )->toArray ();
 						
@@ -205,10 +240,21 @@ class Admin_Model_Mapper_Customer extends Standard_ModelMapper {
 								'status' => 1,
 								'created_at' => $currentDateTime 
 						);
+						
 					}
 					$customerModule->setOptions ( $customerModuleOptions );
-					$customerModule->save ();
+					$customerModule = $customerModule->save ();
 					$customerModuleOrder ++;
+					if (!$customerModuleExists) {
+						foreach($languages as $language_id) {
+							$customerModuleDetail = new Admin_Model_CustomerModuleDetail($customerModule->toArray());
+							$moduleMapper = new Admin_Model_Mapper_Module();
+							$moduleModel = $moduleMapper->find($customerModule->getModuleId());
+							$customerModuleDetail->setScreenName($moduleModel->getDescription());
+							$customerModuleDetail->setLanguageId($language_id);
+							$customerModuleDetail->save();
+						}
+					}
 				}
 			}
 			$db->commit ();

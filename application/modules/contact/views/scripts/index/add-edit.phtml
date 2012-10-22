@@ -1,4 +1,4 @@
-<?php $form = $this->form; ?>
+<?php $form = $this->form;?>
 <style>
 	#gMap{
         margin: auto;
@@ -11,12 +11,15 @@
       <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
         <tr>
           <td valign="middle"><?php echo $this->partial($this->partial,array()); ?></td>
+          <td align="right"><h2><?php echo $this->language; ?></h2></td>
         </tr>
       </table>
 </div>
 <div class="boxBorderBottom">
 <form id="frmAddEditContact" method="<?php echo $form->getMethod();?>" action="<?php echo $form->getAction();?>" class="zend_form">
-	<?php echo $form->contact_id->renderViewHelper()?>
+	<?php echo $form->contact_id->renderViewHelper(); ?>
+	<?php echo $form->contact_detail_id->renderViewHelper(); ?>
+	<?php echo $form->language_id->renderViewHelper(); ?>
 	<table style="margin:10px 0; width:100%;">
 		<tbody>
 			<tr>
@@ -37,7 +40,7 @@
 							</td>
 							<td>
 								<input type="checkbox" checked="checked" name="mark-fixed" id="mark-fixed" />
-								<label for="mark-fixed">Auto Locate</label>
+								<label for="mark-fixed"><?php echo $this->translate('Auto Locate')?> </label>
 							</td>
 						</tr>
 						<tr>
@@ -109,7 +112,7 @@
 				</td>
 			</tr>
 			<tr>
-		    	<td><label for="logo">Logo</label> </td>
+		    	<td><label for="logo"><?php echo $this->translate('Logo')?></label> </td>
 		        <td>
 		        	<input id="logo" type="file" name="logo" />
 		        	<input id="logo_path" type="hidden" name="logo_path" value="<?php echo $this->logo_path; ?>" />
@@ -143,7 +146,7 @@ $(document).ready(function() {
 	            	reference : form,
 	                element : "#content",
 	                beforeShow : function(){
-		                this.alternateMessage = this.showLoadingMessage("Saving Contact...");
+		                this.alternateMessage = this.showLoadingMessage("<?php echo $this->translate('Saving Contact...')?>");
 	                }
 	            });
 	            next();
@@ -157,8 +160,6 @@ $(document).ready(function() {
 						data:{upload:'true'},
 						success: function (data, status)
 						{
-							console.log(data);
-							console.log(typeof(data.success));
 							if(data.success != undefined) {
 								$("#logo_path").attr("value",data.success);
 								next();
@@ -166,7 +167,7 @@ $(document).ready(function() {
 						},
 						error: function (data, status, e)
 						{
-							promptus.showErrorMessage("Error uploading logo.");
+							promptus.showErrorMessage("<?php echo $this->translate('Error uploading logo.')?>");
 							setTimeout(function(){
 								promptus.close();
 							}, 2000);
@@ -187,7 +188,7 @@ $(document).ready(function() {
 							form.data("validator").invalidate(json["errors"]);
 							next();
 						} else if(json["success"] != undefined){
-							promptus.showSuccessMessage("Contact saved successfully.");
+							promptus.showSuccessMessage("<?php echo $this->translate('Contact saved successfully.')?>");
 							setTimeout(function(){
 								location.href = "<?php echo $this->url(array("module"=>"contact","controller"=>"index","action" => "index"),"default",true);?>";
 							}, 2000);

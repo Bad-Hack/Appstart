@@ -2,16 +2,16 @@
 <div id="filterBox">
       <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
         <tr>
-          <td width="10%" valign="middle"><h2 class="filterIcon">Filter</h2></td>
+          <td width="10%" valign="middle"><h2 class="filterIcon"><?php echo $this->translate('Filter');?></h2></td>
           <td width="77%">
           	<table>
               <tr>
-                <td>User Email</td>
+                <td><?php echo $this->translate('User Email');?></td>
                 <td><input type="text" name="email" class="input" id="txtEmail"></td>
-                <td>Role</td>
+                <td><?php echo $this->translate('Role');?></td>
                 <td><input type="text" name="role" class="input" id="txtRole"></td>
                 <td>&nbsp;</td>
-                <td><input type="submit" name="button" id="button" class="button" value="Submit"></td>
+                <td><input type="submit" name="button" id="button" class="button" value="<?php echo $this->translate('Submit');?>"></td>
               </tr>
             </table>
           </td>
@@ -23,14 +23,14 @@
 <table style="border-spacing:0;border-collapse:collapse;width:100%" class="pattern-style-b" id="dataGrid">
 	<thead>
 		<tr>
-	        <th scope="col">User Email</th>
-		    <th scope="col">Role</th>
-		    <th scope="col">Action</th>
+	        <th scope="col"><?php echo $this->translate('User Email');?></th>
+		    <th scope="col"><?php echo $this->translate('Role');?></th>
+		    <th scope="col"><?php echo $this->translate('Action');?></th>
 		</tr>
     </thead> 
 	<tbody>
 		<tr>
-			<td colspan="3" class="dataTables_empty">Loading data from server</td>
+			<td colspan="3" class="dataTables_empty"><?php echo $this->translate('Loading data from server');?></td>
 		</tr>
 	</tbody>      
 </table>
@@ -57,12 +57,12 @@ $(document).ready(function() {
         	var promptus = new prompt({
                     	reference : self,
                         element : ".dataTables_wrapper",
-                        message : "Are you sure you want to delete this User?",
+                        message : "<?php echo $this->translate('Are you sure you want to delete this user');?>",
                         buttons : {
                             "Yes" : function(self){
                                 var prompt = this;
                                 $(document).queue(function(next){
-                                    prompt.showLoadingMessage("Please wait while deleting user..");
+                                    prompt.showLoadingMessage("<?php echo $this->translate('Please wait. Deleting user..');?>");
                                     next();
                                 }).queue(function(next){
                                     console.log(window.currentUserDeleteUrl);
@@ -73,13 +73,13 @@ $(document).ready(function() {
                                         dataType: "json",
                                         success: function(json){
                                             if(json.success != undefined){ 
-                                            	prompt.showSuccessMessage("User deleted successfully.");
+                                            	prompt.showSuccessMessage("<?php echo $this->translate('User deleted successfully.');?>");
                                             	setTimeout(function(){
                                             		prompt.close();
                                                 	grid.fnDraw();
                                                 }, 1000);
                                             } else if(json.errors != undefined){
-                                                var errorMessage = "Unable to delete user:<br />";
+                                                var errorMessage = "<?php echo $this->translate('Unable to delete user:');?><br />";
                                                 errorMessage += json.errors.message;
                                             	prompt.showErrorMessage(errorMessage);
                                             	setTimeout(function(){

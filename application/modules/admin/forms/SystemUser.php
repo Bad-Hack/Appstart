@@ -11,7 +11,7 @@ class Admin_Form_SystemUser extends Zend_Form
 		
 		$notEmpty = new Zend_Validate_NotEmpty();
 		$notEmpty->setMessage('Enter A Password.');
-		$this->addElement('text', 'email', array(
+		/*$this->addElement('text', 'email', array(
 			'label'      => 'User Email:',
 			'size'		 => '35',
             'required'   => true,
@@ -24,6 +24,19 @@ class Admin_Form_SystemUser extends Zend_Form
 				
         ));
 		$this->getElement("email")->setAttrib("required", "required");
+		*/
+		
+		$email = new Standard_Html5_Form_Element_Text_Email("email");
+		$email->setLabel("User Email:");
+		$email->setAttrib("size", 35);
+		$email->setAttrib("required", "required");
+		$email->setFilters(array('StringTrim'));
+		$email->setValidators(array(
+				array($notEmpty,true),
+				array('EmailAddress',true),
+		));
+		$email->setErrorMessages(array('Invalid Email Address'));
+		$this->addElement($email);
 		
 		$notEmpty = new Zend_Validate_NotEmpty();
 		$notEmpty->setMessage('Value Is Required.');

@@ -31,6 +31,25 @@ class Admin_Bootstrap extends Zend_Application_Module_Bootstrap
 		), " m.module_id = tm.module_id " )->where ( ' m.status = 1 AND tm.status = 1 ' )->where ( $where );
 		return $templateModuleMapper->fetchAll ( $templateModuleSql );
 	}
+	
+	public function _initTranslate() {
+		$translate = Zend_Registry::get("app_translate");
+		$langPath = APPLICATION_PATH . DIRECTORY_SEPARATOR .'admin'. DIRECTORY_SEPARATOR .'lang'. DIRECTORY_SEPARATOR;
+		if(file_exists($langPath)) {
+			$iterator = new DirectoryIterator($langPath);
+			foreach ($iterator as $fileinfo) {
+				if(!$fileinfo->isDir()) {
+					$translate->getAdapter()->addTranslation(array(
+							'content' => $fileinfo->getPath(). DIRECTORY_SEPARATOR .$fileinfo->getFilename(),
+							'locale' => str_replace(".php", "", $fileinfo->getFilename())
+					));
+				}
+			}
+			
+			Zend_Registry::set('Zend_Translate', $translate);
+			Zend_Registry::set("app_translate", $translate);
+		}
+	}
 }
 
 

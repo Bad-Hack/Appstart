@@ -54,10 +54,25 @@
 	</table>
 </form>
 </div>
-
 <script type="text/javascript">
 // <!--
 $(document).ready(function() {
+
+	<?php
+		if(!$this->hasData) {
+	?>
+			promptus = new prompt({
+				element : $("#content"),
+				reference : this,
+			});
+			promptus.showErrorMessage("Not enough information to add template");
+			setTimeout(function(){
+				location.href = "<?php echo $this->url(array("module"=>"admin","controller"=>"template","action"=>"index"),"default",true);?>";
+			}, 2000);
+	<?php
+		} 
+	?>
+		
 	$("#modules").multiselect({sortable: false, searchable: false});
 
 	$("#form1").validator().submit(function(e){

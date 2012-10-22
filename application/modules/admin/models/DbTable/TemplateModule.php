@@ -1,7 +1,6 @@
 <?php
 class Admin_Model_DbTable_TemplateModule extends Zend_Db_Table_Abstract {
 	protected $_name = 'template_module';
-	
 	protected $_referenceMap = array (
 			'Module' => array (
 					'columns' => array (
@@ -22,4 +21,5 @@ class Admin_Model_DbTable_TemplateModule extends Zend_Db_Table_Abstract {
 					)
 			)
 	);
+
 }

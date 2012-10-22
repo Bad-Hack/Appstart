@@ -4,7 +4,7 @@ class Contact_Model_Mapper_Contact extends Standard_ModelMapper {
 	
 	public function getNextOrder($customer_id) {
 		$select = $this->getDbTable()->select(false)
-						->from("contact",array("max_order" => "max(`order`)"))
+						->from("module_contact",array("max_order" => "max(`order`)"))
 						->group("customer_id")
 						->having("customer_id=".$customer_id);
 		

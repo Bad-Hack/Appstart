@@ -34,7 +34,7 @@ body{
     padding:81px 20px 20px 20px;
 }
 .admin {
-	/*background-image:url(../images/appstart-admin.png); background-repeat:no-repeat;*/
+	background-image:url(../images/appstart-admin.png); background-repeat:no-repeat;
 }
 .box footer
 {
@@ -159,4 +159,26 @@ footer#main{
 	text-align:center;
 	font:normal 11px/16px Arial, Helvetica, sans-serif;
 	width:100%;
+}
+.box.error-box
+{
+	width:500px;
+	position:absolute;
+	left:50%;
+	top:50%;
+	margin:-200px 0 0 -250px;
+	padding:20px; 
+}
+.box h1{
+	font:bold 21px Arial, Helvetica, sans-serif;
+	color:#cc0000;
+}
+.box h2{
+	font:bold 14px Arial, Helvetica, sans-serif;
+}
+.box h3{
+	font:bold 12px Arial, Helvetica, sans-serif;
+}
+.box h1,.box h2,.box h3{
+	padding: 5px 0;
 }

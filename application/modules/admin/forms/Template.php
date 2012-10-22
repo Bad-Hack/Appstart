@@ -19,7 +19,7 @@ class Admin_Form_Template extends Zend_Form
             'validators' => array(
                 array($notEmpty,true),
             ),
-		'errorMessages' => array('Invalid Email Address')
+		'errorMessages' => array('Invalid Template Name')
 				
         ));
 		
@@ -62,10 +62,11 @@ class Admin_Form_Template extends Zend_Form
     	
     	$mapper = new Admin_Model_Mapper_BusinessType();
     	$models = $mapper->fetchAll();
-    	foreach($models as $businessType) {
-    		$options[$businessType->getBusinessTypeId()] = $businessType->getName();
+    	if($models) {
+	    	foreach($models as $businessType) {
+	    		$options[$businessType->getBusinessTypeId()] = $businessType->getName();
+	    	}
     	}
-    	
     	return $options;
     }
     
@@ -75,10 +76,11 @@ class Admin_Form_Template extends Zend_Form
     	 
     	$mapper = new Admin_Model_Mapper_Module();
     	$models = $mapper->fetchAll();
-    	foreach($models as $module) {
-    		$options[$module->getModuleId()] = $module->getName();
+    	if($models) {
+	    	foreach($models as $module) {
+	    		$options[$module->getModuleId()] = $module->getName();
+	    	}
     	}
-    	 
     	return $options;
     }
 }

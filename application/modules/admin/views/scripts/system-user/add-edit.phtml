@@ -13,7 +13,7 @@
 		<tr>
 	    	<td><?php echo $form->email->renderLabel() ?></td>
 	        <td>
-	        	<?php echo str_replace('"text"' , '"email"',$form->email->renderViewHelper()); ?>
+	        	<?php echo $form->email->renderViewHelper(); ?>
 			</td>
 		</tr>
 	    <tr>
@@ -62,7 +62,7 @@ $(document).ready(function() {
 	            	reference : form,
 	                element : "#form1",
 	                beforeShow : function(){
-		                this.alternateMessage = this.showLoadingMessage("Saving User...");
+		                this.alternateMessage = this.showLoadingMessage("<?php echo $this->translate('Saving User..')?>");
 	                }
 	            });
 	            next();
@@ -75,7 +75,7 @@ $(document).ready(function() {
 					success:function(data){
 						if(!data.error)
 						{
-							promptus.showSuccessMessage("User saved successfully.");
+							promptus.showSuccessMessage("<?php echo $this->translate('User saved successfully.')?>");
 			            	setTimeout(function(){
 			            		promptus.close();
 			            		location.href = "<?php echo $this->url(array("module"=>"admin","controller"=>"system-user","action"=>"index"),null,true); ?>";
@@ -90,7 +90,7 @@ $(document).ready(function() {
 						}
 					},
 					error: function(){
-						promptus.showErrorMessage("Error occured");
+						promptus.showErrorMessage("<?php echo $this->translate('Error occured') ?>");
 						setTimeout(function(){
 							promptus.close();
 							next();

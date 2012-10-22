@@ -6,19 +6,21 @@ class Default_Model_DbTable_UserGroupModule extends Zend_Db_Table_Abstract {
 					'columns' => array (
 							'user_group_id' 
 					),
-					'refTableClass' => 'Default_Model_DbTable_UserGroup',
+					'refTableClass' => 'Default_Model_DbTable_UserGroupModule',
 					'refColumns' => array (
-							'user_group_id' 
+							'module_id' 
 					) 
 			),
-			'Module' => array(
+			'UserGroupModule' => array(
 					'columns' => array (
 							'module_id'
 					),
-					'refTableClass' => 'Admin_Model_DbTable_Module',
+					'refTableClass' => 'Admin_Model_DbTable_CustomerModule',
 					'refColumns' => array (
 							'module_id'
 					)
 			)
 	);
+	
+	
 }

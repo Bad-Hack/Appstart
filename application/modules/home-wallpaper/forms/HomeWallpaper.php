@@ -14,6 +14,25 @@ class HomeWallpaper_Form_HomeWallpaper extends Zend_Form {
 				) 
 		) );
 		$this->addElement ( $home_wallpaper_id);
+				
+		// Home wallpaper Detail ID
+		$home_wallpaper_detail_id = $this->createElement ( "hidden", "home_wallpaper_detail_id", array (
+				'value' => '',
+				'filters' => array (
+						'StringTrim'
+				)
+		) );
+		$this->addElement ( $home_wallpaper_detail_id);
+		
+		// Language ID
+		$language_id = $this->createElement ( "hidden", "language_id", array (
+				'value' => '',
+				'filters' => array (
+						'StringTrim'
+				)
+		) );
+		$this->addElement ( $language_id );
+		
 		
 		// Iamge Title
 		$image_title = $this->createElement ( "text", "image_title", array (
@@ -40,33 +59,41 @@ class HomeWallpaper_Form_HomeWallpaper extends Zend_Form {
 		$image_path_ipad = $this->createElement('file','image_ipad');
 		$image_path_ipad->setLabel('iPad Image :')
 			 ->setDestination(Standard_Functions::getResourcePath(). "home-wallpaper/tmp/images/ipad")
-			 ->addValidator('Size', false, 102400)
-			 ->addValidator('Extension', false, 'jpg,png,gif');
+			 ->addValidator('Size', false, 10485760)
+			 ->addValidator('Extension', false, 'jpeg,jpg,png,gif');
 		$this->addElement($image_path_ipad);
 
 		//image_path_iphone
 		$image_path_iphone = $this->createElement('file','image_iphone');
 		$image_path_iphone->setLabel('iPhone Image :')
 			 ->setDestination(Standard_Functions::getResourcePath(). "home-wallpaper/tmp/images/iphone")
-			 ->addValidator('Size', false, 102400)
-			 ->addValidator('Extension', false, 'jpg,png,gif');
+			 ->addValidator('Size', false, 10485760)
+			 ->addValidator('Extension', false, 'jpeg,jpg,png,gif');
 		$this->addElement($image_path_iphone);
 
 		//image_path_android
 		$image_path_android = $this->createElement('file','image_android');
 		$image_path_android->setLabel('Android Image :')
 			 ->setDestination(Standard_Functions::getResourcePath(). "home-wallpaper/tmp/images/android")
-			 ->addValidator('Size', false, 102400)
-			 ->addValidator('Extension', false, 'jpg,png,gif');
+			 ->addValidator('Size', false, 10485760)
+			 ->addValidator('Extension', false, 'jpeg,jpg,png,gif');
 		$this->addElement($image_path_android);
 
 		//image_path_ipad3
 		$image_path_ipad3 = $this->createElement('file','image_ipad3');
 		$image_path_ipad3->setLabel('iPad3 Image :')
 			 ->setDestination(Standard_Functions::getResourcePath(). "home-wallpaper/tmp/images/ipad3")
-			 ->addValidator('Size', false, 102400)
-			 ->addValidator('Extension', false, 'jpg,png,gif');
+			 ->addValidator('Size', false, 10485760)
+			 ->addValidator('Extension', false, 'jpeg,jpg,png,gif');
 		$this->addElement($image_path_ipad3);
+		
+		//image_path_ios6
+		$image_path_ios6 = $this->createElement('file','image_ios6');
+		$image_path_ios6->setLabel('iOS 6 Image :')
+			->setDestination(Standard_Functions::getResourcePath(). "home-wallpaper/tmp/images/ios6")
+			->addValidator('Size', false, 10485760)
+			->addValidator('Extension', false, 'jpeg,jpg,png,gif');
+		$this->addElement($image_path_ios6);
 		
 		// link_to_module
 		$link_to_module = $this->createElement ( "text", "link_to_module", array (

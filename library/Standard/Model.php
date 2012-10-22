@@ -187,8 +187,9 @@ abstract class Standard_Model {
 	public function delete(){
 		$mapper = new $this->_mapperClass();
 		$primaryKeyName = $this->_getPrimaryKeyName();
-		if($this->get($primaryKeyName)!= "" || $this->get($primaryKeyName)!== null)
+		if($this->get($primaryKeyName)!= "" || $this->get($primaryKeyName)!== null){
 			return $mapper->delete($primaryKeyName." = ".$this->get($primaryKeyName));
+		}
 		else
 			return false;
 	}

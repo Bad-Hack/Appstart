@@ -2,25 +2,25 @@
 <div id="filterBox">
       <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
         <tr>
-          <td valign="middle"><h2 class="filterIcon">Filter</h2></td>
+          <td valign="middle"><h2 class="filterIcon"><?php echo $this->translate('Filter');?></h2></td>
           <td>
           	<table>
               <tr>
-                <td>Customer Name</td>
+                <td><?php echo $this->translate('Customer Name');?></td>
                 <td><input type="text" name="customer_name" class="input" id="txtCustomerName" /></td>
-                <td>Business Type</td>
+                <td><?php echo $this->translate('Edit Template');?></td>
                 <td>
                 	<input type="text" name="bt[name]" class="input" id="txtBusinessTypeId" />
                 </td>
-                <td>Status</td>
+                <td><?php echo $this->translate('Status');?></td>
                 <td>
                 	<select name="c[status]">
-                		<option value="1">Active</option>
-                		<option value="0">InActive</option>
+                		<option value="1"><?php echo $this->translate('Active');?></option>
+                		<option value="0"><?php echo $this->translate('InActive');?></option>
                 	</select>
                 </td>
                 <td>&nbsp;</td>
-                <td><input type="submit" name="button" id="button" class="button" value="Submit">&nbsp;</td>
+                <td><input type="submit" name="button" id="button" class="button" value="<?php echo $this->translate('Submit');?>&nbsp;"></td>
               </tr>
             </table>
           </td>
@@ -31,13 +31,13 @@
 <table style="border-spacing:0;border-collapse:collapse;width:100%" class="pattern-style-b" id="dataGrid">
 	<thead>
 		<tr>
-	        <th scope="col">App Access ID</th>
-		    <th scope="col">Business Type</th>
-		    <th scope="col">Customer User Name</th>
-		    <th scope="col">Customer Name</th>
-		    <th scope="col">Contact Person</th>
-		    <th scope="col">Status</th>
-		    <th scope="col">Action</th>
+	        <th scope="col"><?php echo $this->translate('App Access ID');?></th>
+		    <th scope="col"><?php echo $this->translate('Business Type');?></th>
+		    <th scope="col"><?php echo $this->translate('Customer User Name');?></th>
+		    <th scope="col"><?php echo $this->translate('Customer Name');?></th>
+		    <th scope="col"><?php echo $this->translate('Contact Person');?></th>
+		    <th scope="col"><?php echo $this->translate('Status');?></th>
+		    <th scope="col"><?php echo $this->translate('Action');?></th>
 		</tr>
     </thead> 
 	<tbody>

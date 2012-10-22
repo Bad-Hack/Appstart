@@ -42,6 +42,7 @@ function dataTable(params){
 	
 	var gridObject = {
     	"aoColumns": params.aoColumns,
+    	"oLanguage": {"sUrl": window.dataTableLangUrl},
 		"bPaginate" : params.bPaginate ? params.bPaginate : true,
 		"bDestroy": params.bDestroy ? params.bDestroy : true,	
         "bProcessing": params.bProcessing ? params.bProcessing : false,

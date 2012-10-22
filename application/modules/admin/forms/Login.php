@@ -5,7 +5,7 @@ class Admin_Form_Login extends Zend_Form
 		$this->setMethod('post');
 		$notEmpty = new Zend_Validate_NotEmpty();
 		$notEmpty->setMessage('Enter A Password.');
-		$this->addElement('text', 'email', array(
+		/*$this->addElement('text', 'email', array(
 			'label'      => 'User Email:',
 			'size'		 => '35',
             'required'   => true,
@@ -16,7 +16,19 @@ class Admin_Form_Login extends Zend_Form
             ),
 		'errorMessages' => array('Invalid Email Address')
 				
-        ));
+        ));*/
+		$email = new Standard_Html5_Form_Element_Text_Email("email");
+		$email->setLabel("User Email:");
+		$email->setAttrib("size", 35);
+		$email->setAttrib("required", "required");
+		$email->setFilters(array('StringTrim'));
+		$email->setValidators(array(
+                array($notEmpty,true),
+            	array('EmailAddress',true),
+            ));
+		$email->setErrorMessages(array('Invalid Email Address'));
+		$this->addElement($email);
+		
 		$this->addElement('password', 'password', array(
             'label'      => 'Password:',
 			'size'		 => '35',

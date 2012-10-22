@@ -42,6 +42,10 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 				'column' => array (
 						'id' => array (
 								'actions'
+						),
+						'ignore' => array (
+								'total_customer',
+								'total_template'
 						)
 				)
 		),null,$select);
@@ -68,8 +72,8 @@ class Admin_BusinessTypeController extends Zend_Controller_Action {
 					"action" => "delete",
 					"id" => $row [4] ["business_type_id"]
 			), "default", true );
-			$edit = '<a href="' . $editUrl . '" class="grid_edit" >Edit</a>';
-			$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >Delete</a>';
+			$edit = '<a href="' . $editUrl . '" class="grid_edit" >'.$this->view->translate('Edit').'</a>';
+			$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >'.$this->view->translate('Delete').'</a>';
 			$response ['aaData'] [$rowId] [4] = $edit . "&nbsp;|&nbsp;" . $delete;
 		}
 		echo $this->_helper->json ( $response );

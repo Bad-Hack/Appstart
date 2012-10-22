@@ -4,7 +4,7 @@ class HomeWallpaper_Model_Mapper_HomeWallpaper extends Standard_ModelMapper {
 	
 	public function getNextOrder($customer_id) {
 		$select = $this->getDbTable()->select(false)
-		->from("home_wallpaper",array("max_order" => "max(`order`)"))
+		->from("module_home_wallpaper",array("max_order" => "max(`order`)"))
 		->group("customer_id")
 		->having("customer_id=".$customer_id);
 	

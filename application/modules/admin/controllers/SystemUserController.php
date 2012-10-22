@@ -182,8 +182,8 @@ class Admin_SystemUserController extends Zend_Controller_Action {
 					"id" => $row [2] ["system_user_id"] 
 			), "default", true );
 			
-			$edit = '<a href="' . $editUrl . '" class="grid_edit" >Edit</a>';
-			$delete = ($row [2] ["system_user_id"] == 1) ? '' : '<a href="' . $deleteUrl . '" class="grid_delete" >Delete</a>';
+			$edit = '<a href="' . $editUrl . '" class="grid_edit" >'.$this->view->translate('Edit').'</a>';
+			$delete = ($row [2] ["system_user_id"] == 1) ? '' : '<a href="' . $deleteUrl . '" class="grid_delete" >'.$this->view->translate('Delete').'</a>';
 			$sap = ($edit == "" || $delete == "") ? '' : '&nbsp;|&nbsp;';
 			
 			$response ['aaData'] [$rowId] [2] = $edit . $sap . $delete;

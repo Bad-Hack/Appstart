@@ -16,8 +16,9 @@ class Admin_CustomerController extends Zend_Controller_Action {
 	}
 	public function addAction() {
 		$this->view->heading = "Add Customer";
-		
 		$customerForm = $this->_createCustomerForm ( Admin_Model_Mapper_Customer::$ADD_MODE );
+		
+		$this->view->hasData = true;
 		
 		// Configure the Customer Configuration Form
 		$customerConfigurationForm = new Admin_Form_CustomerConfiguration ();
@@ -25,11 +26,20 @@ class Admin_CustomerController extends Zend_Controller_Action {
 		// Set form for view
 		$this->view->customerForm = $customerForm;
 		$this->view->customerConfigurationForm = $customerConfigurationForm;
+		
+		$mapper = new Admin_Model_Mapper_BusinessType ();
+		$models = $mapper->countAll();
+		$template = new Admin_Model_Mapper_Template();
+		$template = $template->countAll();
+		if($models == 0 || $template == 0) {
+			$this->view->hasData = false;
+		}
 		$this->render ( "add-edit" );
 	}
 	public function editAction() {
 		
 		// Redirect on no customer_id found
+		$this->view->hasData = true;
 		$customer_id = $this->_request->getParam ( "id", "" );
 		if ($customer_id == "") {
 			$this->_redirect ( 'index' );
@@ -54,6 +64,22 @@ class Admin_CustomerController extends Zend_Controller_Action {
 		$this->view->heading = "Edit Customer";
 		
 		$customerForm = $this->_createCustomerForm ( Admin_Model_Mapper_Customer::$EDIT_MODE );
+		
+		// Populate customer langauages
+		$languageMapper = new Admin_Model_Mapper_CustomerLanguage();
+		$languages = $languageMapper->fetchAll("customer_id=".$customer_id);
+		if(is_array($languages)) {
+			$selected = array();
+			$default = "";
+			foreach($languages as $lang) {
+				$selected[] = $lang->getLanguageId();
+				if($lang->getIsDefault()==1) {
+					$default = $lang->getLanguageId();
+				}
+			}
+			$customerForm->getElement ( 'language_id' )->setValue($selected);
+			$customerForm->getElement ( 'default_language_id' )->setValue($default);
+		}
 		
 		// Remove Password Validation and required attribute
 		$password = $customerForm->getElement ( 'password' );
@@ -112,6 +138,13 @@ class Admin_CustomerController extends Zend_Controller_Action {
 			$customermodules = $customermoduleMapper->fetchAll ( "customer_id=" . $id );
 			if(is_array($customermodules)) {
 				foreach ( $customermodules as $module ) {
+					$customermoduledetailMapper = new Admin_Model_Mapper_CustomerModuleDetail();
+					$customermoduledetail = $customermoduledetailMapper->fetchAll("customer_module_id=".$module->getCustomerModuleId());
+					if(is_array($customermoduledetail)) {
+						foreach($customermoduledetail as $detail) {
+							$detail->delete();
+						}
+					}
 					$module->delete ();
 				}
 			}
@@ -122,6 +155,10 @@ class Admin_CustomerController extends Zend_Controller_Action {
 					$config->delete ("customer_id=" . $id);
 				}
 			}
+			// Delete Customer Languages
+			$customerLangMapper = new Admin_Model_Mapper_CustomerLanguage();
+			$deletedRows = $customerLangMapper->delete("customer_id=" . $id);
+			
 			$customerMapper = new Admin_Model_Mapper_Customer();
 			$deletedRows = $customerMapper->delete("customer_id=" . $id);
 			
@@ -325,15 +362,25 @@ class Admin_CustomerController extends Zend_Controller_Action {
 					"action" => "delete",
 					"id" => $row [6] ["customer_id"] 
 			), "default", true );
-			$edit = '<a href="' . $editUrl . '" class="grid_edit" >Edit</a>';
-			$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >Delete</a>';
-			$response ['aaData'] [$rowId] [6] = $edit . "&nbsp;|&nbsp;" . $delete;
+			$viewUrl = $this->view->url ( array (
+					"module" => "default",
+					"controller" => "login",
+					"action" => "admin-login",
+					"customer_id" => $row [6] ["customer_id"]
+			), "default", true );
+			$edit = '<a href="' . $editUrl . '" class="grid_edit" >'.$this->view->translate('Edit').'</a>';
+			$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >'.$this->view->translate('Delete').'</a>';
+			$view = '<a href="' . $viewUrl . '" target="_blank">Dashboard</a>';
+			$response ['aaData'] [$rowId] [6] = $edit . "&nbsp;|&nbsp;" . $delete . "&nbsp;|&nbsp;" .$view;
 		}
 		echo $this->_helper->json ( $response );
 	}
 	private function _createCustomerForm($mode = null) {
 		$mode = $mode == null ? Admin_Model_Mapper_Customer::$ADD_MODE : $mode;
 		$customerForm = new Admin_Form_Customer ();
+		
+		Default_Form_User::$IS_ADMIN_ADD = true;
+		
 		$userForm = new Default_Form_User ();
 		
 		// Add Username

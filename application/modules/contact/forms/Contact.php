@@ -15,6 +15,24 @@ class Contact_Form_Contact extends Zend_Form {
 		) );
 		$this->addElement ( $contact_id);
 		
+		// Contact Detail ID
+		$contact_detail_id = $this->createElement ( "hidden", "contact_detail_id", array (
+				'value' => '',
+				'filters' => array (
+						'StringTrim'
+				)
+		) );
+		$this->addElement ( $contact_detail_id);
+		
+		// Language ID
+		$language_id = $this->createElement ( "hidden", "language_id", array (
+				'value' => '',
+				'filters' => array (
+						'StringTrim'
+				)
+		) );
+		$this->addElement ( $language_id );
+		
 		// Location
 		$location = $this->createElement ( "text", "location", array (
 				'label' => 'Location:',
@@ -89,7 +107,7 @@ class Contact_Form_Contact extends Zend_Form {
 		// Latitude
 		$latitude = $this->createElement ( "text", "latitude", array (
 				'label' => 'Latitude:',
-				'size' => '15',
+				'size' => '20',
 				'filters' => array (
 						'StringTrim'
 				)
@@ -99,27 +117,12 @@ class Contact_Form_Contact extends Zend_Form {
 		// Longitude
 		$longitude = $this->createElement ( "text", "longitude", array (
 				'label' => 'Longitude:',
-				'size' => '15',
+				'size' => '20',
 				'filters' => array (
 						'StringTrim'
 				)
 		) );
 		$this->addElement ( $longitude);
-		/*/ Latitude
-		$latitude = $this->createElement ( "hidden", "latitude", array (
-				'value' => '',
-				'filters' => array (
-						'StringTrim'
-				)
-		) );
-		
-		// Longitude
-		$longitude = $this->createElement ( "hidden", "longitude", array (
-				'value' => '',
-				'filters' => array (
-						'StringTrim'
-				)
-		) );*/
 		
 		// Email 1
 		$email_1 = $this->createElement ( "text", "email_1", array (
@@ -170,17 +173,6 @@ class Contact_Form_Contact extends Zend_Form {
 				)
 		) );
 		$this->addElement ( $timings);
-		
-		/* Order
-		$order = $this->createElement ( "text", "order", array (
-				'label' => 'Order:',
-				'size' => '35',
-				'filters' => array (
-						'StringTrim'
-				)
-		) );
-		$this->addElement ( $order);
-		*/
 		
 		// logo
 		

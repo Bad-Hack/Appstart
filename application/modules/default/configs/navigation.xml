@@ -13,7 +13,8 @@
     		<label>Settings</label>
     		<uri>#</uri>
     		<order>1000</order>
-    		<resource>settings</resource>
+    		<resource>index</resource>
+    		<controller></controller>
     		<pages>
     			<user>
     				<label>User Profile</label>
@@ -22,6 +23,30 @@
 					<action>index</action>
 		            <resource>profile</resource>
     			</user>
+	    		<UserGroup>
+		    		<label>User Groups</label>
+					<module>default</module>			
+					<controller>user-group</controller>
+					<action>index</action>
+		            <order>1000</order>
+		            <resource>user-group</resource>
+		    	</UserGroup>
+		    	<User>
+		    		<label>Users</label>
+					<module>default</module>			
+					<controller>user</controller>
+					<action>index</action>
+		            <order>1001</order>
+		            <resource>user</resource>
+		    	</User>
+		    	<Configuration>
+		    		<label>Configuration</label>
+					<module>default</module>			
+					<controller>configuration</controller>
+					<action>index</action>
+		            <order>1002</order>
+		            <resource>configuration</resource>
+		    	</Configuration>
     		</pages>
     	</Settings>
 	</nav>

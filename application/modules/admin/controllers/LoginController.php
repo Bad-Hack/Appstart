@@ -32,6 +32,7 @@ class Admin_LoginController extends Zend_Controller_Action {
 					// Setting is active Data
 					$identity->role_id = $identity->role;
 					$identity->role = ($identity->role_id == 1) ? "admin" : "user";
+					$identity->active_language_id_admin = 1;
 					
 					$storage = $auth->getStorage ();
 					$storage->write ( $identity );

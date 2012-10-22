@@ -2,19 +2,19 @@
 <div id="filterBox">
       <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
         <tr>
-          <td valign="middle"><h2 class="filterIcon">Filter</h2></td>
+          <td valign="middle"><h2 class="filterIcon"><?php echo $this->translate('Filter'); ?></h2></td>
           <td>
           	<table>
               <tr>
-                <td>Location Name</td>
+                <td><?php echo $this->translate('Location Name'); ?></td>
                 <td><input type="text" class="input" id="txtTemplate" name="location"></td>
-                <td>Address</td>
+                <td><?php echo $this->translate('Address'); ?></td>
                 <td><input type="text" class="input" id="txtEmail" name="address"></td>
-                <td>Status</td>
+                <td><?php echo $this->translate('Status'); ?></td>
                 <td>
                 	<select name="status">
-                		<option value="1">Active</option>
-                		<option value="0">InActive</option>
+                		<option value="1"><?php echo $this->translate('Active'); ?></option>
+                		<option value="0"><?php echo $this->translate('InActive'); ?></option>
                 	</select>
                	</td>
               </tr>
@@ -22,7 +22,7 @@
           </td>
           <td>&nbsp;</td>
           <td align="right">
-          	<input type="submit" name="button" id="button" class="button" value="Submit">
+          	<input type="submit" name="button" id="button" class="button" value="<?php echo $this->translate('Submit')?>">
           </td>
         </tr>
       </table>
@@ -31,17 +31,17 @@
 <table style="border-spacing:0;border-collapse:collapse;width:100%" class="pattern-style-b" id="dataGrid">
 	<thead>
 		<tr>
-	        <th scope="col">Location Name</th>
-		    <th scope="col">Address</th>
-		    <th scope="col">Status</th>
-		    <th scope="col">Order</th>
-		    <th scope="col">Phone 1</th>
-		    <th scope="col">Action</th>
+	        <th scope="col"><?php echo $this->translate('Location Name'); ?></th>
+		    <th scope="col"><?php echo $this->translate('Address'); ?></th>
+		    <th scope="col"><?php echo $this->translate('Status'); ?></th>
+		    <th scope="col"><?php echo $this->translate('Order'); ?></th>
+		    <th scope="col"><?php echo $this->translate('Phone 1'); ?></th>
+		    <th scope="col" class="action"><?php echo $this->translate('Action'); ?></th>
 		</tr>
     </thead> 
 	<tbody>
 		<tr>
-			<td colspan="3" class="dataTables_empty">Loading data from server</td>
+			<td colspan="3" class="dataTables_empty"><?php echo $this->translate('Loading data from server'); ?></td>
 		</tr>
 	</tbody>      
 </table>
@@ -51,13 +51,13 @@ var grid ="";
 $(document).ready(function() {
 
 	grid = dataTable({
-		aaSorting: [[ 0, "desc" ]],
+		aaSorting: [[ 3, "asc" ]],
 		"aoColumns": [
-						{ "sName": "location" },
-						{ "sName": "address" },
-						{ "sName": "status" },
-						{ "sName": "order" },
-						{ "sName": "phone_1" },
+						{ "sName": "cd.location" },
+						{ "sName": "cd.address" },
+						{ "sName": "c.status" },
+						{ "sName": "c.order" },
+						{ "sName": "cd.phone_1" },
 						{ "sName": "actions","bSortable": false}
 					 ],
 		id : $('#dataGrid'),
@@ -76,12 +76,12 @@ $(document).ready(function() {
         	var promptus = new prompt({
                     	reference : self,
                         element : ".dataTables_wrapper",
-                        message : "Are you sure you want to delete this Contact?",
+                        message : "<?php echo $this->translate('Are you sure you want to delete this Contact?'); ?>",
                         buttons : {
                             "Yes" : function(self){
                                 var prompt = this;
                                 $(document).queue(function(next){
-                                    prompt.showLoadingMessage("Please wait while deleting contact..");
+                                    prompt.showLoadingMessage("<?php echo $this->translate('Please wait while deleting contact..'); ?>");
                                     next();
                                 }).queue(function(next){
                                     $.ajax({
@@ -91,13 +91,13 @@ $(document).ready(function() {
                                         dataType: "json",
                                         success: function(json){
                                             if(json.success != undefined){ 
-                                            	prompt.showSuccessMessage("Contact deleted successfully.");
+                                            	prompt.showSuccessMessage("<?php echo $this->translate('Contact deleted successfully.'); ?>");
                                             	setTimeout(function(){
                                             		prompt.close();
                                                 	grid.fnDraw();
                                                 }, 1000);
                                             } else if(json.errors != undefined){
-                                                var errorMessage = "Unable to delete contact:<br />";
+                                                var errorMessage = "<?php echo $this->translate('Unable to delete contact:'); ?><br />";
                                                 errorMessage += json.errors.message;
                                             	prompt.showErrorMessage(errorMessage);
                                             	setTimeout(function(){

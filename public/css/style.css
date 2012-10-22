@@ -510,6 +510,9 @@ a.grid_edit:hover{background-image: url("../images/grid_edit.png");}
 a.grid_delete{padding-left:30px;background-image: url("../images/grid_delete_gray.png");background-position: left center;background-repeat: no-repeat;margin-left:10px;}
 a.grid_delete:hover{background-image: url("../images/grid_delete.png");}
 
+a.grid_publish{padding:3px 30px 3px;background-image: url("../images/publish-open.png");background-position: left center;background-repeat: no-repeat;margin-left:10px;}
+a.grid_publish:hover{background-image: url("../images/publish.png");}
+
 #addlink {
 	float: right;
 }
@@ -518,7 +521,7 @@ a.grid_delete:hover{background-image: url("../images/grid_delete.png");}
     display: block;
     float: left;
     font-size: 11px;
-    margin-left: -13px;
+    margin-left: -1px;
     padding: 2px 20px 3px 17px;
     position: relative;
     text-decoration: none;
@@ -546,6 +549,7 @@ div.customer_submit{width:100%;text-align: center;margin-top:10px;}
 .tableFormtopBottom tr td { padding:5px 0px 5px 0px;}
 
 #business_type_id{min-width: 270px;}
+#language_id{min-width: 325px; height:200px;}
 #modules{  height:200px; width:460px;}
 
 .ui-multiselect li {float:none !important;}
@@ -693,4 +697,74 @@ div.customer_submit{width:100%;text-align: center;margin-top:10px;}
 }
 * html #menu-bar {
   height: 1%;
+}
+
+/* Language Selection Menu */
+#language{
+	border:solid 1px #dcdde2;
+	/*background-color:#f2f4f8;*/
+	background-color:#fff;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding:1px 5px;
+	margin: 3px 0 0;
+	font: 12px/1.5 Arial,Geneva,sans-serif;
+}
+#language .language-item {
+	display:none;
+	color:#909090;
+}
+#language .language-item a {
+	padding: 0;
+}
+#language .language-item a img {
+	padding:0 5px 0 0;
+}
+#language:hover .language-item {
+	display: block;
+}
+#language .active {
+	display:block;
+	color: #01A0BF;
+	padding-right: 15px;
+	background-image: url("../images/down-arrow.png");
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+a.edit-flag{padding-left:0;width:5px;background-image: none;margin-right:10px;display:none;}
+a.edit-flag:hover{background-image: none; display: block;}
+
+/*Edit in different languages*/
+
+#editLanguage{
+	display: block;
+	width: 72px;
+	height: 26px;
+	float:left;
+	background-image: url("../images/lang/default.png");
+	background-repeat: no-repeat;
+	background-position: top;
+}
+#editLanguage .flag-list{
+	display:none;
+	background-color: #f4edb1 !important;
+	margin-top: 0px;
+	width: 66px;
+	position: absolute;
+	margin-left: 2px;
+	border: 1px solid #ede4b3;
+}
+#editLanguage:hover .flag-list{
+	display: block;
+}
+#editLanguage .flag-list a{
+	float:left;
+	display: inline-block;
+	display: inline;
+	padding: 0 2px 0 3px;
+}
+#dataGrid .action {
+	width: 150px !important;
 }

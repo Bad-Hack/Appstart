@@ -14,14 +14,15 @@ class Default_Plugin_Authentication extends Zend_Controller_Plugin_Abstract {
 		$action = $request->getActionName ();
 		if (strtolower ( $request->getModuleName () ) != "admin") {
 			
-			if($resource != "error") {
+			if($resource != "error" && $action!="admin-login" && $resource!="rest") {
 				if (! $this->_auth->hasIdentity () && $resource != "forgot" && $action != "check-login" ) {
 					$request->setModuleName("default")->setControllerName ( 'login' )->setActionName ( 'index' );
 				} else if ((! isset ( $this->_auth->getStorage ()->read ()->group_id ) || $this->_auth->getStorage ()->read ()->group_id == 0) && $resource != "forgot" && $action != "check-login") {
 					$request->setModuleName("default")->setControllerName ( 'login' )->setActionName ( 'index' );
 				}
 				
-				if ($this->_auth->hasIdentity () && $this->_auth->getStorage ()->read ()->group_id != "guest") {
+				if ($this->_auth->hasIdentity () && $this->_acl->hasRole($this->_auth->getStorage ()->read ()->group_id) && $this->_auth->getStorage ()->read ()->group_id != "guest") {
+					$this->_initLocale();
 					if($request->getModuleName ()== "default" && 
 							$this->_acl->hasRole($this->_auth->getStorage ()->read ()->group_id) && 
 							$this->_acl->has($resource) &&
@@ -36,7 +37,7 @@ class Default_Plugin_Authentication extends Zend_Controller_Plugin_Abstract {
 						$this->_initNavigation();
 					}
 					else {
-						$request->setModuleName("default")->setControllerName ( 'login' )->setActionName ( 'logout' );
+						//$request->setModuleName("default")->setControllerName ( 'login' )->setActionName ( 'logout' );
 					}
 				} else {
 					$request->setModuleName("default")->setControllerName ( 'login' )->setActionName ( 'index' );
@@ -61,5 +62,22 @@ class Default_Plugin_Authentication extends Zend_Controller_Plugin_Abstract {
 		//die;
 		$navigation = new Zend_Navigation ( $config );
 		$view->navigation ( $navigation )->setAcl ( $this->_acl )->setRole ( $this->_auth->getStorage ()->read ()->group_id );
+	}
+	private function _initLocale() {
+		$localeValue = 'en';
+		
+		$lang = Standard_Functions::getActiveLanguage();
+		if($lang) {
+			$localeValue = $lang->getLang();
+		}
+		
+		$locale = new Zend_Locale($localeValue);
+		Zend_Registry::set('Zend_Locale', $locale);
+		
+		$translate = Zend_Registry::get("app_translate");
+		$translate->getAdapter()->setLocale($localeValue);
+		
+		Zend_Registry::set('Zend_Translate', $translate);
+		Zend_Registry::set("app_translate", $translate);
 	}
 }

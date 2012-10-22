@@ -11,12 +11,15 @@
       <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
         <tr>
           <td valign="middle"><?php echo $this->partial($this->partial,array()); ?></td>
+          <td align="right"><h2><?php echo $this->language; ?></h2></td>
         </tr>
       </table>
 </div>
 <div class="boxBorderBottom">
 <form id="frmAddEditHomeWallpaper" method="<?php echo $form->getMethod();?>" action="<?php echo $form->getAction();?>" class="zend_form">
-	<?php echo $form->home_wallpaper_id->renderViewHelper()?>
+	<?php echo $form->home_wallpaper_id->renderViewHelper();?>
+	<?php echo $form->language_id->renderViewHelper();?>
+	<?php echo $form->home_wallpaper_detail_id->renderViewHelper();?>
 	<table style="margin:10px 0; width:100%;">
 		<tbody>
 			<tr>
@@ -26,36 +29,52 @@
 				</td>
 			</tr>
 			<tr>
-		    	<td><label for="image_ipad">iPad Image</label> </td>
+		    	<td><label for="image_ipad"><?php echo $this->translate('iPad Image'); ?></label> </td>
 		        <td>
 		        	<input id="image_ipad" type="file" name="image_ipad" />
 		        	<input id="image_ipad_path" type="hidden" name="image_ipad_path" />
+		        	<img alt="" src="<?php echo $this->image_ipad_path;?>">
 				</td>
 			</tr>
 
 			<tr>
-		    	<td><label for="image_iphone">iPhone Image</label> </td>
+		    	<td><label for="image_iphone"><?php echo $this->translate('iPhone Image'); ?></label> </td>
 		        <td>
 		        	<input id="image_iphone" type="file" name="image_iphone" />
 		        	<input id="image_iphone_path" type="hidden" name="image_iphone_path" />
+		        	<img alt="" src="<?php echo $this->image_iphone_path;?>">		       
 				</td>
 			</tr>
 
 			<tr>
-		    	<td><label for="image_android">Android Image</label> </td>
+		    	<td><label for="image_android"><?php echo $this->translate('Android Image'); ?></label> </td>
 		        <td>
 		        	<input id="image_android" type="file" name="image_android" />
 		        	<input id="image_android_path" type="hidden" name="image_android_path" />
+					<img alt="" src="<?php echo $this->image_android_path;?>">
 				</td>
 			</tr>
 
 			<tr>
-		    	<td><label for="image_ipad3">iPad3 Image</label> </td>
+		    	<td><label for="image_ipad3"><?php echo $this->translate('iPad3 Image'); ?></label> </td>
 		        <td>
 		        	<input id="image_ipad3" type="file" name="image_ipad3" />
 		        	<input id="image_ipad3_path" type="hidden" name="image_ipad3_path" />
+		        	<img alt="" src="<?php echo $this->image_ipad3_path;?>">
+		        	
 				</td>
 			</tr>
+			
+			<tr>
+		    	<td><label for="image_ios6"><?php echo $this->translate('iOS6 Image'); ?></label> </td>
+		        <td>
+		        	<input id="image_ios6" type="file" name="image_ios6" />
+		        	<input id="image_ios6_path" type="hidden" name="image_ios6_path" />
+		        	<img alt="" src="<?php echo $this->image_ios6_path;?>">
+		        	
+				</td>
+			</tr>
+			
 			<tr>
 		    	<td><?php echo $form->link_to_module->renderLabel() ?></td>
 		        <td>
@@ -91,7 +110,7 @@ $(document).ready(function() {
 	            	reference : form,
 	                element : "#content",
 	                beforeShow : function(){
-		                this.alternateMessage = this.showLoadingMessage("Saving Wallpaper...");
+		                this.alternateMessage = this.showLoadingMessage("<?php echo $this->translate('Saving Wallpaper...'); ?>");
 	                }
 	            });
 	            next();
@@ -115,14 +134,14 @@ $(document).ready(function() {
 							},
 							complete: function(){
 								count++;
-								if(count==4){
+								if(count==5){
 									next();
 								}
 							}
 						});
 					} else {
 						count++;
-						if(count==4){
+						if(count==5){
 							next();
 						}
 					}
@@ -138,7 +157,7 @@ $(document).ready(function() {
 							form.data("validator").invalidate(json["errors"]);
 							next();
 						} else if(json["success"] != undefined){
-							promptus.showSuccessMessage("Home Wallpaper saved successfully.");
+							promptus.showSuccessMessage("<?php echo $this->translate('Home Wallpaper saved successfully.'); ?>");
 							setTimeout(function(){
 								location.href = "<?php echo $this->url(array("module"=>"home-wallpaper","controller"=>"index","action" => "index"),"default",true);?>";
 							}, 2000);

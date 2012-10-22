@@ -92,6 +92,30 @@ class Admin_Form_Customer extends Zend_Form {
 		$business_type_id->setAttrib ( "required", "required" );
 		$this->addElement ( $business_type_id );
 		
+		// Customer Languages
+		
+		$this->addElement('multiselect','language_id',array(
+				'label'		 => 'Languages:',
+				'MultiOptions' => $this->_getLanguages(),
+				'validators'	=>	array(
+						'NotEmpty'
+				),
+				'Required'	=>	true
+		));
+		
+		// Customer Default Language ID
+		$default_language_id = $this->createElement ( 'select', 'default_language_id', array (
+				'label' => 'Default language:',
+				'MultiOptions' => $this->_getDefaultLanguages(),
+				'validators' => array (
+						'NotEmpty'
+				),
+				'Required' => true
+		) );
+		$default_language_id->setAttrib ( "required", "required" );
+		$default_language_id->setRegisterInArrayValidator(false);
+		$this->addElement ( $default_language_id );
+		
 		// Address
 		$address = $this->createElement ( "textarea", "address", array (
 				'label' => 'Address:',
@@ -111,6 +135,16 @@ class Admin_Form_Customer extends Zend_Form {
 				) 
 		) );
 		$this->addElement ( $country );
+		
+		// PLZ
+		$plz = $this->createElement ( "text", "plz", array (
+				'label' => 'PLZ:',
+				'size' => '30',
+				'filters' => array (
+						'StringTrim'
+				)
+		) );
+		$this->addElement ( $plz );
 		
 		// City
 		$city = $this->createElement ( "text", "city", array (
@@ -133,7 +167,7 @@ class Admin_Form_Customer extends Zend_Form {
 		$this->addElement ( $contact_person_name );
 		
 		// Contact Person Email
-		$contact_person_email = $this->createElement ( "text", "contact_person_email", array (
+		/*$contact_person_email = $this->createElement ( "text", "contact_person_email", array (
 				'label' => 'Contact Person Email:',
 				'size' => '60',
 				'filters' => array (
@@ -141,6 +175,13 @@ class Admin_Form_Customer extends Zend_Form {
 				) 
 		) );
 		$this->addElement ( $contact_person_email );
+		*/
+		
+		$contact_person_email = new Standard_Html5_Form_Element_Text_Email("contact_person_email");
+		$contact_person_email->setLabel("Contact Person Email:");
+		$contact_person_email->setAttrib("size", 60);
+		$contact_person_email->setFilters(array('StringTrim'));
+		$this->addElement($contact_person_email);
 		
 		// Contact Person Phone
 		$contact_person_phone = $this->createElement ( "text", "contact_person_phone", array (
@@ -198,8 +239,12 @@ class Admin_Form_Customer extends Zend_Form {
 		
 		$mapper = new Admin_Model_Mapper_BusinessType ();
 		$models = $mapper->fetchAll ();
-		foreach ( $models as $businessType ) {
-			$options [$businessType->getBusinessTypeId ()] = $businessType->getName ();
+		if($models){
+			foreach ( $models as $businessType ) {
+				$options [$businessType->getBusinessTypeId ()] = $businessType->getName ();
+			}
+		} else {
+			$options = array();
 		}
 		
 		return $options;
@@ -215,10 +260,53 @@ class Admin_Form_Customer extends Zend_Form {
 		$templateQuote = $mapper->getDbTable()->getAdapter()->quoteInto('status = ?', 1);
 		
 		$models = $mapper->fetchAll ($templateQuote);
-		foreach ( $models as $template ) {
-			$options [$template->getTemplateId ()] = $template->getName ();
+		if($models){
+			foreach ( $models as $template ) {
+				$options [$template->getTemplateId ()] = $template->getName ();
+			}
+		} else{
+			$options = array();
 		}
 		
+		return $options;
+	}
+	public function _getLanguages() {
+		$options = array();
+		$mapper = new Admin_Model_Mapper_Language();
+		$model = $mapper->fetchAll();
+		
+		if($model) {
+			foreach($model as $lang) {
+				$options [$lang->getLanguageId ()] = $lang->getTitle();
+			}
+		}
+		
+		return $options;
+	}
+	public function _getDefaultLanguages() {
+		$options = array();
+		$request = Zend_Controller_Front::getInstance()->getRequest();
+		if($request->getParam("id",null)!=null) {
+			$mapper = new Admin_Model_Mapper_CustomerLanguage();
+			
+			$select = $mapper->getDbTable ()->
+								select ( false )->
+								setIntegrityCheck ( false )->
+								from ( array ("l" => "language"), array (
+										"l.language_id" => "language_id",
+										"l.title" => "title") )->
+								joinLeft ( array ("cl" => "customer_language"), "l.language_id = cl.language_id",
+										array ("cl.customer_id") )->
+								where("cl.customer_id=".$request->getParam("id",null));
+			
+			$model = $mapper->getDbTable ()->fetchAll($select)->toArray();
+			
+			if($model) {
+				foreach($model as $lang) {
+					$options [$lang["l.language_id"]] = $lang["l.title"];
+				}
+			}
+		}
 		return $options;
 	}
 }

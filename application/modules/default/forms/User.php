@@ -1,10 +1,11 @@
 <?php
 class Default_Form_User extends Zend_Form {
+	public static $IS_ADMIN_ADD = false;
 	public function init() {
 		$this->setMethod ( 'POST' );
 		
 		$notEmptyValidator = new Zend_Validate_NotEmpty ();
-		$notEmptyValidator->setMessage ( 'Enter Enter Valid Value For The Field.' );
+		$notEmptyValidator->setMessage ( 'Enter Valid Value For The Field.' );
 		
 		// User ID
 		$user_id = $this->createElement ( "hidden", "user_id", array (
@@ -13,7 +14,7 @@ class Default_Form_User extends Zend_Form {
 						'StringTrim' 
 				) 
 		) );
-		
+		$this->addElement($user_id);
 		// Username
 		// Check with front_controller
 		$request = Zend_Controller_Front::getInstance()->getRequest();
@@ -96,14 +97,22 @@ class Default_Form_User extends Zend_Form {
 		$this->addElement ( $phone );
 		
 		// Email
-		$email = $this->createElement ( "text", "email", array (
+		/*$email = $this->createElement ( "text", "email", array (
 				'label' => 'Email:',
 				'size' => '60',
 				'filters' => array (
 						'StringTrim' 
 				) 
 		) );
-		$this->addElement ( $email );
+		$this->addElement ( $email );*/
+		
+		$email = new Standard_Html5_Form_Element_Text_Email("email");
+		$email->setLabel("User Email:");
+		$email->setAttrib("size", 35);
+		$email->setFilters(array('StringTrim'));
+		$email->setValidators(array(array('EmailAddress',true)));
+		$email->setErrorMessages(array('Invalid Email Address'));
+		$this->addElement($email);
 		
 		// Status
 		$status = $this->createElement ( 'select', 'status', array (
@@ -120,14 +129,16 @@ class Default_Form_User extends Zend_Form {
 		$this->addElement ( $status );
 		
 		// User Group ID
-		$this->addElement ( 'multiselect', 'user_group_id', array (
+		$user_group_id = $this->createElement ( 'select', 'user_group_id', array (
 				'label' => 'User Group:',
 				'MultiOptions' => $this->_getUserGroups (),
 				'validators' => array (
 						'NotEmpty' 
 				),
-				'Required' => true 
+				'required' => true 
 		) );
+		$user_group_id->setAttrib("required", "requried");
+		$this->addElement($user_group_id);
 		
 		// Submit Button
 		$submit = $this->createElement ( 'submit', 'submit', array (
@@ -145,9 +156,13 @@ class Default_Form_User extends Zend_Form {
 		$options = array (
 				"" => 'Select User Groups' 
 		);
-		
+		if(!self::$IS_ADMIN_ADD){
+			$where = "created_by = " . Standard_Functions::getCurrentUser()->user_id . " AND name <> 'Administrator'";
+		} else {
+			$where = null;
+		}
 		$mapper = new Default_Model_Mapper_UserGroup ();
-		$models = $mapper->fetchAll ();
+		$models = $mapper->fetchAll ($where);
 		if ($models) {
 			foreach ( $models as $userGroup ) {
 				$options [$userGroup->getUserGroupId ()] = $userGroup->getName ();

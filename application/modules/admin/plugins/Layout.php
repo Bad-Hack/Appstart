@@ -25,7 +25,7 @@ class Admin_Plugin_Layout extends Zend_Controller_Plugin_Abstract {
     }*/
    
     public function preDispatch(Zend_Controller_Request_Abstract $request) {
-    	if($request->getControllerName() == "login" || $request->getControllerName() == "forgot")
+    	if($request->getControllerName() == "login" || $request->getControllerName() == "forgot" || $request->getControllerName() == "error")
         {
         	$layout = Zend_Layout::getMvcInstance();
             $layout->setLayoutPath(APPLICATION_PATH . "/layouts/scripts/");

@@ -2,18 +2,18 @@
 <div id="filterBox">
       <table style="width:100%;border:0;border-spacing:0;border-collapse:collapse;">
         <tr>
-          <td valign="middle"><h2 class="filterIcon">Filter</h2></td>
+          <td valign="middle"><h2 class="filterIcon"><?php echo $this->translate('Filter');?></h2></td>
           <td>
           	<table>
               <tr>
-                <td>Template Name</td>
+                <td><?php echo $this->translate('Template Name');?></td>
                 <td><input type="text" name="t_name" class="input" id="txtTemplate" name="template"></td>
-                <td>Business Type</td>
+                <td><?php echo $this->translate('Business Type');?></td>
                 <td><input type="text" name="bt[name]" class="input" id="txtEmail" name="email"></td>
-                <td>Status</td>
+                <td><?php echo $this->translate('Status');?></td>
                 <td><input type="text" name="t_status" class="input " style="width:100px;" id="txtRole" name="role"></td>
                 <td>&nbsp;</td>
-                <td><input type="submit" name="button" id="button" class="button" value="Submit">&nbsp;</td>
+                <td><input type="submit" name="button" id="button" class="button" value="<?php echo $this->translate('Submit');?>">&nbsp;</td>
               </tr>
             </table>
           </td>
@@ -25,17 +25,17 @@
 <table style="border-spacing:0;border-collapse:collapse;width:100%" class="pattern-style-b" id="dataGrid">
 	<thead>
 		<tr>
-	        <th scope="col">Template</th>
-		    <th scope="col">Business Type</th>
-		    <th scope="col">Status</th>
-		    <th scope="col">Total Modules</th>
-		    <th scope="col">Last Updated</th>
-		    <th scope="col">Action</th>
+	        <th scope="col"><?php echo $this->translate('Template');?></th>
+		    <th scope="col"><?php echo $this->translate('Business Type');?></th>
+		    <th scope="col"><?php echo $this->translate('Status');?></th>
+		    <th scope="col"><?php echo $this->translate('Total Modules');?></th>
+		    <th scope="col"><?php echo $this->translate('Last Updated');?></th>
+		    <th scope="col"><?php echo $this->translate('Action');?></th>
 		</tr>
     </thead> 
 	<tbody>
 		<tr>
-			<td colspan="3" class="dataTables_empty">Loading data from server</td>
+			<td colspan="3" class="dataTables_empty"><?php echo $this->translate('Loading data from server');?></td>
 		</tr>
 	</tbody>      
 </table>
@@ -98,12 +98,12 @@ $(document).ready(function() {
         	var promptus = new prompt({
                     	reference : self,
                         element : ".dataTables_wrapper",
-                        message : "Are you sure you want to delete this Template?",
+                        message : "<?php echo $this->translate('Are you sure you want to delete this Template?');?>",
                         buttons : {
                             "Yes" : function(self){
                                 var prompt = this;
                                 $(document).queue(function(next){
-                                    prompt.showLoadingMessage("Please wait while deleting template..");
+                                    prompt.showLoadingMessage("<?php echo $this->translate('Please wait while deleting template..');?>");
                                     next();
                                 }).queue(function(next){
                                     $.ajax({
@@ -113,13 +113,13 @@ $(document).ready(function() {
                                         dataType: "json",
                                         success: function(json){
                                             if(json.success != undefined){ 
-                                            	prompt.showSuccessMessage("Template deleted successfully.");
+                                            	prompt.showSuccessMessage("<?php echo $this->translate('Template deleted successfully.');?>");
                                             	setTimeout(function(){
                                             		prompt.close();
                                                 	grid.fnDraw();
                                                 }, 1000);
                                             } else if(json.errors != undefined){
-                                                var errorMessage = "Unable to delete template:<br />";
+                                                var errorMessage = "<?php echo $this->translate('Action');?>Unable to delete template:<br />";
                                                 errorMessage += json.errors.message;
                                             	prompt.showErrorMessage(errorMessage);
                                             	setTimeout(function(){

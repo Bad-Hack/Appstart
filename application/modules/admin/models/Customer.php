@@ -7,6 +7,7 @@ class Admin_Model_Customer extends Standard_Model {
 	private $_business_type_id;
 	private $_address;
 	private $_country;
+	private $_plz;
 	private $_city;
 	private $_contact_person_name;
 	private $_contact_person_email;

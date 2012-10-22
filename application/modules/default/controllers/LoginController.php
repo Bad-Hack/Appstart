@@ -43,6 +43,16 @@ class Default_LoginController extends Zend_Controller_Action {
 							$identity->customer_id = 0;
 						}
 						$identity->group_id = $identity->user_group_id;
+						
+						$languageMapper = new Admin_Model_Mapper_CustomerLanguage();
+						$language = $languageMapper->fetchAll("customer_id = ".$group->getCustomerId()." AND is_default=1");
+						if(is_array($language)) {
+							$identity->default_language_id = $language[0]->getLanguageId();
+							$identity->active_language_id = $language[0]->getLanguageId();
+						} else {
+							$identity->default_language_id = 1;
+							$identity->active_language_id = 1;
+						}
 						$storage = $auth->getStorage ();
 						$storage->write ( $identity );
 						
@@ -58,6 +68,7 @@ class Default_LoginController extends Zend_Controller_Action {
 							setcookie ( "username", "", time () + ((24 * 3600) * 7) );
 							setcookie ( "password", "", time () + ((24 * 3600) * 7) );
 						}
+						//$this->setLocale($identity->active_language_id);
 						$this->_redirect ( '/' );
 						return;
 					} else {
@@ -99,11 +110,68 @@ class Default_LoginController extends Zend_Controller_Action {
 		}
 		$this->view->form = $form;
 	}
+	public function adminLoginAction() {
+		$authAdapter = Zend_Auth::getInstance ();
+		if($authAdapter->hasIdentity() && 
+				isset($authAdapter->getStorage ()->read ()->role) && 
+				$authAdapter->getStorage ()->read ()->role != "guest"){
+			$customer_id = $this->_request->getParam ( "customer_id", "" );
+			if($customer_id!="") {
+				$customerMapper = new Admin_Model_Mapper_Customer();
+				$customer = $customerMapper->find($customer_id);
+				if($customer)
+				{
+					$userMapper = new Default_Model_Mapper_User();
+					$user = $userMapper->find($customer->getUserId());
+					
+					$auth = Zend_Auth::getInstance ();
+					$identity = $auth->getIdentity();
+					$identity->user_id = $user->getUserId();
+					$identity->username = $user->getUsername();
+					$identity->name = $user->getName();
+					$identity->group_id = $identity->user_group_id = $user->getUserGroupId();
+					$identity->customer_id = $customer->getCustomerId();
+					
+					$languageMapper = new Admin_Model_Mapper_CustomerLanguage();
+					$language = $languageMapper->fetchAll("customer_id = ".$customer->getCustomerId()." AND is_default=1");
+					if(is_array($language)) {
+						$identity->default_language_id = $language[0]->getLanguageId();
+						$identity->active_language_id = $language[0]->getLanguageId();
+					} else {
+						$identity->default_language_id = 1;
+						$identity->active_language_id = 1;
+					}
+					
+					$storage = $auth->getStorage ();
+					$storage->write ( $identity );
+				}
+			}
+		}
+		//$this->setLocale($identity->active_language_id);
+		$this->_redirect ( '/' );
+	}
 	public function logoutAction() {
 		$authAdapter = Zend_Auth::getInstance ();
-		$identity = $authAdapter->getIdentity ();
-		$authAdapter->clearIdentity ();
-		$this->_redirect ( '/' );
+		if($authAdapter->hasIdentity() &&
+			isset($authAdapter->getStorage ()->read ()->role) &&
+			$authAdapter->getStorage ()->read ()->role != "guest") {
+				$identity = $authAdapter->getIdentity ();
+				unset($identity->user_id);
+				unset($identity->username);
+				unset($identity->name);
+				$identity->group_id=0;
+				unset($identity->user_group_id);
+				unset($identity->customer_id);
+				unset($identity->default_language_id);
+				unset($identity->active_language_id);
+				$storage = $authAdapter->getStorage ();
+				$storage->write ( $identity );
+				$this->_redirect ( '/' );
+		} else {
+			$identity = $authAdapter->getIdentity ();
+			$authAdapter->clearIdentity ();
+			$this->_redirect ( '/' );
+		}
 	}
 }
 

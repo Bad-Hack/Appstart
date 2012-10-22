@@ -4,8 +4,8 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 ?>
 <div id="customer-tabs">
 	<ul>
-		<li><a href="#customer-information">Customer Information</a></li>
-		<li><a href="#customer-configuration">Customer Configuration</a></li>
+		<li><a href="#customer-information"><?php echo $this->translate('Customer Information');?></a></li>
+		<li><a href="#customer-configuration"><?php echo $this->translate('Customer Configuration');?></a></li>
 	</ul>
 	<div id="customer-information">
 		<form action="<?php echo $customerForm->getAction(); ?>"
@@ -13,38 +13,29 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 			id="frmAddEditCustomer" class="zend_form">
 			<?php echo $customerForm->customer_id->renderViewHelper()?>
 			<?php echo $customerForm->user_id->renderViewHelper()?>
-			<table>
+			<table style="width:100%">
 				<tbody>
 					<tr>
 						<td><?php echo $customerForm->app_access_id->renderLabel() ?></td>
 						<td><?php echo $customerForm->app_access_id->renderViewHelper()?></td>
-					</tr>
-					<tr>
 						<td><?php echo $customerForm->customer_name->renderLabel() ?></td>
 						<td><?php echo $customerForm->customer_name->renderViewHelper()?></td>
 					</tr>
 					<tr>
 						<td><?php echo $customerForm->username->renderLabel() ?></td>
 						<td><?php echo $customerForm->username->renderViewHelper()?></td>
-					</tr>
-					<tr>
-						<td><?php echo $customerForm->password->renderLabel() ?></td>
-						<td><?php echo $customerForm->password->renderViewHelper()?></td>
-					</tr>
-					<tr>
 						<td><?php echo $customerForm->phone->renderLabel() ?></td>
 						<td><?php echo $customerForm->phone->renderViewHelper()?></td>
 					</tr>
 					<tr>
+						<td><?php echo $customerForm->password->renderLabel() ?></td>
+						<td><?php echo $customerForm->password->renderViewHelper()?></td>
 						<td><?php echo $customerForm->email->renderLabel() ?></td>
 						<td><?php echo $customerForm->email->renderViewHelper()?></td>
 					</tr>
 					<tr>
-						<td><?php echo $customerForm->business_type_id->renderLabel() ?></td>
-						<td><?php echo $customerForm->business_type_id->renderViewHelper()?></td>
-					</tr>
-
-					<tr>
+						<td rowspan="3"><?php echo $customerForm->language_id->renderLabel() ?></td>
+						<td rowspan="3"><?php echo $customerForm->language_id->renderViewHelper()?></td>
 						<td><?php echo $customerForm->address->renderLabel() ?></td>
 						<td><?php echo $customerForm->address->renderViewHelper()?></td>
 					</tr>
@@ -53,28 +44,32 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 						<td><?php echo $customerForm->country->renderViewHelper()?></td>
 					</tr>
 					<tr>
+						<td><?php echo $customerForm->plz->renderLabel() ?></td>
+						<td><?php echo $customerForm->plz->renderViewHelper()?></td>
+					</tr>
+					<tr>
+						<td><?php echo $customerForm->default_language_id->renderLabel() ?></td>
+						<td><?php echo $customerForm->default_language_id->renderViewHelper()?></td>
 						<td><?php echo $customerForm->city->renderLabel() ?></td>
 						<td><?php echo $customerForm->city->renderViewHelper()?></td>
 					</tr>
 					<tr>
+						<td><?php echo $customerForm->business_type_id->renderLabel() ?></td>
+						<td><?php echo $customerForm->business_type_id->renderViewHelper()?></td>
 						<td><?php echo $customerForm->contact_person_name->renderLabel() ?></td>
 						<td><?php echo $customerForm->contact_person_name->renderViewHelper()?></td>
 					</tr>
 					<tr>
+						<td><?php echo $customerForm->template_id->renderLabel() ?></td>
+						<td><?php echo $customerForm->template_id->renderViewHelper()?></td>
 						<td><?php echo $customerForm->contact_person_email->renderLabel() ?></td>
 						<td><?php echo $customerForm->contact_person_email->renderViewHelper()?></td>
 					</tr>
 					<tr>
-						<td><?php echo $customerForm->contact_person_phone->renderLabel() ?></td>
-						<td><?php echo $customerForm->contact_person_phone->renderViewHelper()?></td>
-					</tr>
-					<tr>
 						<td><?php echo $customerForm->status->renderLabel() ?></td>
 						<td><?php echo $customerForm->status->renderViewHelper()?></td>
-					</tr>
-					<tr>
-						<td><?php echo $customerForm->template_id->renderLabel() ?></td>
-						<td><?php echo $customerForm->template_id->renderViewHelper()?></td>
+						<td><?php echo $customerForm->contact_person_phone->renderLabel() ?></td>
+						<td><?php echo $customerForm->contact_person_phone->renderViewHelper()?></td>
 					</tr>
 				</tbody>
 			</table>
@@ -115,6 +110,34 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 </div>
 <script type="text/javascript">
 	$(document).ready(function(){
+		<?php
+			if(!$this->hasData) {
+		?>
+			promptus = new prompt({
+				element : $("#content"),
+				reference : this,
+			});
+			promptus.showErrorMessage("<?php echo $this->translate('Not enough information to add customers');?>");
+			setTimeout(function(){
+				location.href = "<?php echo $this->url(array("module"=>"admin","controller"=>"customer","action"=>"index"),"default",true);?>";
+			}, 2000);
+		<?php
+			} 
+		?>
+		
+		$("#language_id").multiselect({
+			sortable: false, 
+			searchable: false
+		});
+		$('#language_id').bind('change', function(event, ui) {
+			$("#default_language_id").html("");
+			$.map( $('#language_id').find('option[selected]'), function(item,i) { 
+				$('#default_language_id').append(
+				        $('<option label="'+$(item).html()+'"></option>').val($(item).val()).html($(item).html())
+				);
+			});
+		});
+		
 		// Hide errors on changing tab
 		var tabs = $( "#customer-tabs" ).tabs({
 			select: function(event, ui){
@@ -135,7 +158,7 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 						element : $("#customer-information"),
 						reference : self,
 						beforeShow : function(){
-							this.alternateMessage = this.showLoadingMessage("Saving Customer Information..");
+							this.alternateMessage = this.showLoadingMessage("<?php echo $this->translate('Saving Customer Information..');?>");
 						}
 					});
 					next();
@@ -154,7 +177,7 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 								$(tabs).tabs('option','disabled',[]);
 								// Set the id for the customer configuration
 								$("#configuration_customer_id").attr("value",customer.customer_id);
-								promptus.showSuccessMessage("Customer saved successfully");
+								promptus.showSuccessMessage("<?php echo $this->translate('Customer saved successfully');?>");
 								setTimeout(function(){
 									$(self).find("input[type=submit]").attr({"disabled":"disabled"});
 									next();
@@ -184,7 +207,7 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 						element : $("#customer-configuration"),
 						reference : self,
 						beforeShow : function(){
-							this.alternateMessage = this.showLoadingMessage("Saving Customer Configuration..");
+							this.alternateMessage = this.showLoadingMessage("<?php echo $this->translate('Saving Customer Configuration..');?>");
 						}
 					});
 					next();
@@ -199,7 +222,7 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 							if( json && json.success != undefined ) {
 								var customer_configuration = json.success.message.customer_configuration;
 								$(self).find("#customer_configuration_id").attr("value",customer_configuration.customer_configuration_id);								
-								promptus.showSuccessMessage("Customer saved successfully");
+								promptus.showSuccessMessage("<?php echo $this->translate('Customer saved successfully');?>");
 								setTimeout(function(){
 									$(self).find("input[type=submit]").attr({"disabled":"disabled"});
 									next();
@@ -232,7 +255,11 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 				$(this).find("input[type=submit]").removeAttr("disabled");
 			}
 		});
-
+		// making password field mandatory if username changes
+		$("#username").change(function(){
+			password.required = true;
+		});
+		
 		$("#business_type_id").change(function(){
 			var self = this;
 			$(document).queue(function(next){
@@ -240,7 +267,7 @@ $customerConfigurationForm = $this->customerConfigurationForm;
 					element : $("#customer-information"),
 					reference : self,
 					beforeShow : function(){
-						this.alternateMessage = this.showLoadingMessage("Loading templates for the selected business type..");
+						this.alternateMessage = this.showLoadingMessage("<?php echo $this->translate('Loading templates for the selected business type..');?>");
 					}
 				});
 				next();

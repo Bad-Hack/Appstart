@@ -24,6 +24,15 @@ class Admin_TemplateController extends Zend_Controller_Action
     	foreach ($form->getElements() as $element) {
     		if($element->getDecorator('Label')) $element->getDecorator('Label')->setTag(null);
     	}
+    	$this->view->hasData = true;
+    	$mapper = new Admin_Model_Mapper_BusinessType ();
+    	$models = $mapper->countAll();
+    	$module = new Admin_Model_Mapper_Module();
+    	$module = $module->countAll();
+    	if($models == 0 || $module == 0) {
+    		$this->view->hasData = false;
+    	}
+    	
     	$this->view->form = $form;
     	$this->view->assign ( array (
     			"partial" => "template/partials/add.phtml"
@@ -35,6 +44,7 @@ class Admin_TemplateController extends Zend_Controller_Action
     {
     	$form = new Admin_Form_Template();
     	$request = $this->getRequest();
+    	$this->view->hasData = true;
     	if($request->getParam("id","")!="")
     	{ 
 	    	$mapper = new Admin_Model_Mapper_Template();
@@ -260,8 +270,8 @@ class Admin_TemplateController extends Zend_Controller_Action
     				"id" => $row [5] ["template_id"]
     		), "default", true );
     			
-    		$edit = '<a href="' . $editUrl . '" class="grid_edit" >Edit</a>';
-    		$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >Delete</a>';
+    		$edit = '<a href="' . $editUrl . '" class="grid_edit" >'.$this->view->translate('Edit').'</a>';
+    		$delete = '<a href="' . $deleteUrl . '" class="grid_delete" >'.$this->view->translate('Delete').'</a>';
     		$sap = ($edit == "" || $delete == "") ? '' : '&nbsp;|&nbsp;';
     			
     		$response ['aaData'] [$rowId] [5] = $edit . $sap . $delete;
